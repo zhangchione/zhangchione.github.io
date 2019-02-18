@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://yoursite.com/Tags/">
+    <link rel="canonical" href="https://yoursite.com/Tags/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -80,7 +80,7 @@
                         
 							
                         <li>
-                            <a href="/Tags/">Tags</a>
+                            <a href="/About/">About</a>
                         </li>
 							
 						
@@ -88,7 +88,7 @@
                         
 							
                         <li>
-                            <a href="/About/">About</a>
+                            <a href="/Tags/">Tags</a>
                         </li>
 							
 						
@@ -172,22 +172,76 @@
             <!-- 标签云 -->
             <div id="tag_cloud" class="tags">
                 
-                <a href="#test" title="test" rel="1">test</a>
-                
-                <a href="#生活" title="生活" rel="1">生活</a>
-                
-                <a href="#博客学习" title="博客学习" rel="1">博客学习</a>
+                <a href="#博客学习" title="博客学习" rel="2">博客学习</a>
                 
                 <a href="#日常" title="日常" rel="1">日常</a>
+                
+                <a href="#test" title="test" rel="2">test</a>
+                
+                <a href="#生活" title="生活" rel="2">生活</a>
                 
             </div>
 
             <!-- 标签列表 -->
             
             <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="博客学习">
+                    <span class="tag-text">博客学习</span>
+                </span>
+                
+                <div class="post-preview">
+                    <a href="/2018/12/04/FirstBlog/">
+                        <h2 class="post-title">
+                            Mac系统 利用github+hexo 搭建自己的Blog
+                        </h2>
+                        
+                    </a>
+                </div>
+                <hr>
+                
+                <div class="post-preview">
+                    <a href="/2018/06/23/Love/">
+                        <h2 class="post-title">
+                            Love
+                        </h2>
+                        
+                    </a>
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-tag listing-seperator" id="日常">
+                    <span class="tag-text">日常</span>
+                </span>
+                
+                <div class="post-preview">
+                    <a href="/2018/12/04/FirstBlog/">
+                        <h2 class="post-title">
+                            Mac系统 利用github+hexo 搭建自己的Blog
+                        </h2>
+                        
+                    </a>
+                </div>
+                <hr>
+                
+            </div>
+            
+            <div class="one-tag-list">
                 <span class="fa fa-tag listing-seperator" id="test">
                     <span class="tag-text">test</span>
                 </span>
+                
+                <div class="post-preview">
+                    <a href="/2018/06/23/Love/">
+                        <h2 class="post-title">
+                            Love
+                        </h2>
+                        
+                    </a>
+                </div>
+                <hr>
                 
                 <div class="post-preview">
                     <a href="/2018/06/22/hello-world/">
@@ -216,34 +270,10 @@
                 </div>
                 <hr>
                 
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="博客学习">
-                    <span class="tag-text">博客学习</span>
-                </span>
-                
                 <div class="post-preview">
-                    <a href="/2018/12/04/FirstBlog/">
+                    <a href="/2018/06/22/hello-world/">
                         <h2 class="post-title">
-                            Mac系统 利用github+hexo 搭建自己的Blog
-                        </h2>
-                        
-                    </a>
-                </div>
-                <hr>
-                
-            </div>
-            
-            <div class="one-tag-list">
-                <span class="fa fa-tag listing-seperator" id="日常">
-                    <span class="tag-text">日常</span>
-                </span>
-                
-                <div class="post-preview">
-                    <a href="/2018/12/04/FirstBlog/">
-                        <h2 class="post-title">
-                            Mac系统 利用github+hexo 搭建自己的Blog
+                            Hello World
                         </h2>
                         
                     </a>
@@ -334,7 +364,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+        async("https://yoursite.com/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},

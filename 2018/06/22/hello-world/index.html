@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://yoursite.com/2018/06/22/hello-world/">
+    <link rel="canonical" href="https://yoursite.com/2018/06/22/hello-world/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -80,7 +80,7 @@
                         
 							
                         <li>
-                            <a href="/Tags/">Tags</a>
+                            <a href="/About/">About</a>
                         </li>
 							
 						
@@ -88,7 +88,7 @@
                         
 							
                         <li>
-                            <a href="/About/">About</a>
+                            <a href="/Tags/">Tags</a>
                         </li>
 							
 						
@@ -172,6 +172,8 @@
                         
                         <a class="tag" href="/tags/#test" title="test">test</a>
                         
+                        <a class="tag" href="/tags/#生活" title="生活">生活</a>
+                        
                     </div>
                 </div>
             </div>
@@ -206,7 +208,7 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/12/04/FirstBlog/" data-toggle="tooltip" data-placement="top" title="Mac系统 利用github+hexo 搭建自己的Blog">&larr; Previous Post</a>
+                        <a href="/2018/06/23/Love/" data-toggle="tooltip" data-placement="top" title="Love">&larr; Previous Post</a>
                     </li>
                     
                     
@@ -218,6 +220,25 @@
 
 
                 <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC80MTQ1MS8xNzk5OA==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
                 
 
                 
@@ -249,6 +270,8 @@
                     <div class="tags">
                         
                         <a class="tag" href="/tags/#test" title="test">test</a>
+                        
+                        <a class="tag" href="/tags/#生活" title="生活">生活</a>
                         
                     </div>
                 </section>
@@ -356,7 +379,7 @@
 <script>
     // only load tagcloud.js in tag.html
     if($('#tag_cloud').length !== 0){
-        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+        async("https://yoursite.com/js/jquery.tagcloud.js",function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
                 color: {start: '#bbbbee', end: '#0085a1'},
