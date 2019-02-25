@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Mac系统 利用github+hexo 搭建自己的Blog｜Cone&#39;s blog
+        关于刷题入门(简单题操作)的总结｜Cone&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/2018/12/04/FirstBlog/">
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/05/刷题入门2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -143,13 +143,13 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="post-default.jpg">
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/bj.png">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('post-default.jpg')
+        background-image: url('http://pn24i41zt.bkt.clouddn.com/bj.png');
     }
 
     
@@ -160,17 +160,17 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Mac系统 利用github+hexo 搭建自己的Blog</h1>
+                    <h1>关于刷题入门(简单题操作)的总结</h1>
                     
                     <span class="meta">
                          作者 张驰
                         <span>
-                          日期 2018-12-04
+                          日期 2018-12-05
                          </span>
                     </span>
                     <div class="tags text-center">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </div>
@@ -179,7 +179,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Mac系统 利用github+hexo 搭建自己的Blog
+            关于刷题入门(简单题操作)的总结
         </span>
     </div>
 </header>
@@ -190,63 +190,46 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="1-Git"><a href="#1-Git" class="headerlink" title="1.Git"></a>1.Git</h2><p>用来将本地Hexo内容提交到Github上。Xcode自带Git。</p>
-<h2 id="2-Node-js"><a href="#2-Node-js" class="headerlink" title="2.Node.js"></a>2.Node.js</h2><p>用来生成静态页面。<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js官网</a>。 下载下图红色箭头所指向的文件！<img src="https://upload-images.jianshu.io/upload_images/13179799-2bf72161dcd8dfe7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="https://upload-images.jianshu.io/upload_images/13179799-ebbfca5e3b697d2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""> 最后一路按照即可！</p>
-<h1 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h1><p>打开终端执行以下命令</p>
-<blockquote>
-<p>$ sudo npm install -g hexo  </p>
-</blockquote>
-<p>执行该命令后hexo即安装完成</p>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>在桌面创建一个名为hexo的文件夹 然后终端进入到该文件夹执行如下命令：</p>
-<blockquote>
-<p>$ hexo init</p>
-</blockquote>
-<p>然后执行如下命令打开hexo 服务器</p>
-<blockquote>
-<p>$ hexo s</p>
-</blockquote>
-<p>打开<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> , 能看到如下界面 <img src="https://upload-images.jianshu.io/upload_images/13179799-e814287874919b62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>本地搭建完成，下面关联Github</p>
-<h1 id="关联Github"><a href="#关联Github" class="headerlink" title="关联Github"></a>关联Github</h1><h2 id="1-登录Github"><a href="#1-登录Github" class="headerlink" title="1.登录Github"></a>1.登录Github</h2><p>登陆你的GitHub，新建仓库，名为用户名.github.io固定写法。如下图所示：<img src="https://upload-images.jianshu.io/upload_images/13179799-2a63e9ea44cd6d28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>本地内容如下:<img src="https://upload-images.jianshu.io/upload_images/13179799-457d98575321f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br> 终端cd到本地 hexo 文件夹下，打开文件夹下 _config.yml 文件，终端输入命令：</p>
-<blockquote>
-<p>$ vim _config.yml</p>
-</blockquote>
-<p>打开之后往下滑到最后修改成如下样子：<img src="https://upload-images.jianshu.io/upload_images/13179799-86b622bab7259975.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>把红框内容改成自己的github用户名即可</p>
-<p>接下来执行如下命令： </p>
-<blockquote>
-<p>$ hexo g </p>
-</blockquote>
-<p>若出现找不到博客错误则执行:</p>
-<blockquote>
-<p>$ npm install hexo –save</p>
-</blockquote>
-<p>在执行如下命令</p>
-<blockquote>
-<p>$ hexo d</p>
-</blockquote>
-<p>若出现无法连接git或找不到git，则执行如下命令来安装：</p>
-<blockquote>
-<p> $ npm install hexo-deployer-git –save  </p>
-</blockquote>
-<p>若你未关联Github，则执行hexo deploy命令时终端会提示你输入Github的用户名和密码，即</p>
-<blockquote>
-<p>Username for ‘<a href="https://github.com&#39;" target="_blank" rel="noopener">https://github.com&#39;</a>:<br>  Password for ‘<a href="https://github.com&#39;" target="_blank" rel="noopener">https://github.com&#39;</a>:</p>
-</blockquote>
-<p>hexo d 命令成功后 打开：<a href="http://zhangchione.github.io">http://zhangchione.github.io</a> 将zhangchione改成你的 用户名即可。和之前打开的一样。</p>
-<p>本地和git关联成功 </p>
-<h2 id="属于自己的博客搭建成功！！"><a href="#属于自己的博客搭建成功！！" class="headerlink" title="属于自己的博客搭建成功！！"></a>属于自己的博客搭建成功！！</h2>
+                <h2 id="Cone-总结"><a href="#Cone-总结" class="headerlink" title="Cone 总结"></a>Cone 总结</h2><p>一、判断一个数的奇偶性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 判断奇偶性 只需要对2取模即可，模为1位奇数，反之为偶</span><br><span class="line"></span><br><span class="line">int a;</span><br><span class="line">if(a%2==1)</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a为奇数&quot;)；</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a为偶数&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-c4bfc98579f31a15.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<p>二、判断闰年</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//1、能整除4且不能整除100  2、能整除400 二者成立一个即可</span><br><span class="line">int y;</span><br><span class="line">if((y%400==0)||(y%4==0&amp;&amp;y%100!=0))</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;这年为闰年&quot;);</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;这年为平年&quot;)；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-a80c3adb3d79fe6a.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<p>三、判断三边是否能够构成一个三角形</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//在已知三边都大于0的情况下 任意两边之和大于第三边即可</span><br><span class="line"></span><br><span class="line">int a,b,c;</span><br><span class="line">if((a+b&gt;c)&amp;&amp;(a+c&gt;b)&amp;&amp;(c+b&gt;a))</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a,b,c三边可以构成三角形&quot;);</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a,b,c三边无法构成三角形&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-15544cad285d0b89.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<p>四、关于三个数比较大小并排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 利用if判断是否需要交换值 </span><br><span class="line"></span><br><span class="line">int a,b,c,t;</span><br><span class="line">if(a&gt;b) //保证a&lt;=b</span><br><span class="line">&#123;</span><br><span class="line">t=a;</span><br><span class="line">a=b;</span><br><span class="line">b=t;</span><br><span class="line">&#125;</span><br><span class="line">if(a&gt;c) //保证a&lt;=c，这样，a就最小了</span><br><span class="line">&#123;</span><br><span class="line">t=a;</span><br><span class="line">a=c;</span><br><span class="line">c=t;</span><br><span class="line">&#125;</span><br><span class="line">if(b&gt;c) //对比a大的两个字符，保证b&lt;=c</span><br><span class="line">&#123;</span><br><span class="line">t=b;</span><br><span class="line">b=c;</span><br><span class="line">c=t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-07ec189cf94148b5.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<p>五、关于求一个数中各个位数上的数字算法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//这里以三位数为例</span><br><span class="line">int i; // i 为三位数</span><br><span class="line">a=i/100;</span><br><span class="line">b=(i-a*100)/10;</span><br><span class="line">c=i%10;</span><br><span class="line"></span><br><span class="line">// a为百位上的数 b为十位上的数 c为个位上的数；</span><br><span class="line">//例如 i=123  a=1 b=2 c=3; 看懂运算符 / 的用法就很好掌握这个</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-775044f577b7ea88.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<h3 id="关于简单数学知识的总结："><a href="#关于简单数学知识的总结：" class="headerlink" title="关于简单数学知识的总结："></a>关于简单数学知识的总结：</h3><p>一、两点间的距离公式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 初中知识，就不解释了 坐标（x1,y1）(x2,y2)</span><br><span class="line">double x1,y1,x2,y2;</span><br><span class="line">double d = 0;</span><br><span class="line">d = sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));</span><br><span class="line">//d 为距离</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-49cdff256108af12.gif?imageMogr2/auto-orient/strip" alt="image.gif"> </p>
+<p>二、球的体积公式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 好像也是初中知识，设P = π ;</span><br><span class="line">double V,r;</span><br><span class="line">V=4*P*(r*r*r)/3;</span><br><span class="line">//V为体积</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-129e92ca80453544.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<p>三、数列求和公式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//此处为等差数列求和 一 1，2，3，4，5 ………… t 为例</span><br><span class="line">int sum=0;</span><br><span class="line">int t,n:</span><br><span class="line">if(t%2==0)</span><br><span class="line">&#123;</span><br><span class="line">n=t/2;</span><br><span class="line">t=t+1;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">n=(t+1)/2;</span><br><span class="line">&#125;</span><br><span class="line">sum = t*n;</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/13179799-b9f7d2966d335c27.gif?imageMogr2/auto-orient/strip" alt=""> </p>
+<h3 id="最后一些小坑坑洼洼的总结："><a href="#最后一些小坑坑洼洼的总结：" class="headerlink" title="最后一些小坑坑洼洼的总结："></a>最后一些小坑坑洼洼的总结：</h3><p>1、要看清楚题目，题目给出的数是整数还是浮点数。</p>
+<p>2、如果题目给出一个范围区间的两个数m,n，题目没有说明m&lt;n 或者n&lt;m，就需要判断m，n的大小关系。</p>
+<p>3、小数点的保留要注意。（%.alf）a 为要保留的位数小数点 例如%.2lf 保留两位小数。</p>
+
                 <hr>
                 
 
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2018/12/05/刷题入门1/" data-toggle="tooltip" data-placement="top" title="关于输入、输出的总结">&larr; Previous Post</a>
+                        <a href="/2018/12/05/刷题入门3/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(时间和空间复杂度)的总结">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2018/06/22/hello-world/" data-toggle="tooltip" data-placement="top" title="Hello World">Next Post &rarr;</a>
+                        <a href="/2018/12/05/刷题入门1/" data-toggle="tooltip" data-placement="top" title="关于输入、输出的总结">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -284,7 +267,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#环境配置"><span class="toc-text">环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Git"><span class="toc-text">1.Git</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Node-js"><span class="toc-text">2.Node.js</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#安装hexo"><span class="toc-text">安装hexo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关联Github"><span class="toc-text">关联Github</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-登录Github"><span class="toc-text">1.登录Github</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#属于自己的博客搭建成功！！"><span class="toc-text">属于自己的博客搭建成功！！</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Cone-总结"><span class="toc-text">Cone 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于简单数学知识的总结："><span class="toc-text">关于简单数学知识的总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后一些小坑坑洼洼的总结："><span class="toc-text">最后一些小坑坑洼洼的总结：</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>
@@ -306,7 +289,7 @@
                     </h5>
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
                         
                     </div>
                 </section>

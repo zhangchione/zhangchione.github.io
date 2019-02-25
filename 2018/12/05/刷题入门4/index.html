@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cone Blog">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Cone" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        关于刷题入门（冒泡、选择排序）总结｜Cone&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/05/刷题入门4/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="true" data-istags="false
+" data-ishome="false">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Cone
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/About/">About</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/Works/">Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/bj.png">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://pn24i41zt.bkt.clouddn.com/bj.png');
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>关于刷题入门（冒泡、选择排序）总结</h1>
+                    
+                    <span class="meta">
+                         作者 张驰
+                        <span>
+                          日期 2018-12-05
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            关于刷题入门（冒泡、选择排序）总结
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h3 id="简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。"><a href="#简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。" class="headerlink" title="简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。"></a>简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。</h3><h3 id="冒泡排序："><a href="#冒泡排序：" class="headerlink" title="冒泡排序："></a>冒泡排序：</h3><p>冒泡排序：顾名思义就是 小的数往上面冒，大的数往下沉（升序）。当然也可以反过来进行（降序）。</p>
+<p>冒泡排序是常用的一种排序方法，其基本方法就是逐次比较。即一次比较两个数，若它们的顺序错误，则它们交换；重复进行，直到没有需要交换为止。</p>
+<p>以升序为例：</p>
+<pre><code>1、比较相邻数字的大小，若第一个数比第二个数大，则相互交换；
+
+2、对每一对相邻的数作相同的工作，那么最后的数应该是最大的数；
+
+3、针对所有数（除了最后一个）重复上述步骤，直到没有任何一对数字需要比较为止。
+
+需要注意的是，第3条中所谓的“最后一个”是指前几步中已经处理过的最大的数，而不是整个数列的最后一个数
+
+例如，将下列数列用冒泡排序法从小到大重新排列;
+
+                      48 37 64 96 75 12 26 48
+
+                               每次排序后数列的变化如下：
+
+                                        第一次排序：37 48 64 75 12 26 48 96   第一次排序之后 最大的已经到了最后面（最下面）
+
+                                                 第二次排序：37 48 64 12 26 48 75 96  第二次排序之后，第二大的到了倒数第二个位置 （往下也是这样）
+
+                                                          第三次排序：37 48 12 26 48 64 75 96 ……
+
+                                                                   第四次排序：37 12 26 48 48 64 75 96 ……
+
+                                                                                        :
+
+                                                                                                             :
+
+                                                                                                                                  :
+
+                                                                                                                                            经过一系列过程，最终数列次序为：12 26 37 48 48 64 75 96.
+
+                                                                                                                                            冒泡排序原理弄清之后，接下来就是代码实现了：
+
+                                                                                                                                            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">                                                                                                                                                        //冒泡排序</span><br><span class="line">                                                                                                                                                        //设数组a 有n个元素</span><br><span class="line">                                                                                                                                                        int t;</span><br><span class="line">                                                                                                                                                        for(i=0;i&lt;n-1;i++)//n个数的数列总共扫描n-1次</span><br><span class="line">                                                                                                                                                        &#123;</span><br><span class="line">                                                                                                                                                        for(j=0;j&lt;n-i-1;j++)//每一趟扫描到a[n-i-2]与a[n-i-1]比较为止结束</span><br><span class="line">                                                                                                                                                        &#123;</span><br><span class="line">                                                                                                                                                        if(a[j]&gt;a[j+1])//后一位数比前一位数小的话，就交换两个数的位置（升序）</span><br><span class="line">                                                                                                                                                        &#123;</span><br><span class="line">                                                                                                                                                        t=a[j+1];</span><br><span class="line">                                                                                                                                                        a[j+1]=a[j];</span><br><span class="line">                                                                                                                                                        a[j]=t;</span><br><span class="line">                                                                                                                                                        &#125;</span><br><span class="line">                                                                                                                                                        &#125;</span><br><span class="line">                                                                                                                                                        &#125;</span><br></pre></td></tr></table></figure>
+
+
+                                                                                                                                            ![](https://upload-images.jianshu.io/upload_images/13179799-d120a1423224aac0.gif?imageMogr2/auto-orient/strip) 
+
+                                                                                                                                            ### 选择排序：
+
+                                                                                                                                            选择法排序是相对好理解的排序算法。假设要对含有n个数的序列进行升序排列，算法步骤是：
+
+                                                                                                                                               1、从数组存放的n个数中找出最小数的下标（算法见下面的“求最值”），然后将最小数与第1个数交换位置；
+
+                                                                                                                                                  2、除第1个数以外，再从其余n-1个数中找出最小数（即n个数中的次小数）的下标，将此数与第2个数交换位置；
+
+                                                                                                                                                     3、重复步骤1  n-1趟，即可完成所求。
+
+                                                                                                                                                     <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">                                                                                                                                                                 //选择排序</span><br><span class="line">                                                                                                                                                                 //设数组a 为待排序数组</span><br><span class="line">                                                                                                                                                                 int k,i,j;</span><br><span class="line">                                                                                                                                                                 for(i=0;i&lt;n-1;i++)         /*处理n-1趟*/</span><br><span class="line">                                                                                                                                                                 &#123;</span><br><span class="line">                                                                                                                                                                 k = i;      /*总是假设此趟处理的第一个（即全部数的第i个）数最小，k记录其下标*/</span><br><span class="line">                                                                                                                                                                 for(j=i+1;j&lt;n;j++)</span><br><span class="line">                                                                                                                                                                 &#123;</span><br><span class="line">                                                                                                                                                                 if(a[j] &lt; a[k])</span><br><span class="line">                                                                                                                                                                 k = j; </span><br><span class="line">                                                                                                                                                                 &#125;</span><br><span class="line">                                                                                                                                                                 if (k != i)</span><br><span class="line">                                                                                                                                                                 &#123; </span><br><span class="line">                                                                                                                                                                 t = a[i]; </span><br><span class="line">                                                                                                                                                                 a[i] = a[k]; </span><br><span class="line">                                                                                                                                                                 a[k] = t; </span><br><span class="line">                                                                                                                                                                 &#125;</span><br><span class="line">                                                                                                                                                                 &#125;</span><br></pre></td></tr></table></figure>
+
+
+                                                                                                                                                     ![](https://upload-images.jianshu.io/upload_images/13179799-d114702e2a48e4cb.gif?imageMogr2/auto-orient/strip) 
+
+                                                                                                                                                     本文详细举例讲了冒泡排序，在刷题前期中 会冒泡排序了，基本上就很少用到选择排序，所以对于选择排序没有详细讲解。
+</code></pre>
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/12/05/getchar用法/" data-toggle="tooltip" data-placement="top" title="getchar()用法">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/12/05/刷题入门3/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(时间和空间复杂度)的总结">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC80MTQ1MS8xNzk5OA==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。"><span class="toc-text">简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#冒泡排序："><span class="toc-text">冒泡排序：</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="https://www.wxz.name">汪小祯</a></li>
+                        
+                        <li><a href="https://www.jianshu.com/u/5bc1057e34a7">周玉林</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/yin_5bc870d095522">陈庆伟</a></li>
+                        
+                        <li><a href="https://zsd.name">张赛东</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/fanrui_5c052adaeef32">范瑞</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Cone 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://zhangchione.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    var _baId = 'de6e91c32960c44c0d4b38fcf214cd45';
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?" + _baId;
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/head.png">
+</body>
+
+</html>

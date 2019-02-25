@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        关于输入、输出的总结｜Cone&#39;s blog
+        关于刷题入门(时间和空间复杂度)的总结｜Cone&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/2019/01/27/Love/">
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/05/刷题入门3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -160,12 +160,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>关于输入、输出的总结</h1>
+                    <h1>关于刷题入门(时间和空间复杂度)的总结</h1>
                     
                     <span class="meta">
                          作者 张驰
                         <span>
-                          日期 2019-01-27
+                          日期 2018-12-05
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -179,7 +179,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            关于输入、输出的总结
+            关于刷题入门(时间和空间复杂度)的总结
         </span>
     </div>
 </header>
@@ -190,15 +190,25 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h1 id="Cone"><a href="#Cone" class="headerlink" title="Cone"></a>Cone</h1>
+                <h2 id="时间和空间复杂度"><a href="#时间和空间复杂度" class="headerlink" title="时间和空间复杂度"></a>时间和空间复杂度</h2><p>在刷题过程中会遇到一些超时的现象，这就说明你的算法不符合题目要求的运行时间，称为超时。</p>
+<p>时间复杂度：目前通俗来讲就是程序在完成后台测试数据（每组数据对应一个时间，所有时间都符合才可以）要花的时间，如果这个时间超过题目要求的时间（通常是1000ms）就会超时。它的具体定义以及公式计算等等会在数据结构这本书上出现。</p>
+<p>空间复杂度：通俗来讲就是程序所占的内存。刷题中，这种情况很少出现这个超出限制。</p>
+<h3 id="Time-Limited-Exceed（超时）"><a href="#Time-Limited-Exceed（超时）" class="headerlink" title="Time Limited Exceed（超时）"></a>Time Limited Exceed（超时）</h3><p>简称TLE。通常需要进行算法优化来降低时间复杂度，加快代码运行的时间。<br>常见的TLE有以下几种情况：</p>
+<p>1、程序中出现无法终止的死循环<br>2、读取输入流和输出流的时间太长。（C++的输入输出中，cin和cout没有scanf和printf快，不要问我是怎么知道的，我都已经在输入输出上载过无数跟头了….建议同学们养成用scanf和printf的好习惯）<br>3、时间复杂度大，常常是多层循环或者深递归导致。建议大家能不用循环的时候，就不用循环，因为循环费时。</p>
+<p>如何判断自己的程序是否会超时：  首先看题目数据的大小， 会给一个数据范围，比如0&lt;N &lt;1000， 接下来看你的程序的代码的语句一共运行多少次， 基本上就是看 循环的层数（一般是看有多少个for嵌套或者while）。N为上面那个范围，要考虑极限数据 就是 N = 1000的情况， 三个for嵌套 就是 1000的三次方 等于10亿 对于这个数量级程序就会超时。 程序执行语句次数一般控制在10^7 到10^8以下 就不会超时，这个是因为计算机每秒可以运行大概10^8条语句。</p>
+
                 <hr>
                 
 
                 <ul class="pager">
                     
+                    <li class="previous">
+                        <a href="/2018/12/05/刷题入门4/" data-toggle="tooltip" data-placement="top" title="关于刷题入门（冒泡、选择排序）总结">&larr; Previous Post</a>
+                    </li>
+                    
                     
                     <li class="next">
-                        <a href="/2019/01/27/hell/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(简单题操作)的总结">Next Post &rarr;</a>
+                        <a href="/2018/12/05/刷题入门2/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(简单题操作)的总结">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -236,7 +246,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Cone"><span class="toc-text">Cone</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#时间和空间复杂度"><span class="toc-text">时间和空间复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Time-Limited-Exceed（超时）"><span class="toc-text">Time Limited Exceed（超时）</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>

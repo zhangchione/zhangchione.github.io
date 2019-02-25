@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        Mac系统 利用github+hexo 搭建自己的Blog｜Cone&#39;s blog
+        这充实的岁月，正是奋斗的最好年华 — 2018年总结｜Cone&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/2018/12/04/FirstBlog/">
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/30/2018年小结/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -143,13 +143,13 @@
 <!--only post-->
 
 
-<img class="wechat-title-img" src="post-default.jpg">
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/bj.png">
 
 
 <style>
     
     header.intro-header {
-        background-image: url('post-default.jpg')
+        background-image: url('http://pn24i41zt.bkt.clouddn.com/bj.png');
     }
 
     
@@ -160,17 +160,17 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>Mac系统 利用github+hexo 搭建自己的Blog</h1>
+                    <h1>这充实的岁月，正是奋斗的最好年华 — 2018年总结</h1>
                     
                     <span class="meta">
                          作者 张驰
                         <span>
-                          日期 2018-12-04
+                          日期 2018-12-30
                          </span>
                     </span>
                     <div class="tags text-center">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#总结" title="总结">总结</a>
                         
                     </div>
                 </div>
@@ -179,7 +179,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            Mac系统 利用github+hexo 搭建自己的Blog
+            这充实的岁月，正是奋斗的最好年华 — 2018年总结
         </span>
     </div>
 </header>
@@ -190,63 +190,27 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="1-Git"><a href="#1-Git" class="headerlink" title="1.Git"></a>1.Git</h2><p>用来将本地Hexo内容提交到Github上。Xcode自带Git。</p>
-<h2 id="2-Node-js"><a href="#2-Node-js" class="headerlink" title="2.Node.js"></a>2.Node.js</h2><p>用来生成静态页面。<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">Node.js官网</a>。 下载下图红色箭头所指向的文件！<img src="https://upload-images.jianshu.io/upload_images/13179799-2bf72161dcd8dfe7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br><img src="https://upload-images.jianshu.io/upload_images/13179799-ebbfca5e3b697d2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""> 最后一路按照即可！</p>
-<h1 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h1><p>打开终端执行以下命令</p>
-<blockquote>
-<p>$ sudo npm install -g hexo  </p>
-</blockquote>
-<p>执行该命令后hexo即安装完成</p>
-<h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>在桌面创建一个名为hexo的文件夹 然后终端进入到该文件夹执行如下命令：</p>
-<blockquote>
-<p>$ hexo init</p>
-</blockquote>
-<p>然后执行如下命令打开hexo 服务器</p>
-<blockquote>
-<p>$ hexo s</p>
-</blockquote>
-<p>打开<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> , 能看到如下界面 <img src="https://upload-images.jianshu.io/upload_images/13179799-e814287874919b62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
-<p>本地搭建完成，下面关联Github</p>
-<h1 id="关联Github"><a href="#关联Github" class="headerlink" title="关联Github"></a>关联Github</h1><h2 id="1-登录Github"><a href="#1-登录Github" class="headerlink" title="1.登录Github"></a>1.登录Github</h2><p>登陆你的GitHub，新建仓库，名为用户名.github.io固定写法。如下图所示：<img src="https://upload-images.jianshu.io/upload_images/13179799-2a63e9ea44cd6d28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>本地内容如下:<img src="https://upload-images.jianshu.io/upload_images/13179799-457d98575321f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br> 终端cd到本地 hexo 文件夹下，打开文件夹下 _config.yml 文件，终端输入命令：</p>
-<blockquote>
-<p>$ vim _config.yml</p>
-</blockquote>
-<p>打开之后往下滑到最后修改成如下样子：<img src="https://upload-images.jianshu.io/upload_images/13179799-86b622bab7259975.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>把红框内容改成自己的github用户名即可</p>
-<p>接下来执行如下命令： </p>
-<blockquote>
-<p>$ hexo g </p>
-</blockquote>
-<p>若出现找不到博客错误则执行:</p>
-<blockquote>
-<p>$ npm install hexo –save</p>
-</blockquote>
-<p>在执行如下命令</p>
-<blockquote>
-<p>$ hexo d</p>
-</blockquote>
-<p>若出现无法连接git或找不到git，则执行如下命令来安装：</p>
-<blockquote>
-<p> $ npm install hexo-deployer-git –save  </p>
-</blockquote>
-<p>若你未关联Github，则执行hexo deploy命令时终端会提示你输入Github的用户名和密码，即</p>
-<blockquote>
-<p>Username for ‘<a href="https://github.com&#39;" target="_blank" rel="noopener">https://github.com&#39;</a>:<br>  Password for ‘<a href="https://github.com&#39;" target="_blank" rel="noopener">https://github.com&#39;</a>:</p>
-</blockquote>
-<p>hexo d 命令成功后 打开：<a href="http://zhangchione.github.io">http://zhangchione.github.io</a> 将zhangchione改成你的 用户名即可。和之前打开的一样。</p>
-<p>本地和git关联成功 </p>
-<h2 id="属于自己的博客搭建成功！！"><a href="#属于自己的博客搭建成功！！" class="headerlink" title="属于自己的博客搭建成功！！"></a>属于自己的博客搭建成功！！</h2>
+                <h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>梦想着远方，哪怕它遥远而一无所有，做一个向着光奔跑的程序员。</p>
+<h1 id="生活"><a href="#生活" class="headerlink" title="生活"></a>生活</h1><h2 id="游戏"><a href="#游戏" class="headerlink" title="游戏"></a>游戏</h2><p>大一下的时候，那时候喜欢上了玩吃鸡，很多很多次都借着别人的电脑玩吃鸡，五一那几天假期，和室友在寝室里面，不分白天黑夜的玩，还立下不吃鸡不睡觉的flag。过了五一假期，整个人都精神涣散，后来慢慢调整，慢慢淡出游戏，之后就没有借电脑玩游戏了。<br>大一期末考完高数，分了班，换了寝室，从爬6楼到只要爬4楼了。也换了室友，室友是自己选的（这个自由选择室友的分寝室方法真的很不错），志同道合的我们四个湖南人走到了一起。</p>
+<h2 id="晚睡与早起"><a href="#晚睡与早起" class="headerlink" title="晚睡与早起"></a>晚睡与早起</h2><p>记得之前高中的时候晚上11点了，觉得已经很晚了。然后到了大学，经常性的12点甚至12点之后才睡。有些时候是玩手机到12点，有些时候是写代码到凌晨，有些时候是寝室交流到12点，不管是哪种，熬夜伤身体，不好。<br>关于早起，记得大一入党积极分子交谈的时候，很有底气的说：大学从来没有晚于7点30起来，到了大二下学期12月份，没课了，经常性的8-9点起来，甚至10-11点才起来。</p>
+<h2 id="篮球与健身"><a href="#篮球与健身" class="headerlink" title="篮球与健身"></a>篮球与健身</h2><p>不知道从高一还是初三那一年开始，我喜欢上了科比，喜欢上了篮球，在高中三年，只要有空闲时间总会拿着球，喊着其他人一起去打球，似乎慢慢的这种爱好变成了一种习惯。但是到了大学，时间变多了，打球的次数却变少了，由于学习或者打球场地较远，或者时间不够，打球的次数也渐渐变少了。不过当自己拿起球的时候，那种感觉还是依然存在。<br>来大学前就想着，要把自己全身多余的肉炼成肌肉，在大二开始跑了35km之后，就去报了健身房，连续去了两次之后，跟很多人一样，就没去健身了。</p>
+<h2 id="朋友圈与娱乐"><a href="#朋友圈与娱乐" class="headerlink" title="朋友圈与娱乐"></a>朋友圈与娱乐</h2><p>有一句是：你在青春热血的年纪，拿着手机，刷着微博，看着新闻，做着我八十岁能做的事，你要青春干什么。诚然，这句话反应了很多年轻人的现状，反思自己，不经常做这些事，看抖音也是看一些学习或者提升自己的短视频，在自己学习类了的时候，偶尔会拿出来做做八十岁能做的事。</p>
+<h1 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h1><h2 id="iOS开发"><a href="#iOS开发" class="headerlink" title="iOS开发"></a>iOS开发</h2><p>从小白终于到了入门阶段了，如果当初学长要我入门学的是OC语言，不是swift的话，可能会快一点，查了很多swift的资料，查出来很多很多OC的，前期不知道怎么办，进度慢。<br>目前能够自己解决掉大部分开发中遇到的问题，学会了如何解决问题，同时也在用swift重写工大助手，已经写了约70%的功能了，能够看懂OC代码了。<br>大一暑假 当初去写老来宝app的时候，由于要搬到江西去写，之后由于一些特殊情况就放弃了，其实不应该放弃的，这让队友一个人在写，导致最后没有写出来而没有拿到钱，我在那里可能也写不出，但是不应该放弃队友。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>大一下学期，报了蓝桥杯，在3月开学的第一个月里，自己在慢慢的摸索学习算法，蓝桥杯只拿了省三，不过对于初次比赛的我，很开心，那个时候以及知足了。由于三月分的算法学习，导致了4月1号打完蓝桥杯，4月份一整月都没做什么事，都在玩。<br>到了年底，期间把时间花在了iOS上面，水平还是不够，只会基本的dp 搜索等基础题目。</p>
+<h2 id="数学与英语"><a href="#数学与英语" class="headerlink" title="数学与英语"></a>数学与英语</h2><p>本想着大一参加数学竞赛的，却无奈时间不够用， 没有准备数竞。英语四级是一个做的不好的地方，裸考了第一次 397分，到了12月份的这次，感觉又很悬了。</p>
+<h2 id="大学课程成绩"><a href="#大学课程成绩" class="headerlink" title="大学课程成绩"></a>大学课程成绩</h2><p>大一一年绩点3.7，班级排名第一，年级好像是12名。一等奖学金。对于一个喜欢代码，不喜欢其他课程的程序员来讲，平均85+ 也有点难度。</p>
+<h1 id="能力"><a href="#能力" class="headerlink" title="能力"></a>能力</h1><p>记得大一来的时候，去面试学习部，被刷了，当时很郁闷。后来反思，自己能力不足，有问题。经过这一年多的努力，担任班上学习委员，18级新生小班助。能力有所提高。学习部应该会收我了！！！</p>
+<h1 id="感悟"><a href="#感悟" class="headerlink" title="感悟"></a>感悟</h1><p>在大学，作为学计算机的程序员，应该耐得住寂寞，心应该静下来。如果学计算机的不能够静心的话，那应该在这一领域上走不远。</p>
+<h1 id="总结与展望2019"><a href="#总结与展望2019" class="headerlink" title="总结与展望2019"></a>总结与展望2019</h1><p>2018这一年，走过许多坎坎坷坷，让自己明白：什么事情都要全力以赴，不要管结果怎么样，尽力了，不后悔就是最好的。2018 这年已经过去了，已经翻篇了，人生很重要的2019 和2020 就要来了，希望接下来的两年： 我自己所做的，都是因为自己想做，自己喜欢。那些不足的地方，自己应该好好改进。希望能在大二结束的时候拿到实习offer。加油吧！2019！！！ 热爱生活，专注能力提升，追逐自己心中那份光！</p>
+
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2018/12/05/刷题入门1/" data-toggle="tooltip" data-placement="top" title="关于输入、输出的总结">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2018/06/22/hello-world/" data-toggle="tooltip" data-placement="top" title="Hello World">Next Post &rarr;</a>
+                        <a href="/2018/12/05/getchar用法/" data-toggle="tooltip" data-placement="top" title="getchar()用法">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -284,7 +248,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#环境配置"><span class="toc-text">环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Git"><span class="toc-text">1.Git</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Node-js"><span class="toc-text">2.Node.js</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#安装hexo"><span class="toc-text">安装hexo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#初始化"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关联Github"><span class="toc-text">关联Github</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-登录Github"><span class="toc-text">1.登录Github</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#属于自己的博客搭建成功！！"><span class="toc-text">属于自己的博客搭建成功！！</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#结束语"><span class="toc-text">结束语</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#生活"><span class="toc-text">生活</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#游戏"><span class="toc-text">游戏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#晚睡与早起"><span class="toc-text">晚睡与早起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#篮球与健身"><span class="toc-text">篮球与健身</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#朋友圈与娱乐"><span class="toc-text">朋友圈与娱乐</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#学习"><span class="toc-text">学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS开发"><span class="toc-text">iOS开发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#算法"><span class="toc-text">算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数学与英语"><span class="toc-text">数学与英语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大学课程成绩"><span class="toc-text">大学课程成绩</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#能力"><span class="toc-text">能力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#感悟"><span class="toc-text">感悟</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结与展望2019"><span class="toc-text">总结与展望2019</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -306,7 +270,7 @@
                     </h5>
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#博客" title="博客">博客</a>
+                        <a class="tag" href="/tags/#总结" title="总结">总结</a>
                         
                     </div>
                 </section>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cone Blog">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Cone" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        关于输入、输出的总结｜Cone&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/05/刷题入门1/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="true" data-istags="false
+" data-ishome="false">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Cone
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/About/">About</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/Works/">Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/bj.png">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://pn24i41zt.bkt.clouddn.com/bj.png');
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>关于输入、输出的总结</h1>
+                    
+                    <span class="meta">
+                         作者 张驰
+                        <span>
+                          日期 2018-12-05
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            关于输入、输出的总结
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="Cone"><a href="#Cone" class="headerlink" title="Cone"></a>Cone</h1><p>写博客是一个输出的过程，对于自己学习的一个总结，从这篇博客开始，以后坚持写博客，把踩过的坑以及总结记录下来，以后自己还可以慢慢看 回忆大学四年学习历程。</p>
+<p>总结一下踩过的坑：第一次开始接触杭电1000题，C语言语法才掌握小部分，就开始刷题，1000题错了20多次，最后还是百度到的多组输入数据才过。</p>
+<p>对于读题：那时候以为题目中的 A B N这种字母， 我的程序变量就要定义为A B N这种，这个显然是错的，变量是随便自己定义的。定义为 a,b都可以 例如 杭电1000题 定义为 int a,b; 然后使用a,b都可以。</p>
+<p>对于输入和输出： 输入时要从键盘输入，输出通俗就打印结果在运行窗口上面，每输入一组数据 就打印一组结果，输入输出刚开始看也一知半解的。</p>
+<p>Sample Input<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 5</span><br><span class="line">10 20</span><br></pre></td></tr></table></figure></p>
+<p>Sample Output<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">6</span><br><span class="line">30</span><br></pre></td></tr></table></figure></p>
+<p>例如这种，先输入1 和 5 在打印6 然后输入10 20 在打印30 。<br>对于AC：oj系统后台很多测试数据，你的程序要通过全部的测试数据才能AC </p>
+<p>入门：杭电1000 A+B<br>题目： 要求输入多组数据到程序结束。<br>这种多组数据输入需要用到!=EOF 或者~ 这种格式 例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//!=EOF 情况</span><br><span class="line">int a,b;</span><br><span class="line">while(scanf(&quot;%d%d&quot;,&amp;a,&amp;b)!=EOF)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">// ~ 情况</span><br><span class="line">while(~scanf(&quot;%d%d&quot;,&amp;a,&amp;b))</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>两种方法可以达到同一效果。还有其他方法，这里就不列举。掌握这两种情况 对于以后这种多组数据输入题目就可以处理解决。<br>输出：要求每一行输出一个测试数据答案。即加上一个换行符(‘\n’)就可以轻松解决<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//假设sum 为输出结果</span><br><span class="line">printf(&quot;%d\n&quot;,sum);</span><br></pre></td></tr></table></figure></p>
+<h1 id="输入情形"><a href="#输入情形" class="headerlink" title="输入情形"></a>输入情形</h1><h3 id="一、要求输入N组测试数据-："><a href="#一、要求输入N组测试数据-：" class="headerlink" title="一、要求输入N组测试数据  ："></a>一、要求输入N组测试数据  ：</h3><p>Input<br>Input contains an integer N in the first line, and then N lines follow. Each line consists of a pair of integers a and b, separated by a space, one pair of integers per line.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 这种情况 要用到循环， 我用的是while 这种循环</span><br><span class="line">int N;</span><br><span class="line">while(N--)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、要求输入数据到为0结束："><a href="#二、要求输入数据到为0结束：" class="headerlink" title="二、要求输入数据到为0结束："></a>二、要求输入数据到为0结束：</h3><p>Input<br>Input contains multiple test cases. Each test case contains a pair of integers a and b, one pair of integers per line. A test case containing 0 0 terminates the input and this test case is not to be processed.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//这种为0的情况处理，我用的跳出循环语句：break</span><br><span class="line">int a,b;</span><br><span class="line">while(~scanf(&quot;%d%d&quot;,&amp;a,&amp;b))</span><br><span class="line">&#123;</span><br><span class="line">if(a == 0 &amp;&amp; b == 0)</span><br><span class="line">&#123;</span><br><span class="line">break;   </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是两个数为0的情况， 一个数为0的情况 去掉一个 b == 0 即可，多个数据为0 也是同样处理 </p>
+<h3 id="三、要求输入多组数据，输出结果中一空行隔开："><a href="#三、要求输入多组数据，输出结果中一空行隔开：" class="headerlink" title="三、要求输入多组数据，输出结果中一空行隔开："></a>三、要求输入多组数据，输出结果中一空行隔开：</h3><p>Input<br>The input will consist of a series of pairs of integers a and b, separated by a space, one pair of integers per line.<br>Output<br>For each pair of input integers a and b you should output the sum of a and b, and followed by a blank line.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 多加一个\n即可解决</span><br><span class="line"></span><br><span class="line">//假设sum为输出结果</span><br><span class="line"></span><br><span class="line">printf(&quot;%d\n\n&quot;,sum);</span><br></pre></td></tr></table></figure></p>
+<h3 id="四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行"><a href="#四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行" class="headerlink" title="四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行"></a>四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行</h3><p>Input<br>Input contains an integer N in the first line, and then N lines follow. Each line starts with a integer M, and then M integers follow in the same line. </p>
+<p>Output<br>For each group of input integers you should output their sum in one line, and you must note that there is a blank line between outputs.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//采用if判断</span><br><span class="line">int t;</span><br><span class="line">scanf(&quot;%d&quot;,&amp;t);</span><br><span class="line">while(t--)</span><br><span class="line">&#123;</span><br><span class="line">if(t!=0)   </span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="最后oj系统的提交结果出现的情况："><a href="#最后oj系统的提交结果出现的情况：" class="headerlink" title="最后oj系统的提交结果出现的情况："></a>最后oj系统的提交结果出现的情况：</h2><h3 id="Accepted-正确"><a href="#Accepted-正确" class="headerlink" title="Accepted (正确)"></a>Accepted (正确)</h3><p>当你在某一ACM在线测评系统上提交了你的代码后，如果你得到了一个Accepted，简称AC，恭喜你，通过了这道题，你的代码是正确的。除了Accepted之外的所有结果，都是不符合要求的。</p>
+<h3 id="Compile-Error（编译错误）"><a href="#Compile-Error（编译错误）" class="headerlink" title="Compile Error（编译错误）"></a>Compile Error（编译错误）</h3><p>简称CE。通常是指语法错误，这是最最简单的错误了，因为你完全可以在提交之前，在本地的编译器上测试出来，然后改正。</p>
+<h3 id="Wrong-Answer（错误）"><a href="#Wrong-Answer（错误）" class="headerlink" title="Wrong Answer（错误）"></a>Wrong Answer（错误）</h3><p>简称WA。很多ACM新手们，在千辛万苦写好一份代码并且自认为是正确的，但是提交之后却得到了Wrong Answer的结果，他们百思不得其解，其实，OJ的后台有很多组测试数据，就算你的代码可以通过样例，但并不代表可以通过后台的所有数据，只要你有一组数据输出与测试输出不一样，你就无法AC。所以建议同学们，可以自己脑补一些特殊数据，看看是否能够得到正确的结果。除此之外，还要再次认真读题，很多时候Wrong Answer都是因为没有正确理解题目的意思。</p>
+<h3 id="Presentation-Error-格式错误"><a href="#Presentation-Error-格式错误" class="headerlink" title="Presentation Error(格式错误)"></a>Presentation Error(格式错误)</h3><p>简称PE。这种错误还是比较容易发现并改正的，通常产生的原因是由于你的代码输出的格式与题目要求的不一致。 </p>
+<p>常见的PE有以下几种：<br>1、大小写错误<br>2、行末不应该有空格<br>3、分号 冒号 逗号等中英文标点符号傻傻分不清<br>4、换行和空格乱用</p>
+<h3 id="Time-Limited-Exceed（超时）"><a href="#Time-Limited-Exceed（超时）" class="headerlink" title="Time Limited Exceed（超时）"></a>Time Limited Exceed（超时）</h3><p>简称TLE。通常需要进行算法优化来降低时间复杂度，加快代码运行的时间。<br>常见的TLE有以下几种情况：<br>1、程序中出现无法终止的死循环<br>2、读取输入流和输出流的时间太长。（C++的输入输出中，cin和cout没有scanf和printf快，不要问我是怎么知道的，我都已经在输入输出上载过无数跟头了….建议同学们养成用scanf和printf的好习惯）<br>3、时间复杂度大，常常是多层循环或者深递归导致。建议大家能不用循环的时候，就不用循环，因为循环费时。</p>
+<h3 id="Runtime-Error（运行错误）"><a href="#Runtime-Error（运行错误）" class="headerlink" title="Runtime Error（运行错误）"></a>Runtime Error（运行错误）</h3><p>简称RE。这种错误也是好避免的。<br>常见的RE有以下几种：<br>1、数组开得太小了，导致访问到了不该访问的内存区域<br>2、发生除零错误<br>3、大数组定义在函数内，导致程序栈区耗尽<br>4、指针用错了，导致访问到不该访问的内存区域<br>5、程序抛出了未接受的异常</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/12/05/刷题入门2/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(简单题操作)的总结">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/12/04/FirstBlog/" data-toggle="tooltip" data-placement="top" title="Mac系统 利用github+hexo 搭建自己的Blog">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC80MTQ1MS8xNzk5OA==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Cone"><span class="toc-text">Cone</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#输入情形"><span class="toc-text">输入情形</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、要求输入N组测试数据-："><span class="toc-text">一、要求输入N组测试数据  ：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、要求输入数据到为0结束："><span class="toc-text">二、要求输入数据到为0结束：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、要求输入多组数据，输出结果中一空行隔开："><span class="toc-text">三、要求输入多组数据，输出结果中一空行隔开：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行"><span class="toc-text">四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后oj系统的提交结果出现的情况："><span class="toc-text">最后oj系统的提交结果出现的情况：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Accepted-正确"><span class="toc-text">Accepted (正确)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Compile-Error（编译错误）"><span class="toc-text">Compile Error（编译错误）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wrong-Answer（错误）"><span class="toc-text">Wrong Answer（错误）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Presentation-Error-格式错误"><span class="toc-text">Presentation Error(格式错误)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Time-Limited-Exceed（超时）"><span class="toc-text">Time Limited Exceed（超时）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Runtime-Error（运行错误）"><span class="toc-text">Runtime Error（运行错误）</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="https://www.wxz.name">汪小祯</a></li>
+                        
+                        <li><a href="https://www.jianshu.com/u/5bc1057e34a7">周玉林</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/yin_5bc870d095522">陈庆伟</a></li>
+                        
+                        <li><a href="https://zsd.name">张赛东</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/fanrui_5c052adaeef32">范瑞</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Cone 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://zhangchione.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    var _baId = 'de6e91c32960c44c0d4b38fcf214cd45';
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?" + _baId;
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/head.png">
+</body>
+
+</html>
