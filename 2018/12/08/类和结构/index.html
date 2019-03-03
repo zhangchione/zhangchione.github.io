@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cone Blog">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Cone" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        DFS与BFS｜Cone&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="https://zhangchione.github.io/2018/12/08/类和结构/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//o7bkkhiex.bkt.clouddn.com/lion-blur-bg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="true" data-istags="false
+" data-ishome="false">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Cone
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Works/">Works</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/About/">About</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/bj.png">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://pn24i41zt.bkt.clouddn.com/bj.png');
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>DFS与BFS</h1>
+                    
+                    <span class="meta">
+                         作者 张驰
+                        <span>
+                          日期 2018-12-08
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            DFS与BFS
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p><strong>DFS（Deep First Search）深度优先搜索。</strong></p>
+<p><strong>BFS（Breath First Search）广度优先搜索。</strong></p>
+<p>今天想说一说个人对于这两个搜索方法的见解。在我看来，DFS与BFS是算法道路上最基础最容易掌握的，同时，又能提供巨大助力的方法之一。我这里斗胆用方法二字来形容DFS以及BFS，用搜索思想来囊括二者。方法是死的，而思想是活的，我们应该通过对这两种方法的剖析来获得这种思想，因为无论是在现实问题还是算法题目上，问题模型都是多变的，我们要着重于理解思想而后针对特定问题能用最佳的方法去解决。</p>
+<p>话不多说，我们先从DFS说起。</p>
+<h2 id="1-DFS（深度优先搜索）"><a href="#1-DFS（深度优先搜索）" class="headerlink" title="1.DFS（深度优先搜索）"></a><strong><em>1.DFS（深度优先搜索）</em></strong></h2><p>讲搜索当然不能撇开图，搜索思想在图问题中能以最直观的方式展现。下面是我个人对于DFS的理解与概括，如果你是初学者看不懂可以结合后面举的例子来理解，如果对于我的总结哪里有不对的地方欢迎私信指正我。</p>
+<p><strong>深度优先搜索的步骤分为 1.递归下去 2.回溯上来。顾名思义，深度优先，则是以深度为准则，先一条路走到底，直到达到目标。这里称之为递归下去。</strong></p>
+<p><strong>否则既没有达到目标又无路可走了，那么则退回到上一步的状态，走其他路。这便是回溯上来。</strong></p>
+<p>下面结合具体例子来理解。</p>
+<p>如图所示，在一个迷宫中，黑色块代表玩家所在位置，红色块代表终点，问是否有一条到终点的路径</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-c90ea79e2fa6857e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>我们用深度优先搜索的方法去解这道题，由图可知，我们可以走上下左右四个方向，我们规定按照左下右上的方向顺序走，即，如果左边可以走，我们先走左边。然后递归下去，没达到终点，我们再回溯上来，等又回溯到这个位置时，左边已经走过了，那么我们就走下边，按照这样的顺序与方向走。并且我们把走过的路标记一下代表走过，不能再走。</p>
+<p>所以我们从黑色起点首先向左走，然后发现还可以向左走，最后我们到达图示位置</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-ef8adb6e21bcf727.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>已经连续向左走到左上角的位置了，这时发现左边不能走了，这时我们就考虑往下走，发现也不能走，同理，上边也不能走，右边已经走过了也不能走，这时候无路可走了，代表这条路是死路不能帮我们解决问题，所以现在要回溯上去，回溯到上一个位置，</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-f37e27dec608f288.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>在这个位置我们由上可知走左边是死路不行，上下是墙壁不能走，而右边又是走过的路，已经被标记过了，不能走。所以只能再度回溯到上一个位置寻找别的出路。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-e78c428985fd9734.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>最终我们回溯到最初的位置，同理，左边证明是死路不必走了，上和右是墙壁，所以我们走下边。然后递归下去</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-67dacffbada482e6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>到了这个格子，因为按照左下右上的顺序，我们走左边，递归下去</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-3d81d50a2cd591d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>一直递归下去到最左边的格子，然后左边行不通，走下边。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-609129235523ca82.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>然后达到目标。DFS的重要点在于状态回溯。代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">int goal_x,goal_y;     //目标的坐标</span><br><span class="line">int graph[][];          //地图</span><br><span class="line">int used[][];            //用来标记地图上那些点是走过的</span><br><span class="line">int px[] = &#123;-1,0,1,0&#125;;   //通过px 和 py数组来实现左下右上的移动顺序</span><br><span class="line">int py[] = &#123;0,-1,0,1&#125;;</span><br><span class="line">int flag = 0;            //是否能达到终点的标志</span><br><span class="line"></span><br><span class="line">void DFS(int graph[][],int used[],int x,int y)</span><br><span class="line">&#123;</span><br><span class="line">if(graph[x][y] == graph[goal_x][goal_y])     //如果与目标坐标相同，则成功</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;successful&quot;);</span><br><span class="line">flag = 1;</span><br><span class="line">return ;</span><br><span class="line">&#125;</span><br><span class="line">for(int i = 0; i != 4; ++i)              //遍历四个方向</span><br><span class="line">&#123;</span><br><span class="line">if(used[x + px[i]][y + py[i]] == 0 &amp;&amp; !flag)     //如果没有走过这个格子</span><br><span class="line">&#123;</span><br><span class="line">used[x + px[i]][y + py[i]] = 1;     //将该格子设为走过</span><br><span class="line">DFS(graph,used,x + px[i],y + py[i]);      //递归下去</span><br><span class="line">used[x + px[i]][y + py[i]] = 0;//状态回溯，退回来，将格子设置为未走过</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-BFS（广度优先搜索）"><a href="#2-BFS（广度优先搜索）" class="headerlink" title="2.BFS（广度优先搜索）"></a><strong><em>2.BFS（广度优先搜索）</em></strong></h2><p>广度优先搜索较之深度优先搜索之不同在于，深度优先搜索旨在不管有多少条岔路，先一条路走到底，不成功就返回上一个路口然后就选择下一条岔路，而广度优先搜索旨在面临一个路口时，把所有的岔路口都记下来，然后选择其中一个进入，然后将它的分路情况记录下来，然后再返回来进入另外一个岔路，并重复这样的操作，用图形来表示则是这样的，例子同上</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-4dbd5ba1c5afb867.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>从黑色起点出发，记录所有的岔路口，并标记为走一步可以到达的。然后选择其中一个方向走进去，我们走黑点方块上面的那个，然后将这个路口可走的方向记录下来并标记为2，意味走两步可以到达的地方。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-32ea289ab9b6ee80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>接下来，我们回到黑色方块右手边的1方块上，并将它能走的方向也记录下来，同样标记为2，因为也是走两步便可到达的地方</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-586e8b48bb9295d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>这样走一步以及走两步可以到达的地方都搜索完毕了，下面同理，我们可以迅速把三步的格子给标记出来</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-9f0c44ded9dbd754.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>再之后是四步，五步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13179799-4b4f736ea49288d3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p>我们便成功寻找到了路径，并且把所有可行的路径都求出来了。在广度优先搜索中，可以看出是逐步求解的，反复的进入与退出，将当前的所有可行解都记录下来，然后逐个去查看。在DFS中我们说关键点是递归以及回溯，在BFS中，关键点则是状态的选取和标记。</p>
+<p>代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void BFS()</span><br><span class="line">&#123;</span><br><span class="line">queue que;              //用队列来保存路口</span><br><span class="line">int graph[][];          //地图</span><br><span class="line">int px[] = &#123;-1,0,1,0&#125;;   //移动方向的数组</span><br><span class="line">int py[] = &#123;0,-1,0,1&#125;;</span><br><span class="line">que.push(起点入队);      //将起点入队</span><br><span class="line">while( !que.empty() )    //只要队列不为空</span><br><span class="line">&#123;</span><br><span class="line">auto temp = que.pop();          //得到队列中的元素</span><br><span class="line">for(int i = 0; i != 4; ++i)</span><br><span class="line">&#123;</span><br><span class="line">if(//可以走)</span><br><span class="line">&#123;</span><br><span class="line">//标记当前格子</span><br><span class="line">//将当前状态入队列，等待下次提取</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注：以上两个代码只是提供思路，并非是语法正确的可运行代码。</strong></p>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a><strong><em>3.总结</em></strong></h2><p>对于这两个搜索方法，其实我们是可以轻松的看出来，他们有许多差异与许多相同点的。</p>
+<p><strong>1.数据结构上的运用</strong></p>
+<p>DFS用递归的形式，用到了栈结构，先进后出。</p>
+<p>BFS选取状态用队列的形式，先进先出。</p>
+<p><strong>2.复杂度</strong></p>
+<p>DFS的复杂度与BFS的复杂度大体一致，不同之处在于遍历的方式与对于问题的解决出发点不同，DFS适合目标明确，而BFS适合大范围的寻找。</p>
+<p><strong>3.思想</strong></p>
+<p>思想上来说这两种方法都是穷竭列举所有的情况。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/12/30/2018年小结/" data-toggle="tooltip" data-placement="top" title="这充实的岁月，正是奋斗的最好年华 — 2018年总结">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/12/07/ARC/" data-toggle="tooltip" data-placement="top" title="自动引用计数 (Automatic Reference Counting)">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC80MTQ1MS8xNzk5OA==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-DFS（深度优先搜索）"><span class="toc-text">1.DFS（深度优先搜索）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-BFS（广度优先搜索）"><span class="toc-text">2.BFS（广度优先搜索）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-总结"><span class="toc-text">3.总结</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <div style="margin-top: 20px;">
+                    <h5 class="text-center">FRIENDS</h5>
+                    <ul class="list-inline text-center">
+                        
+                        <li><a href="https://www.wxz.name">汪小祯</a></li>
+                        
+                        <li><a href="https://www.jianshu.com/u/5bc1057e34a7">周玉林</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/yin_5bc870d095522">陈庆伟</a></li>
+                        
+                        <li><a href="https://zsd.name">张赛东</a></li>
+                        
+                        <li><a href="https://segmentfault.com/u/fanrui_5c052adaeef32">范瑞</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/zhangchione">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Cone 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://zhangchione.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    var _baId = 'de6e91c32960c44c0d4b38fcf214cd45';
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?" + _baId;
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="http://pn24i41zt.bkt.clouddn.com/head.png">
+</body>
+
+</html>
