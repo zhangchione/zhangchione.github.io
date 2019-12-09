@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        关于刷题入门(简单题操作)的总结｜Cone&#39;s blog
+        Swift 内存管理ARC 以及循环引用思考｜Cone&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/2018/12/05/刷题入门2/">
+    <link rel="canonical" href="https://zhangchione.github.io/2019/11/09/Swift-内存管理ARC-以及循环引用思考/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -160,17 +160,17 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>关于刷题入门(简单题操作)的总结</h1>
+                    <h1>Swift 内存管理ARC 以及循环引用思考</h1>
                     
                     <span class="meta">
                          作者 张驰
                         <span>
-                          日期 2018-12-05
+                          日期 2019-11-09
                          </span>
                     </span>
                     <div class="tags text-center">
                         
-                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
                         
                     </div>
                 </div>
@@ -179,7 +179,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            关于刷题入门(简单题操作)的总结
+            Swift 内存管理ARC 以及循环引用思考
         </span>
     </div>
 </header>
@@ -190,46 +190,24 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <h2 id="Cone-总结"><a href="#Cone-总结" class="headerlink" title="Cone 总结"></a>Cone 总结</h2><p>一、判断一个数的奇偶性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 判断奇偶性 只需要对2取模即可，模为1位奇数，反之为偶</span><br><span class="line"></span><br><span class="line">int a;</span><br><span class="line">if(a%2==1)</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a为奇数&quot;)；</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a为偶数&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-c4bfc98579f31a15.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<p>二、判断闰年</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//1、能整除4且不能整除100  2、能整除400 二者成立一个即可</span><br><span class="line">int y;</span><br><span class="line">if((y%400==0)||(y%4==0&amp;&amp;y%100!=0))</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;这年为闰年&quot;);</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;这年为平年&quot;)；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-a80c3adb3d79fe6a.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<p>三、判断三边是否能够构成一个三角形</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//在已知三边都大于0的情况下 任意两边之和大于第三边即可</span><br><span class="line"></span><br><span class="line">int a,b,c;</span><br><span class="line">if((a+b&gt;c)&amp;&amp;(a+c&gt;b)&amp;&amp;(c+b&gt;a))</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a,b,c三边可以构成三角形&quot;);</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">printf(&quot;a,b,c三边无法构成三角形&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-15544cad285d0b89.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<p>四、关于三个数比较大小并排序</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 利用if判断是否需要交换值 </span><br><span class="line"></span><br><span class="line">int a,b,c,t;</span><br><span class="line">if(a&gt;b) //保证a&lt;=b</span><br><span class="line">&#123;</span><br><span class="line">t=a;</span><br><span class="line">a=b;</span><br><span class="line">b=t;</span><br><span class="line">&#125;</span><br><span class="line">if(a&gt;c) //保证a&lt;=c，这样，a就最小了</span><br><span class="line">&#123;</span><br><span class="line">t=a;</span><br><span class="line">a=c;</span><br><span class="line">c=t;</span><br><span class="line">&#125;</span><br><span class="line">if(b&gt;c) //对比a大的两个字符，保证b&lt;=c</span><br><span class="line">&#123;</span><br><span class="line">t=b;</span><br><span class="line">b=c;</span><br><span class="line">c=t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-07ec189cf94148b5.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<p>五、关于求一个数中各个位数上的数字算法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//这里以三位数为例</span><br><span class="line">int i; // i 为三位数</span><br><span class="line">a=i/100;</span><br><span class="line">b=(i-a*100)/10;</span><br><span class="line">c=i%10;</span><br><span class="line"></span><br><span class="line">// a为百位上的数 b为十位上的数 c为个位上的数；</span><br><span class="line">//例如 i=123  a=1 b=2 c=3; 看懂运算符 / 的用法就很好掌握这个</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-775044f577b7ea88.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<h3 id="关于简单数学知识的总结："><a href="#关于简单数学知识的总结：" class="headerlink" title="关于简单数学知识的总结："></a>关于简单数学知识的总结：</h3><p>一、两点间的距离公式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 初中知识，就不解释了 坐标（x1,y1）(x2,y2)</span><br><span class="line">double x1,y1,x2,y2;</span><br><span class="line">double d = 0;</span><br><span class="line">d = sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));</span><br><span class="line">//d 为距离</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-49cdff256108af12.gif?imageMogr2/auto-orient/strip" alt="image.gif"> </p>
-<p>二、球的体积公式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 好像也是初中知识，设P = π ;</span><br><span class="line">double V,r;</span><br><span class="line">V=4*P*(r*r*r)/3;</span><br><span class="line">//V为体积</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-129e92ca80453544.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<p>三、数列求和公式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//此处为等差数列求和 一 1，2，3，4，5 ………… t 为例</span><br><span class="line">int sum=0;</span><br><span class="line">int t,n:</span><br><span class="line">if(t%2==0)</span><br><span class="line">&#123;</span><br><span class="line">n=t/2;</span><br><span class="line">t=t+1;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">n=(t+1)/2;</span><br><span class="line">&#125;</span><br><span class="line">sum = t*n;</span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/13179799-b9f7d2966d335c27.gif?imageMogr2/auto-orient/strip" alt=""> </p>
-<h3 id="最后一些小坑坑洼洼的总结："><a href="#最后一些小坑坑洼洼的总结：" class="headerlink" title="最后一些小坑坑洼洼的总结："></a>最后一些小坑坑洼洼的总结：</h3><p>1、要看清楚题目，题目给出的数是整数还是浮点数。</p>
-<p>2、如果题目给出一个范围区间的两个数m,n，题目没有说明m&lt;n 或者n&lt;m，就需要判断m，n的大小关系。</p>
-<p>3、小数点的保留要注意。（%.alf）a 为要保留的位数小数点 例如%.2lf 保留两位小数。</p>
+                <p>内存管理是编程时一个不可回避的问题，在Swift中，是自动管理内存的，也就是ARC机制，自动引用计数机制。我们不需要关心内存的申请和分配。</p>
+<h4 id="ARC工作机制"><a href="#ARC工作机制" class="headerlink" title="ARC工作机制"></a>ARC工作机制</h4><p>当我们每次创建一个类的新实例的时候，ARC会为我们分配一块内存来存储实例的信息。当该实例不在被使用时即一个实例没有引用的时候，ARC会为我们释放掉所占用的内存，也就是即使清除内存，不造成内存泄露。</p>
+<p>如果我们正在使用的实例被ARC回收掉。当我们在此访问的时候会造成崩溃。为了保证真正使用的实例内存不会被回收，ARC会跟踪和计算每一个实例被引用的数量，如果不为0，就不会销毁或回收。</p>
+<p>如果想要我们的实例不会被销毁，我们需要创建该类实例的强引用。</p>
+<h4 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h4><p>当两个对象相互强引用对方的时候，其中都不能被释放，就出现了循环引用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">class Person:NSObject&#123;</span><br><span class="line">    var name:String</span><br><span class="line">    init(name:String) &#123;</span><br><span class="line">        print(&quot;\(name) 被初始化&quot;)</span><br><span class="line">        self.name = name</span><br><span class="line">    &#125;</span><br><span class="line">    var car:Car? = nil</span><br><span class="line">    deinit &#123;</span><br><span class="line">        print(&quot;\(name) 被释放&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Car:NSObject&#123;</span><br><span class="line">    var id:String</span><br><span class="line">    init(id:String) &#123;</span><br><span class="line">        print(&quot;\(id) 被初始化&quot;)</span><br><span class="line">        self.id = id</span><br><span class="line">    &#125;</span><br><span class="line">    var person:Person? = nil</span><br><span class="line">    deinit &#123;</span><br><span class="line">        print(&quot;\(id) 被释放&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">        var james:Person? = Person(name: &quot;James&quot;)</span><br><span class="line">        var bmw:Car? = Car(id: &quot;湘B:88888&quot;)</span><br><span class="line">        james!.car = bmw</span><br><span class="line">        bmw!.person = james</span><br><span class="line">        // James 被初始化</span><br><span class="line">        // 湘B:88888 被初始化</span><br><span class="line">        james = nil</span><br><span class="line">        bmw = nil</span><br><span class="line">        // 并未打印 James 被释放</span><br><span class="line">        // 湘B:88888 被释放</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中就出现了循环引用，查找原因。两个对象相互强引用对方，导致谁都无法释放。也就james中间引用了bmw，而bmw中也引用了james,当我们尝试去释放james的时候，由于james的成员变量bmw无法被释放，导致自身也无法被释放。</p>
+<h4 id="weak、unowned解决循环引用问题"><a href="#weak、unowned解决循环引用问题" class="headerlink" title="weak、unowned解决循环引用问题"></a>weak、unowned解决循环引用问题</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">weak var car:Car? = nil</span><br><span class="line">weak var person:Person? = nil</span><br></pre></td></tr></table></figure>
+<p>我们在两个类的成员变量前面加上 weak 关键字，很顺利的得到了我们想要的结果，两个实例被释放。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">james = nil</span><br><span class="line">bmw = nil</span><br><span class="line">//  James 被释放</span><br><span class="line">// 湘B:88888 被释放</span><br></pre></td></tr></table></figure></p>
+<p><strong>weak：</strong> 当一个对象被声明为weak时，表示父层级对改对象没有指向，该对象的ARC 引用计数不会+1。当对象被释放后，弱引用也随即消失。继续访问改对象，程序会得到nil,不会引起崩溃。<br><strong>unowned：</strong> 它与weak的本质是一样的，不同点在于，对象被释放后，依然有一个无效的指向引用，它不是可选，也不是nil,继续访问改对象，会引起奔溃</p>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2018/12/05/刷题入门3/" data-toggle="tooltip" data-placement="top" title="关于刷题入门(时间和空间复杂度)的总结">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2018/12/05/刷题入门1/" data-toggle="tooltip" data-placement="top" title="关于输入、输出的总结">Next Post &rarr;</a>
+                        <a href="/2019/11/09/Swift 写时复制机制 以及值类型与引用类型思考/" data-toggle="tooltip" data-placement="top" title="getchar()用法">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -267,7 +245,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Cone-总结"><span class="toc-text">Cone 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于简单数学知识的总结："><span class="toc-text">关于简单数学知识的总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后一些小坑坑洼洼的总结："><span class="toc-text">最后一些小坑坑洼洼的总结：</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#ARC工作机制"><span class="toc-text">ARC工作机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#循环引用"><span class="toc-text">循环引用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#weak、unowned解决循环引用问题"><span class="toc-text">weak、unowned解决循环引用问题</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -289,7 +267,7 @@
                     </h5>
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
                         
                     </div>
                 </section>

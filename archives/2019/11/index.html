@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/tags/总结/">
+    <link rel="canonical" href="https://zhangchione.github.io/archives/2019/11/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -43,7 +43,7 @@
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="false" data-istags="true
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="false" data-istags="false
 " data-ishome="false">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -167,19 +167,43 @@
 
 
 
-<div class="post-preview " style="background-image: url('http://ptanrgfsn.bkt.clouddn.com/back.pnghttp://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2018/12/30/2018年小结/">
+<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
+    <a href="/2019/11/09/Swift-内存管理ARC-以及循环引用思考/">
         <h2 class="post-title">
-            这充实的岁月，正是奋斗的最好年华 — 2018年总结
+            Swift 内存管理ARC 以及循环引用思考
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-30
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-09
         </p>
         
         <div class="post-content-preview">
             <p>
-                结束语梦想着远方，哪怕它遥远而一无所有，做一个向着光奔跑的程序员。
-生活游戏大一下的时候，那时候喜欢上了玩吃鸡，很多很多次都借着别人的电脑玩吃鸡，五一那几天假期，和室友在寝室里面，不分白天黑夜的玩，还立下不吃鸡不睡觉的flag。过了五一假期，整个人都精神涣散，后来慢慢调整，慢慢淡出游戏，之后就没..
+                内存管理是编程时一个不可回避的问题，在Swift中，是自动管理内存的，也就是ARC机制，自动引用计数机制。我们不需要关心内存的申请和分配。
+ARC工作机制当我们每次创建一个类的新实例的时候，ARC会为我们分配一块内存来存储实例的信息。当该实例不在被使用时即一个实例没有引用的时候，ARC会为我们释..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
+    <a href="/2019/11/09/Swift 写时复制机制 以及值类型与引用类型思考/">
+        <h2 class="post-title">
+            getchar()用法
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-09
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                记录Swift语言特性–偶遇操作系统Copy on Write今天在学习操作系统fork函数的时候遇到了写时复制，联想起了Swift中也有一个写时复制机制。
+Swift 写时复制12var a = [1,2,3,4]var b = a
+当代码这样执行完的时候，数组a和数组b在内存上是同一块内容，..
             </p>
         </div>
     </a>
