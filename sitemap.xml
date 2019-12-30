@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://zhangchione.github.io/About/index.html</loc>
+    <loc>https://zhangchione.github.io/2019/12/30/2019%E5%B0%8F%E7%BB%93/</loc>
     
-    <lastmod>2019-12-30T03:42:48.178Z</lastmod>
+    <lastmod>2019-12-30T04:10:40.419Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://zhangchione.github.io/2019/12/30/2019%E5%B0%8F%E7%BB%93/</loc>
+    <loc>https://zhangchione.github.io/tags/index.html</loc>
     
-    <lastmod>2019-12-30T02:34:59.340Z</lastmod>
+    <lastmod>2019-12-30T04:09:52.889Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://zhangchione.github.io/About/index.html</loc>
+    
+    <lastmod>2019-12-30T03:42:48.178Z</lastmod>
     
   </url>
   
@@ -82,13 +89,6 @@
     <loc>https://zhangchione.github.io/2018/06/22/hello-world/</loc>
     
     <lastmod>2019-11-09T02:10:00.828Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://zhangchione.github.io/tags/index.html</loc>
-    
-    <lastmod>2019-06-18T14:09:44.043Z</lastmod>
     
   </url>
   
