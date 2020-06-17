@@ -37,7 +37,7 @@
 <style>
 
     header.intro-header {
-        background-image: url('http://120.77.154.242/images/20200617/opR7thBTg7gQJEOqsB1d.jpg')
+        background-image: url('https://upload-images.jianshu.io/upload_images/13179799-a9d7d4221c1bbce7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240')
     }
 </style>
 <!-- hack iOS CSS :active style -->
@@ -80,7 +80,7 @@
                         
 							
                         <li>
-                            <a href="/Works/">Works</a>
+                            <a href="/About/">About</a>
                         </li>
 							
 						
@@ -88,7 +88,7 @@
                         
 							
                         <li>
-                            <a href="/About/">About</a>
+                            <a href="/Works/">Works</a>
                         </li>
 							
 						
@@ -140,38 +140,134 @@
 
 <!-- Main Content -->
 <style>
-    .intro-header .site-heading {
-        margin: 50px;
+    #about-header{
+        margin-top: 85px;
     }
-    
-    header.intro-header {
-        background-image: url('https://imgchr.com/i/ms4gHK')
+    #about-header img{
+        width: 145px;
     }
-    
+    .offer-body,
+    .person-body,
+    .project-body,
+    .skills-body,
+    .work-body,
+    .learn-body{
+        padding-left: 25px;
+    }
+    p{
+        margin:0;
+        font-size: 15px;
+    }
+    .body-section{
+        padding-left: 15px;
+    }
+    #offer ul{
+        margin-left: 20px;
+        margin-bottom: 5px!important;
+        border-left: 4px darkgray solid;
+        padding-left: 8px;
+    }
+    li{
+        list-style: none;
+        font-size: 15px;
+    }
+    .title{
+        color: #777;
+    }
+    .title>span{margin-right: 5px}
+    .detail-info-xueli{
+        display: block;
+        padding-left: 70px;
+    }
 </style>
 
-<!-- Page Header -->
-<header class="intro-header">
-    <div class="container">
+<!-- Chinese Version -->
+<div class="zh post-container">
+<    <div class="content" id="about-header">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading text-center">
-                    <h1>About</h1>
-                    <span class="subheading">做什么都因为喜欢</span>
+            <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3">
+                <div>
+                    <img  src="http://120.77.154.242/images/20200617/VCqJplchKawWKqEUy7nQ.png"
+                    style="border-radius: 50%;"/>
+                </div>
+                <div class="text-center">
+                     <h2>张驰/男/20岁</h2>
+                    <p>iOS开发工程师/大三在读</p>
                 </div>
             </div>
         </div>
-    </div>
-</header>
-
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <!-- 目录列表 -->
-            
-        </div>
-    </div>
+        <!--正文-->
+        <div class="row" id="offer">
+            <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3">
+<!--                 <div class="work-experience">
+                    <h3 class="title"> 工作经历</h3>
+                    <p>
+                        2016年7月-2017年6月, 在校园自媒体公司任前端开发职务
+                    </p>
+                    <div class="body-section">
+                        <ul>
+                            <li>1. 使用 ES6 + Vue + Bulma + webpack, 参与官网后台的开发</li>
+                            <li>2. 独立负责开发一款面向校园查询成绩课标的微信小程序, 在开发的过程中最棘手的问题是解决 iOS 与 Android 平台微信内因不同的渲染引擎导致的排版错误, 和使用第三方 Labrador 框架解决前期小程序无法优雅的组件化的问题</li>
+                            <li>3. 使用 jQuery + Bootstrap 编写和维护官网首页</li>
+                        </ul>
+                    </div>
+                </div> -->
+                <div class="project-show">
+                    <h3 class="title"><span class="glyphicon glyphicon-folder-open"></span> 项目经验</h3>
+                    <div class="project-body">
+                        
+                    <p>
+                        行迹 - 记录旅行，分享美好(2019.4-2019.10[公测版])
+                    </p>
+                    <div class="body-section">
+                        
+                            <li>1. 担任该项目的总负责人以及iOS端开发者，该项目为第四届中国高校计算机大赛-移动应用创新赛三 等奖作品</li>
+                            <li>2. 负责团队的人员协调和产品策划以及iOS端全部开发，组织团队不断进行讨论学习、产品定位、制定可行的设计方案，包括UI沟通设计、后台接口规范设计等。</li>
+                            <li>3. 在开发期间，完成了利用SnpaKit布局进行纯代码UI界面绘制、利用UIView定制了N张图片不同样式Cell并了解了圆角设置不恰当会影响滑动性能、实现了底部TabBar中间不规则按钮、利用Alamofire+HandyJSON+SwiftJSON实现了网络请求封装以及请求结果回调等任务。</li>
+                            <li>4. 利用CocoaPodS对第三方库进行管理、利用Git+GiHub进行了代码版本控制管理。进行了本地打包上架任务，了解了从Archive到发布testflight版本到提交审核流程以及证书签名原理。</li>
+                        
+                    </div>
+                    <p>
+                        工大助手 - 属于你我的校园助手(2018.12-至今[正式上架版])
+                    </p>
+                    <div class="body-section">
+                        
+                            <li>1. 进行Objective-C与Swift混编维护更新了部分功能，如添加课程详情页、更多消息模块，增加了校园说说搜索、热门查询等。</li>
+                            <li>2. 独自利用Swift语言对此项目iOS端产品进行了重构，将项目由MVC模式转变为MVVM模式。</li>
+                            <li>3. 在重构期间，完成进行了UItableView的滑动性能调优，解决了滑动卡顿以及Cell复用出错等问题;利用Moya进行网络请求管理优化了代码结构;摒弃了storyboard布局，利用SnpaKit+少量xib进行界面UI编写等任务。</li>
+                            <li>4. 了解Ci自动打包上架流程，与Android、后端开发者不断讨论交流以及用户反馈，了解了产品运营，对产品用户体验有较强的意识。</li>
+                        
+                    </div>
+                    </div>
+                </div>
+                <div class="person-info">
+                    <h3 class="title"><span class="glyphicon glyphicon-user"></span> 其他</h3>
+                    <div class="person-body">
+                        <p>学历: 本科</p>
+                        <p>个人博客: <a target="_blank" href="https://www.zhangchione.com/"> www.zhaangchione.com <span class="glyphicon glyphicon-link"></span> </a></p>
+                        <p>GitHub: <a target="_blank" href="http://github.com/zhangchione">http://github.com/zhangchione <span class="glyphicon glyphicon-link"></span></a></p>
+                    </div>
+                </div>
+<!--                 <div>
+                    <h3 class="title">正在深入学习的</h3>
+                    <ul>
+                        <li>Vue 组件化</li>
+                        <li>React Native</li>
+                        <li>Webpack</li>
+                        <li>ES6/7 新特性</li>
+                    </ul>
+                </div> -->
+                <div class="contact-show">
+                    <h3 class="title "> <span class="glyphicon glyphicon-earphone"></span> 联系我</h3>
+                        <p>
+                            电 &nbsp; &nbsp; &nbsp; 话: 15274737502
+                        </p>
+                        <p>
+                            邮 &nbsp; &nbsp; &nbsp; 箱: zc@zhangchione.cc
+                        </p>
+                </div>
+            </div>
+        </div></div>
 </div>
 
 <!-- Footer -->
@@ -214,7 +310,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Cone 2020
+                    Copyright &copy; Cone 2019
                     <br>
                     <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
                     <br>
@@ -303,7 +399,7 @@
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <!--wechat title img-->
-<img class="wechat-title-img" src="https://upload-images.jianshu.io/upload_images/13179799-d8aed8b2af94dd33.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<img class="wechat-title-img" src="http://120.77.154.242/images/20200617/VCqJplchKawWKqEUy7nQ.png">
 </body>
 
 </html>
