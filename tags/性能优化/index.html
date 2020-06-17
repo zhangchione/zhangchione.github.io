@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://zhangchione.github.io/archives/2019/">
+    <link rel="canonical" href="https://zhangchione.github.io/tags/性能优化/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -43,7 +43,7 @@
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="false" data-istags="false
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="false" data-istags="true
 " data-ishome="false">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -168,180 +168,17 @@
 
 
 <div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/11/09/Swift-内存管理ARC-以及循环引用思考/">
+    <a href="/2020/03/30/保持页面滑动流畅性的一次工程实践/">
         <h2 class="post-title">
-            Swift 内存管理ARC 以及循环引用思考
+            保持页面滑动流畅性的一次工程实践
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-09
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-30
         </p>
         
         <div class="post-content-preview">
             <p>
-                内存管理是编程时一个不可回避的问题，在Swift中，是自动管理内存的，也就是ARC机制，自动引用计数机制。我们不需要关心内存的申请和分配。
-ARC工作机制当我们每次创建一个类的新实例的时候，ARC会为我们分配一块内存来存储实例的信息。当该实例不在被使用时即一个实例没有引用的时候，ARC会为我们释..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/11/09/Swift 写时复制机制 以及值类型与引用类型思考/">
-        <h2 class="post-title">
-            Swift 写时复制机制 以及值类型与引用类型思考
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-11-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                记录Swift语言特性–偶遇操作系统Copy on Write今天在学习操作系统fork函数的时候遇到了写时复制，联想起了Swift中也有一个写时复制机制。
-Swift 写时复制12var a = [1,2,3,4]var b = a
-当代码这样执行完的时候，数组a和数组b在内存上是同一块内容，..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/31/Swift-将代码更优雅-——-枚举/">
-        <h2 class="post-title">
-            Swift 将代码更优雅 —— 枚举
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-31
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                笔者枚举在swift中真正站起来了，想来聊聊枚举，枚举跟其他类型一样在swift中属于一等类型。它有很多种用法，如果你读过Alamofire的源码，你会发现，枚举在这个库中得到了完美的诠释。
-enum的用法：常规枚举1234567891011121314151617181920212223242..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/31/Git-使用总结/">
-        <h2 class="post-title">
-            Git 使用总结
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-31
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                从18年3月份接触iOS开发，使用git到现在快两年时间了，记录一次深入学习Git并总结。
-GitGit是目前世界上最先进的分布式版本控制系统(没有之一)，是有liunx之父管理liunx版本用C语言编写的版本控制系统。
-集中式与分布式（SVN与Git）集中式集中式版本控制系统，版本库是集中存放..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/31/Swift-官方文档阅读笔记与思考（一）/">
-        <h2 class="post-title">
-            Swift 官方文档阅读笔记与思考（一）
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-31
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                2019年12月20号，通过了字节跳动的iOS开发实习面试，二面面试官给我提了一个建议：把Swift经典著作再通读几遍，每一次都会有不同的收获，于是我想开始这个计划吧。
-常量和变量swift非常鼓励我们使用常量，当我们非常确定一个量不会改变时，我们最好是使用let声明常量，这样就可以很好的降低出..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/31/Swift-将代码更优雅-——-控制流/">
-        <h2 class="post-title">
-            Swift 将代码更优雅 —— 控制流
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-31
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                if let 可选绑定1234567var optionalName : String? = &quot;Cone&quot;var greet = &quot;hello!&quot;if let name = optionalName &#123;   greet = &quot;Hello..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/31/谈谈Swift里面的闭包/">
-        <h2 class="post-title">
-            谈谈Swift里面的闭包
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-31
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                闭包是Swift中很重要的一点，也是难点。学习了Swift很久，记录一下对闭包的思考。
-理解1、闭包可以讲是一段代码的集合与函数类似，也是引用类型。2、闭包的使用：主要用与回调（异步回调等等）3、闭包可以作为函数参数传递等。4、闭包表达式风格简洁，官方鼓励在一些常见的场景中进行语法优化，虽然在一..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('http://120.77.154.242/images/20191209/xAVthRbZANfbSzmy4E7G.jpg')">
-    <a href="/2019/10/30/2019比赛总结/">
-        <h2 class="post-title">
-            2019比赛总结
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-10-30
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                伴随着移动应用赛的结束，终于可以开始好好沉淀自己的技术了！2019年，因为它，学到了很多东西，很久没有写博客了。想把这一切都记录下来。那就从这篇博客开始吧~
-杭州决赛（10.25-27）—— 结束比赛结束。从初赛到决赛，我们经历了大半年的时间。团队付出了很多，同时也收货了很多，我们拿到了三等奖。..
+                最近在做自己的独立App的时候又出现到了UItableView的滑动流畅性问题，于是这一次想彻底的解决这一问题，并总结解决方法，待以后工作开发中可以快速复用，提高效率。 界面滑动流畅一般是指系统会在一秒钟之内刷新60次界面，也就是60FPS（Frames Per Second）,即每16.7ms..
             </p>
         </div>
     </a>
