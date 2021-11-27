@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>深入浅出CPU的两种工作模式</title>
+      <link href="/2021/11/11/cpu-work-model/"/>
+      <url>/2021/11/11/cpu-work-model/</url>
+      
+        <content type="html"><![CDATA[<p>上期文章 是关于Linux启动的，在启动的时候会切换CPU模式，从实模式到保护模式，有小伙伴咨询到我说想详细了解下这两种模式。</p><p>那么，本期来跟你们唠嗑一下CPU工作模式，一起彻底理解CPU工作模式。</p><h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><ul><li>寄存器就是用来存取数据的，在CPU运算的时候主要靠寄存器来进行数据存取。</li><li>寄存器的位数就代表这CPU能运行的位数，比如32位机器，就是说寄存器的位数有32位，一般32位的话，就是EAX 这种，包含高16位和低16位，，低16位有包含高八位AH和低八位AL。</li></ul><p>进入正题。</p><h1 id="实模式部分"><a href="#实模式部分" class="headerlink" title="实模式部分"></a>实模式部分</h1><p>CPU的工作模式，简单概括就是CPU在工作的时候是如何寻址的，那么在实模式下，我们很容易猜测到是寻找实实在在的内存地址，没错，实模式工作时，是<strong>寻找真实的物理地址</strong>，而且<strong>没有加任何限制</strong>，下面我们先来看看历史起源。</p><h3 id="历史起源"><a href="#历史起源" class="headerlink" title="历史起源"></a>历史起源</h3><p>CPU的实模式工作模式就起源于8086处理器，这也是第一款支持内存分段的处理器，此时的CPU就工作在实模式下，8086这款处理的寄存器位数只有16位，寄存器只有16位的话，那么它最大的表示范围为：2^16 = 64 K，也就是说此时寄存器能够存储的最大的值就是64K - 1，大于这个值就放不下了，但8086处理器的地址总线有20根，也就是20位，20位的寻址空间可达到 2^32B = 1024K = 1M，所以地址总线能传这么大的数，但是寄存器却存不下，</p><p>为了解决这一不匹配带来的问题，必须要采用一种方式给它俩匹配上，而这种方式，就是下面寻址原理提到的方式。</p><h3 id="寻址原理"><a href="#寻址原理" class="headerlink" title="寻址原理"></a>寻址原理</h3><p>在上一期关于<a href="https://mp.weixin.qq.com/s/_hSLAZPSw_zSZQ0W9V-Fiw">Linux启动</a>的文章中，我们知道内存地址的表示是由代码段寄存器CS和指令寄存器IP完成的，前者代表段基地址，后者代表段内偏移地址。他们都是16位的，为了和20位地址总线匹配，会进行如下：<strong>先将cs寄存器的值左移四位，然后再与ip寄存器的值相加</strong>，这么以转换，就得到了一个20位的数据大小了，如下所示：</p><p><strong>真实物理地址 = 段基址 &lt;&lt;&lt;&lt; 4  + 段内偏移地址</strong></p><p>我们现在假设 段基址的值也就是cs寄存器的值 =  0xFFFF , 段内偏移地址也就是 ip寄存器的值为 0x0000， 那么最终的真实物理地址为：</p><p><strong>0xffff &lt;&lt;&lt;&lt; 4 + 0x0000 = 0xffff0 + 0x0000 = 0xffff0</strong></p><p>最终结果就是 0xffff0 了</p><p>通过原理的介绍以及例子的讲解，我们弄清楚了实模式下的CPU寻址原理，也就是（cs:ip）</p><p>其实还有一点没有跟你提到，我们前面所描述的寻址原理，是通过段基地址和段内偏移地址找到的内存地址，这就是在操作系统进行内存管理的第一大跨越，著名的内存分段模型。</p><h3 id="8086CPU的问题"><a href="#8086CPU的问题" class="headerlink" title="8086CPU的问题"></a>8086CPU的问题</h3><p>通过上面的描述，细心的你，肯定发了问题。</p><p>你会发现用到的既然都是真实的物理地址，是不是随意一个能表示的地址都可以访问？</p><p>这就出现了两个程序之间的地址空间没有界限，就可以相互随意干扰，所以就得给内存地址加上保护机制。</p><p>你还会发现代码段寄存器和指令寄存器所能表示的最大寻址地址为0xFFFF:0xFFFF = 0x10FFEF</p><p>这个地址已经比1M要大了，那超过1M怎么办呢，地址总线就那么20根，这个时候8086CPU采取的办法就是高位被抛弃，也就是我们现在说的数据溢出（Overflow）了。</p><p>为了解决这些问题保护模式机制就诞生了。</p><h1 id="保护模式部分"><a href="#保护模式部分" class="headerlink" title="保护模式部分"></a>保护模式部分</h1><p>保护模式出现的原因就是为了解决实模式下出现的问题，保护，顾名思义：就是保护进程地址空间，程序A的地址空间，不能随意被程序B访问。</p><p>保护模式下的概念稍多，我们先来看看几个概念。</p><h2 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h2><h3 id="执行权限（CPU特权级）"><a href="#执行权限（CPU特权级）" class="headerlink" title="执行权限（CPU特权级）"></a>执行权限（CPU特权级）</h3><p>既然是需要保护内存地址空间，那么肯定有些指令得有执行的权限控制，CPU就实现了特权级，如图</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG216_20211127102824.png"></p><p>从里往外权限依次降低，可以看到内核态具有最高权限即Ring 0 拥有最高权限，可以访问低特权级的资源，而反过来却不行。</p><h3 id="段描述符"><a href="#段描述符" class="headerlink" title="段描述符"></a>段描述符</h3><p>这里32位CPU中的寄存器相比于16位发生了改变，原来16位寄存器可以存放下段基地址和段内偏移地址，而变到32位，还需要存储其他信息，肯定放不下了。放不下，就需要想办法去解决，这个时候就去找内存借用空间，然后把描述一个段的信息封装成特定格式的描述符，存放在内存中，这个描述符就被称为段描述符，它包含两个双字，也就是64位8字节数据，里面包含了段基地址、段长度、权限、类型等等信息，具体就来看图吧！</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127102906.png"></p><p>那么段描述符肯定不止一个，多个段描述符在内存中，就形成了一个表，这个表叫做全局段描述符表（GDT，Global Descriptor Table），这个表的基地址是由GDTR寄存器指向。这个寄存器在保护模式初始化的时候会加载一个值，这个值就指向了GDT，这样要寻址的时候就会先来到这里，而在寄存器中，不在是存放段基址，而是一个指向段描述符表的索引。所以这里就从根本上改变了寻址方式了。</p><h3 id="段选择子"><a href="#段选择子" class="headerlink" title="段选择子"></a>段选择子</h3><p>上面提到的指向段描述符表的索引就属于段选择子的一部分，具体结构如下图：</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127102920.png"></p><ul><li>索引：表示在段描述附表中的索引位置</li><li>TL：Table Indicator 表示是去GDT表查找还是LDT（局部描述符表）</li><li>RPL：请求特权级，以什么样的特权级访问段信息。</li></ul><p>段选择子又属于属于段寄存器的一部分，它是一个16位的整数（这是16位可见部分）记录了GDT表的段描述符的具体索引位置，以及请求特权级和描述符表类型以及段描述符表索引。</p><h2 id="寻址原理-1"><a href="#寻址原理-1" class="headerlink" title="寻址原理"></a>寻址原理</h2><p>保护模式的寻址原理，就没有实模式那么简单了，首先在保护模式下，cs寄存器的低16位存储的是上面提到的段选择子的信息，在寻址的时候，会根据GDTR寄存器找到基址，然后根据cs寄存器里面的段选择子信息，进行偏移读取，读取完了之后，其实这个时候已经找到了程序执行的地址，接下来就<strong>会根据段描述符进行对段寄存器的填充，主要是填充不可见的那一部分</strong>，段寄存器的大致分布如下。</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">struct Segment&#123;  WORD selector;  //16位段选择子          WORD attribute; //16位表示的段属性  DWORD base;     //32位表示的基址始  DWORD limit;    //32位表示&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>我们前面提到了，段选择子是段寄存器的一部分，如上面代码 selector 就是表示选择子，而下面的三个属性是不可见的。attribute 属性标注了段的属性，是可读还是可写还是可执行的，base属性表示了段从哪里开始，limit和base就可以确定一个段的大小。<br>除了段选择子可见外，后面的三个部分对程序员是不可见的，那么我们如何得知这三部分的存在呢？这里需要做一些相关的实验室，后续见~</p><p>填充完了之后，段寄存器中有内存地址信息了。</p><p>弄清楚了保护模式的寻址原理了，是不是还想知道，实模式下，究竟如何切到到保护模式呢？</p><h1 id="实模式切换到保护模式"><a href="#实模式切换到保护模式" class="headerlink" title="实模式切换到保护模式"></a>实模式切换到保护模式</h1><p>x86的CPU在每次加电或者reset的时候，都是先进入到的是实模式，如果要切换到保护模式得需要程序引导，这个引导，我们上期提到过了，在启动的时候是存在GRUB中的，根据上文，我们回忆一下，切到保护模式的寻址方式发生了根本改变，那么是不是先得准备好保护模式所需要的寻址资料呢。</p><h3 id="屏蔽中断"><a href="#屏蔽中断" class="headerlink" title="屏蔽中断"></a>屏蔽中断</h3><p>其实在准备寻址资料之前还需要一步叫屏蔽中断，保护模式下的中断和实模式下的可不一样，所以为了安全第一步就得屏蔽实模式下的中断，指令如下</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">cli<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><h3 id="准备全局段描述符"><a href="#准备全局段描述符" class="headerlink" title="准备全局段描述符"></a>准备全局段描述符</h3><p>然后得准备好全局段描述符 GDT用来存放实模式下的CS和IP的段地址信息；</p><p>接下来得有一个指向GDT的寄存器，它叫 GDTR寄存器 初始化这个值使其指向GDT基地址。</p><h3 id="设置CR0"><a href="#设置CR0" class="headerlink" title="设置CR0"></a>设置CR0</h3><p>CR0也是CPU的寄存器之一，它可以控制CPU的重要特性，其中有一个位置就是代表了是否进入保护模式，是它的最低位——保护允许位，将这个位设置成1，就代表要开启保护模式。</p><h3 id="长跳转"><a href="#长跳转" class="headerlink" title="长跳转"></a>长跳转</h3><p>设置完CR0之后，就开始进入保护模式了，这个时候得需要长跳转指令，如下，</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">jmp 08h:_32bits_mode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>为什么是长跳转？<br>长跳转的一个作用是可以清空CPU的指令流水线，在切换到保护模式前，有很多实模式下的指令进入到了指令流水线中，而这个时候CPU又切换了工作模式，就得把之前的指令都清空。</p><p>长跳转到08h这个地址执行，这个时候cs的值也就被重新赋值了。</p><h3 id="初始化相关寄存器"><a href="#初始化相关寄存器" class="headerlink" title="初始化相关寄存器"></a>初始化相关寄存器</h3><p>长跳转完之后，最后就是进行相关寄存器的初始化，比如ax、bx、sp等，初始化完之后就按照保护模式的寻址方式进行寻址。</p><p>到此，CPU进入了保护模式运行，完了模式切换。</p><h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>回顾上面的内容，主要讲解了实模式的一些历史起源、寻址原理，以及保护模式下的几个概念和寻址方式，最后对两种模式的切换步骤做了描述，你可能有疑问了，是不是还有64位的工作模式，没错，是还有64位的工作模式——长模式，它的寻址原理和32位差不多，也是会有一个段描述符来存储信息，只是在校验方面有些不同，弄懂保护模式就很好理解长模式了。</p><p>更多内容你可以关注公众号： 「ConeZhang」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Liunx </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 启动 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于Liunx启动，你想知道的全都在这!</title>
+      <link href="/2021/11/10/LiunxStart/"/>
+      <url>/2021/11/10/LiunxStart/</url>
+      
+        <content type="html"><![CDATA[<p>Liunx是我们日常学习工作中，打交道最多的一个系统，似乎我们很少关注它的启动初始化，那么本文就带你捋一捋Liunx启动初始化那些事。</p><p>全文结构大致如下：首先会讲解一些基础知识，这为你阅读本文减小一些压力，然后会从整体启动流程上带你简要梳理一遍Liunx启动，然后会分开深入到各个阶段去彻底理解每个阶段在干什么，之后为了检验自己是否大致掌握Liunx启动，我会以问答的形式留下几个问题，最后会对全文启动流程做一个简单的总结。</p><p>话不多说，先来几个问题热热身</p><h1 id="那些你会迷惑的问题"><a href="#那些你会迷惑的问题" class="headerlink" title="那些你会迷惑的问题"></a>那些你会迷惑的问题</h1><ul><li>为什么开机的时候是从BIOS里的代码开始执行而不是内存或外存里的？</li><li>0xFFFF0这个地址存在于哪里？</li><li>BIOS到底又做了些什么</li><li>为什么一开始只有1M的寻址空间？</li><li>为什么需要有GRUB引导程序，不要它行不行？</li><li>我们能调用fork并创建出系统的第一个进程吗？</li><li>ps -ef 里面有很多父进程是1，这个1号进程是啥？</li><li>…..</li></ul><h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>下面是两点基础知识，阅读前，回忆一下，话不多说，上图。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127085544.png"></p><ul><li>计算机是由CPU、内存、磁盘、IO设备等硬件组成，其中在运行前，操作系统会将我们的二进制程序加载到内存中，这个时候才能被CPU运行。CPU就会去内存中读取相关的指令。需要注意一点的是：<strong>CPU只能读取内存中的指令，它不能和磁盘等这类外存设备交互。</strong></li><li>CPU分为三个单元：计算、控制、数据单元，其中数据单元主要由一些寄存器组成，主要存储运行过程中产生的值，控制单元就是控制从哪里读取指令并控制计算单元去算，计算单元很好理解了，就是做苦力，给我算！！！，而CPU取代码指令是由CS（代码寄存器）和IP（指令寄存器）共同完成的，CPU会改变这两个寄存器的值，然后控制单元通过地址总线来到相应的内存地址取值。</li></ul><p>好了两点基础知识回忆完了，进入正题！</p><h1 id="启动整体流程"><a href="#启动整体流程" class="headerlink" title="启动整体流程"></a>启动整体流程</h1><p>老规矩，先上图，一目了然，这张图描述了启动的几个阶段，其中前面三个红色阶段是重点。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090033.png"></p><p>上图大致解读：当机器通电后，整个机器就开始运行了，最先来到的是BIOS时期，这个时候CPU控制权在BIOS手里，会进行开机自检，自检完了之后会 会查找可启动设备，加载主引导目录（MBR），加载完MBR之后，将CPU的控制权转交给了GRUB引导，经过GRUB的几个引导步骤之后，GRUB完成就加载了内核代码，接下来，内核就会接管CPU控制权并完成接下来的内核初始化启动任务。内核初始化完成最后会运行sbin/init进行系统的初始化，等系统初始化完了之后会启动终端，输入密码，就完成了一次启动，整个流程大致就是这样了。</p><p>下面我们深入各个阶段来看看，每个阶段具体干了些什么。</p><h1 id="深入各阶段分析"><a href="#深入各阶段分析" class="headerlink" title="深入各阶段分析"></a>深入各阶段分析</h1><h3 id="BIOS-时期"><a href="#BIOS-时期" class="headerlink" title="BIOS 时期"></a>BIOS 时期</h3><p>首先是 BIOS 时期阶段，BIOS（Basic Input and Output System，基本输入输出系统）系统程序在厂家出厂的时候被固化在了一个叫 ROM（Read Only Memory）的东西上，它是一个只读的存储器，显然这是一个只能读取，不能写入的存储器。了解完 BIOS 是被固化的程序之后，你肯定好奇，BIOS 程序是如何被找到的？</p><p>其实这得多亏了 CPU 设计的硬件程序员们在设计 CPU 时已经将特定的值写好了。</p><p>通电之后，CS 寄存器和 IP 寄存器会被强制赋值，其中 CS 被设成：0xFFFF，IP 设成 0x0000。在前缀知识，我们了解到了 CS 寄存器是代码段寄存器，全称是 Code Segment，它存放的是内存代码段区域的段基址。IP 寄存器是指令寄存器，全称是 Instruction Pointer，他存放的是下一条要执行指令的段内偏移地址。</p><p>有了段基址和段内偏移地址，我们就能得到下一条程序的地址。在 8086 16 位处理器中为了兼容 20 根地址总线的寻址能力，就将 cs 寄存器左移四位 + ip 寄存器 = 下一条程序地址。例如：cs = 0xFFFF， IP = 0x0000，计算出来的地址 address = CS &lt;&lt;&lt;&lt; 4 + IP = 0xFFFF0。</p><p>这里 CPU 本身只能处理 16 位数据，如果超过了 16 位，比如 18 位 0000 0000 0000 0001 00 那么就超出了 cpu 的处理范围，但是地址总线有 20 跟， 也就是可以传输 20 位的数据 例如 0000 0000 0000 0001 0001，那么 16 位和 20 位怎么兼容呢？CPU 工程师们就想到了 讲 cs 寄存器左移四位在加上 ip 寄存器的值不就是 20 位了吗？这个计算方法就是这么来的。看图，一目了然。</p><p>有框相加 就是最终值 20 位了。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090156.png"></p><p>通过 CS 寄存器和 IP 地址得到的内存地址 0xFFFF0，属于连接了主板的 ROM 芯片上，这类芯片的寻址方式和内存 RAM 是一样的，也就是上面提到的 BIOS 程序固化在上面了。</p><p>CPU 拿到 0xFFFF0 这个地址，就跳转到这里来执行 BIOS 代码，BIOS 就开始执行起来了。这个 0xFFFF0 地址是在 ROM 上，这和 X86 架构下 CPU 实模式工作原理有关，X86 系统会将 0xF0000 到 0xFFFFF 这 64K 空间映射给 ROM 上，而 0x00000 ~ 0xDFFFF 这段空间映射给 RAM。所以其实最开始内存没有初始化的时候，是从 ROM 读取的 BIOS 程序，具体内存布局看下图：</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090206.png"></p><p>你仔细一看就知道了 0xFFFF0 落在了 倒数第二上面的 ROM 区域。</p><p>那么 BIOS 系统做了什么呢？</p><p>首先 BIOS 会进行 CPU，内存的初始化工作，这个时候我们说的 8G 16G 内存就真正初始化完了，可以用了。然后会把自己的一部分复制到内存中去，这一步就是为了以后建立中断向量表和服务程序做准备以及把相关的启动区程序加载进去，最后跳转告诉 CPU 跳转到内存去执行代码，这个跳转地址是：</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">jmp far f000:e05b<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>可以看到会跳转到 0xfe05b（cs=0xf000 + ip=0xe05b =&gt; cs &lt;&lt;&lt;&lt; 4 + ip = 0xfe05b） 执行内存中的代码，这也是最早内存中的代码。<br>跳转到内存之后，会进行本地设备的初始化工作，并进行检查，看看硬件是否损坏等，这个时候 BIOS 就会开始调用显卡、网卡等烧写好的固件程序了。</p><p>以上都完成好之后，还会建立一个中断向量表和中断服务程序，我们用到的鼠标和键盘都是要通过中断实现的，这也是启动 Liunx 非常重要的工作。</p><p>做完中断的初始化工作，下一步就是准备加载引导程序了。</p><p>为了能够启动外部存储器中的程序，BIOS 会搜索可引导的设备，至于按照什么顺序搜索，这些都是在出厂芯片中设定好了的，可以是从硬盘中、U 盘中、网络中等等。</p><p>当然，一般都是从硬盘中启动的。硬盘上的第一个扇区，512 个字节的大小，这也是每个扇区的标准大小，被称为 MBR（Master Boot Record，主启动记录），这个里面包含三个重要的信息，如图：</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090220.png"></p><ul><li>引导加载程序（Boot loader) 446 字节</li></ul><p>存储操作系统相关的信息，比如名称、内核位置等等。</p><ul><li>分区表 64 字节</li></ul><p>也就是磁盘分区了，每个主分区占 16 个字节，</p><ul><li>分区表有效性标记 2 字节</li></ul><p>BIOS 会把 MBR 加载到内存中执行，这个执行地址是 0x7c00，也就是说把主启动记录程序 MBR 全部加载到从 0x7c00 这个开始地址中了，为什么是 0x7c00 这么一个奇怪的地址呢？这是由于 IMB 公司最早的个人电脑 IBM PC6160 上市的时候搭载操作系统是 86-DOS，用到的芯片是 Intel 的第一代个人电脑芯片 8088，86-DOS 操作系统运行时需要的内存至少是 32KB，32KB 的范围就是 0x0000 ~ 0x7FFF，而 8088 本身需要占 0x0000 ~ 0x03FF 来保存中断向量表和中断服务程序，所以还剩 0x0400 ~ 0x7FFF 给操作系统用，为了尽可能的将多的连续内存空间留给 86-DOS，MBR 被放到了内存地址的末尾，而 MBR 本身也会产生数据，所以最后计算方式就变成了 最高地址 0x7FFF + 1 - 512 -512 = 0x7c00 这里 +1 是因为取值是从 0 开始。</p><p>到这里 BIOS 的任务完成了，把控制器交给 MBR，Liunx 中是 GRUB 了。</p><h3 id="GRUB-引导"><a href="#GRUB-引导" class="headerlink" title="GRUB 引导"></a>GRUB 引导</h3><p>GRUB 全称叫全称 Grand Unified Bootloader Version。顾明思议就是搞系统启动的，当前都是用 GRUB2 了。这里为了简便就交 GRUB 吧</p><p>GRUB 的配置，我们可以在 /boot/grub2/ 目录下查看 grub.cfg，例如：</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">### BEGIN /etc/grub.d/10_Linux ###menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos --class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-3.10.0-514.26.2.el7.x86_64-advanced-59d9ca7b-4f39-4c0c-9334-c56c182076b5' &#123;load_videoset gfxpayload=keepinsmod gzioinsmod part_msdosinsmod ext2set root='hd0,msdos1'if [ x$feature_platform_search_hint = xy ]; then  search --no-floppy --fs-uuid --set=root --hint='hd0,msdos1'  59d9ca7b-4f39-4c0c-9334-c56c182076b5else  search --no-floppy --fs-uuid --set=root 59d9ca7b-4f39-4c0c-9334-c56c182076b5filinux16 /boot/vmlinuz-3.10.0-1160.45.1.el7.x86_64 root=UUID=59d9ca7b-4f39-4c0c-9334-c56c182076b5 ro crashkernel=auto   net.ifnames=0  idle=halt console=tty0 console=ttyS0,115200n8 LANG=en_US.UTF-8initrd16 /boot/initramfs-3.10.0-1160.45.1.el7.x86_64.img&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这就是一个启动项，如果 grub 引导加载完成后，会让你选择操作系统，在那个选择菜单的界面就是这里配置而来的。<br>GRUB 引导启动阶段主要包含三个阶段，同时也分成了多个文件，两个重要的文件：boot.img 和 core.img，</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090243.png"></p><p>话不多说，上图。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG215_20211127090322.png"></p><p>下面来具体看看这两个文件是怎么样被加载的。</p><p>boot.img 主要在 1 阶段被加载。</p><h4 id="Stage1-阶段"><a href="#Stage1-阶段" class="headerlink" title="Stage1 阶段"></a>Stage1 阶段</h4><p>这个阶段 BIOS 时期最后跳转的入口地址程序——BootLoader。</p><p>由于 512 个字节实在太有限了，它做不了太多的事情。仅仅就加载了 boot.img。</p><p>而 boot.img 的一个位置写入了 core.img 的文件位置，类似于你去问路，某大爷告诉你应该怎么怎么走，这个时候 boot.img 就相当于这位大爷了。</p><p>boot.img 之后就跳转 core.img 入口地址，开始进入 Stage1.5 阶段了</p><h4 id="Stage1-5-阶段"><a href="#Stage1-5-阶段" class="headerlink" title="Stage1.5 阶段"></a>Stage1.5 阶段</h4><p>这个阶段是 Stage1 和 Stage2 之间的过渡步骤，主要是加载 Stage2 阶段用到的 core.img，core.img 包含 diskboot.img、lzma_decompress.img、kernel.img 和一些列模块。</p><p>这个阶段首先会加载 diskboot.img，这个文件中以文件块列表的方式保存着 core.img 这个文件内容，所以 diskboot 能够找到 core.img 剩下的内容并将其他的内容加载进来，在这阶段主要是做让系统具有识别文件的能力，也是一个从 Stage1 到 Stage2 的过渡期。</p><h4 id="Stage2-阶段"><a href="#Stage2-阶段" class="headerlink" title="Stage2 阶段"></a>Stage2 阶段</h4><p>这个过程主要是执行上面 Stage1.5 阶段存放的加载指令，主要是 core.img 的解压文件和内核文件。在解压加载 kernel.img 之前，lzma_decomprees.img 会调用 real_to_prot，从实模式切换到保护模式。为什么要做这一步骤呢，因为实模式下的 1M 空间实在太小了，寻址不到超过 1M 的地址，而内核加载到内存中大于 1M 了，所以得寻求更大的空间。就会切到保护模式下，这样就能有更大的寻址空间，加载更多的东西了，保护模式下是 32 位寻址空间，也就是 2^32B = 4G，这也就足够寻址到内核在内存中的地址了。</p><p>所以 CPU 工作模式从实模式到保护模式的切换就是在 GRUB 引导阶段进行的。</p><p>有了更大的寻找空间之后，就会对 Kernel.img 进行解压缩，然后跳转到 Kernel.img 开始执行，这个时候会开始读取 grub.cfg 文件里的配置信息。如果启动正常，最后就会显示出让你选择操作系统的列表画面。</p><p>当你选择完操作系统之后，grub 的任务也就要完成了，这个时候就开始加载内核代码，也就开始进入到下一阶段了。</p><p>内核初始化阶段就真正来到了操作系统层面了，这里就是操作系统程序启动的入口！！！</p><h3 id="内核初始化"><a href="#内核初始化" class="headerlink" title="内核初始化"></a>内核初始化</h3><p>内核初始化主要分为三个部分，也就是 0、1、2 三个进程的建立三部分，首先 grub 引导 Liunx 内核加载完之后，从 start_kernel() 方法开始进行内核初始化，这个方法非常有名，因为这里是内核的开始，Liunx 的入口。</p><h4 id="著名的-start-kernel"><a href="#著名的-start-kernel" class="headerlink" title="著名的 start_kernel()"></a>著名的 start_kernel()</h4><p>来看 start_kernel() 中的代码，这里删除了很多代码，这个方法有 200 多行，主要是一个包装方法，里面调用了各个部分的初始化方法，这里选取了几个比较重要的方法，稍作说明。</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">void start_kernel(void)&#123;        //零号进程初始化    set_task_stack_end_magic(&amp;init_task)    //中断门初始化    trap_init();    //内存初始化        mm_init();    ftrace_init();    //调度器初始化    sched_init();    //fork初始化建立进程的     fork_init();        //VFS数据结构内存池初始化      vfs_caches_init();    //运行第一个进程     arch_call_rest_init();&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h4 id="万物之源——0-号进程"><a href="#万物之源——0-号进程" class="headerlink" title="万物之源——0 号进程"></a>万物之源——0 号进程</h4><p>首先我们来看看万物之源——0 号进程</p><p>0 号进程的初始化代码</p><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token function">set_task_stack_end_magic</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>init_task<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>可以看到这句初始化需要传入一个 init_task 参数，来看看这个 init_task 怎么来的</p><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">/* Initial task structure */</span><span class="token keyword">struct</span> task_struct init_task <span class="token operator">=</span> <span class="token function">INIT_TASK</span><span class="token punctuation">(</span>init_task<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token function">EXPORT_SYMBOL</span><span class="token punctuation">(</span>init_task<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>通过了一个叫做 EXPORT_SYMBOL 的宏进行的初始化。<br>这个宏里面主要是对 init_task 做了写死赋值，所以我们的 0 号进程的信息，都来源是硬编码！！！这就是道生一呀。</p><p>可以看到这个结构是 task_struct，它是个什么东西呢？</p><p>顾名思义，task 是任务，也就是任务结构，任务？ 好像和我们 CPU 执行任务有点联系。</p><p>没错！ 它就是 CPU 执行任务的结构，也是表示进程和线程的数据结构。具体的解读请期待下一期。这里我们紧扣主题——Liunx 启动。</p><p>好了 0 号进程有了，也就是 万物之源的 一 出来了。接下来内核会做更多的初始化，例如：</p><ul><li>中断模块初始化 trap_init()</li></ul><p>这个方法里面设置了很多中断门，用于处理各类中断，BIOS 时期也建立了中断向量表和服务程序，没错这里会根据之前建立的，为操作系统重新建立一次。</p><ul><li>内存模块初始化 mm_init()</li></ul><p>这个方法里面会初始化内存管理模块，内存是这个时候才开始被操作系统初始化的，在操作系统层面要使用内存，就必须在这个之后了。</p><ul><li>调度模块初始化 sched_init()</li></ul><p>这个方法会初始化调度模块，主要是用于 CPU 调度任务。</p><ul><li>fork 创建初始化 fork_init()</li></ul><p>fork 在这里才被初始化，未被初始化之前都无法使用 fork，1 号进程的初始化也是在 fork 之后进行的。所以我们 0 号进程是无法通过 fork 进行初始化的。</p><ul><li>文件系统初始化 vfs_caches_init()</li></ul><p>这里会初始化基于内存的文件系统 rootfs,文件系统是存储信息的，要兼容各类文件系统，系统会抽象出一层虚拟文件系统（VFS Virtual File System）.</p><ul><li>其他初始化 rest_init()</li></ul><p>这里会做很多其他方面的初始化工作，比如 1 号、2 号进程的初始化。</p><h4 id="1-号进程建立"><a href="#1-号进程建立" class="headerlink" title="1 号进程建立"></a>1 号进程建立</h4><p>1 号进程是在 rest_init() 方法里调用 kernel_thread(kernel_init, NULL, CLONE_FS) 进行的初始化，它对于操作系统来讲有着很重要的意义，可以说是“标志性划时代的”，在 1 号进程没有初始化的时候，所有资源都是操作系统内核本身的，而 1 号进程初始化完之后，要讲一些资源分配给它进行使用。这也就从改变了系统的运行方式。这里就设计到了，有哪些资源是内核所可以调用的，哪些资源是给类似 1 号用户进程调用的，x86 架构给我们提供了权限机制，就很好的解决了这个问题，这里简单提一点：内核拥有 Ring0 最高权限，我们把关键的资源和代码放在这里，也叫做内核态，而普通用户程序放在 Ring3，也叫做用户态。他们之间是通过系统调用进行沟通的，话不多说，看图，从里往外权限依次降低，可以看到内核态具有最高权限。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG216_20211127090345.png"></p><p>1 号进程的建立，CPU 的执行权限，将会从内核态转到用户态。在 1 号进程建立时，是调用下面的</p><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ramdisk_execute_command<span class="token punctuation">)</span>    ramdisk_execute_command <span class="token operator">=</span> <span class="token string">"/init"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>也就是这个 ramdisk，进行了用户空间的初始化，从虚拟根文件系统切换到真正的根文件系统。<br>这一部分主要是通过在内存中建立虚拟根文件系统实现相关设备的驱动并建立和切换到真正的根文件系统。</p><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG217_20211127090419.png"></p><p>如上图，我们当前在 / 目录下，也就是根文件目录， 它的功能就是讲内核与真正的根建立联系，内核通过它加载根文件系统的驱动程序，然后以读写方式挂载根文件系统，在 initrd 程序建立 ramdisk 内存虚拟根文件系统后 内核开始驱动基本硬件，例如：CPU，I/O 等等，在驱动加载完后，会根据 grub.cfg 文件中的 root=”xxxxx”指定的内容创建一个根设备，可以往上面看 grubp 配置文件里有下面这段代码。</p><pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">set root='hd0,msdos1'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>然后将跟文件系统以只读的方式挂载，这就切换到真正的根文件系统上了。这也就是 ramdisk 的作用。<br>1 号用户进程初始化完了，用户进程的祖先有了，那么内核进程的祖先还没，你可能会有疑惑，我们的 0 号进程不就是内核进程吗？对没错，但是 0 号进程后续会变成 CPU 的 idle 进程，要另作他用。idle 进程，你可以理解为 CPU 不工作时，他就开始运行的一个进程，他的主要作用是：节能和低退出延迟。所以得创建一个 2 号进程来作为所有内核态的祖先。</p><h4 id="2-号进程建立"><a href="#2-号进程建立" class="headerlink" title="2 号进程建立"></a>2 号进程建立</h4><p>2 号进程是调用 kernel_thread 方法创建的，其具体方法如下</p><pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token function">kernel_thread</span><span class="token punctuation">(</span>kthreadd<span class="token punctuation">,</span> NULL<span class="token punctuation">,</span> CLONE_FS <span class="token operator">|</span> CLONE_FILES<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>2 号进程是用来管理内核态的线程调度，是所有内核线程的祖先<br>2 号进程初始化完，到目前用户态和内核态都有祖先进程管理了，系统初始化也完成了。</p><p>2 号进程完成后会调用/sbin/init 程序，开始进入系统初始化阶段。</p><p>到这里， 内核就加载完成，接下来就是对整个系统进行初始化。</p><h3 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h3><p>经过了内核的初始化，系统其实已经跑起来了，已经可以开始运行程序了，但是为了更好的提供给用户使用，需要对一些常用的东西进行封装成服务，以进程的形式加载进来。</p><p>系统初始化阶段首先会通过/etc/inittab 进行运行级别的确认，运行级别是为了系统的允许而定的机制，下面例举了 7 种级别：</p><p>0、关机，shutdown</p><p>1、单用户模式，这个就是 root 用户，最高权限；</p><p>2、多用户维护模式，会启动网络功能，但不会启动 NFS</p><p>3、多用户完全功能模式，文本界面，这个是默认的运行级别</p><p>4、预留级别：目前无特别使用目的，但习惯以同 3 级别功能使用；</p><p>5、多用户完全功能模式，图形界面，与 3 不同的是这是图形化界面模式；</p><p>6、重启，reboot</p><p>然后会去执行系统初始化脚本/erc/rc.sysinit，为用户初始化用户空间，完成之后，根据运行级别，系统开启对应的服务，关闭那些不要的服务。</p><p>系统初始化脚本主要做的一些事：设置 host 名和欢迎信息、挂在/etc/fstab 定义的文件系统、设置系统时钟、加载额外设备的驱动程序等等。</p><p>系统的初始化工作主要执行这个脚本程序，到此系统就进行了正常的初始化。</p><h3 id="启动终端"><a href="#启动终端" class="headerlink" title="启动终端"></a>启动终端</h3><p>默认运行级别情况下，会打开 6 个纯文本终端，这是 Liunx 设定的。</p><p>系统初始化完成后，会给出相应的用户登录提示，用户输入密码后，系统调用 login 程序，核验密码，如果正确，会分配 uid 和 gid，这两个 id 用于检测用户的身份信息，之后就从文件 /etc/passwd/读取登录用户指定的 shell 并启动。</p><p>到这里，整个系统就启动好了！！</p><p>接下里看看最上面提到的几个问题</p><h1 id="几惑问题"><a href="#几惑问题" class="headerlink" title="几惑问题"></a>几惑问题</h1><ul><li>为什么开机的时候是从BIOS里的代码开始执行而不是内存或外存里的？</li></ul><p>内存是需要进程初始化之后才能使用，而内存初始化是在 start_kernel 方法才进行，所以开机通电就读内存的代码是不行的。而文章中提到了 CPU 是不能和外存打交道的，所以开机读外存的代码也是不可行的。由于 BIOS 的代码是存放在 ROM 中的，在 CPU 运行的时候与内存 RAM 相似，</p><p>所以 CPU 开机的时候可以在这里读取代码。</p><ul><li>0xFFFF0这个地址存在于哪里？</li></ul><p>回答完上面那个问题，相信，你也知道了，0xFFFF0 这个 BIOS 入口地址是在 ROM 中了。</p><ul><li>BIOS到底又做了些什么？</li></ul><p>在上面 BIOS 时期中已经提到了它做的一些事，可以参考上面。</p><ul><li>为什么一开始只有1M的寻址空间？</li></ul><p>当前 CPU 有三种工作模式， 实模式，保护模式，长模式，最开始的时候 CPU 处理实模式下，也就对应在最早的 8086CPU 工作模式，而这个模式下虽然处理数据的位数只有 16 位，但是地址总线有 20 位，20 位的地址总线的寻址空间有 2^20B = 1M 这么大，这也就是最开始的寻址空间大小了，后面随着 CPU 的工作模式切换，这个寻址空间也变大了。</p><ul><li>为什么需要有GRUB引导程序，不要它行不行？</li></ul><p>这个问题和上个问题也有牵连，由于最开始的寻址空间只有 1M，所以无法直接一次加载操作系统内核那么大的程序，如果将超过 1M 的空间地址加载到内存中，而这是能够获取到内存的最大地址是 1M， 1M 以后的数据都获取不到，所以得一步步引导并扩大，最后全部加载进来。</p><p>整个 Liunx 的启动，就像重定向一样，BIOS 告诉 CPU 你去 加载 GRUB，而 GRUB 告诉 CPU 我是启动引导程序，用户选择完操作系统后，你就可以进行加载了，而且我还要切换你的工作模式。</p><p>就这样一步步引导，Liunx 就初始化完成了。</p><ul><li>我们能调用fork并创建出系统的第一个进程吗？</li></ul><p>通过上面的讲解，想必你也能回答这个问题了，fork 是系统调用，需要在操作系统内核初始化之后才能调用，比如 1 号进程就是 fork 出来的。</p><ul><li>ps -ef 里面有很多父进程是1，这个1号进程是啥？</li></ul><p>阅读完全文，想必你也知道了这个 1 就是 1 生万物 的 1，由于有了 1 号进程，用户态下的所有进程的鼻祖，它的作用不言而喻。</p><h1 id="简要总结"><a href="#简要总结" class="headerlink" title="简要总结"></a>简要总结</h1><p>本文从 Liunx 系统的启动初始化，与你一起了解了计算机启动原理，一起深入理解了 BIOS 时期，它干的一些事情，以及 GRUB 引导程序的相关知识，还有根据 Liunx 源码解读了内核初始化过程，最后回答了文章开头提出的相关问题。</p><p>更多内容你可以关注公众号： 「<strong>ConeZhang</strong>」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Liunx </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 启动 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>保持页面滑动流畅性的一次工程实践</title>
+      <link href="/2020/03/30/iOS_UI_fps/"/>
+      <url>/2020/03/30/iOS_UI_fps/</url>
+      
+        <content type="html"><![CDATA[<p>最近在做自己的独立App的时候又出现到了UItableView的滑动流畅性问题，于是这一次想彻底的解决这一问题，并总结解决方法，待以后工作开发中可以快速复用，提高效率。<br> 界面滑动流畅一般是指系统会在一秒钟之内刷新60次界面，也就是60FPS（Frames Per Second）,即每16.7ms就需要刷新一次，如果每次刷新时间超过16.7ms，就会出现界面掉帧和卡顿，就会让用户感觉到滑动不流畅，会带来非常不好的体验。追求性能、提升用户体验是我们开发者永远期待并执行的一件事。</p><p> 先来看看现状吧，剖析完现状才能对症下药。</p><h3 id="项目现状"><a href="#项目现状" class="headerlink" title="项目现状"></a>项目现状</h3><p><img src="http://120.77.154.242/images/20200617/f0n4UvAY1ewMuX97jHzE.png"><br> 可以看到FPS有出现了20、30多的情况，这已经到了无法接受的的地步了。所以开始优化实践吧。期望值能稳定达到55~60，也就是使滑动达到或接近满帧。</p><h3 id="了解原理"><a href="#了解原理" class="headerlink" title="了解原理"></a>了解原理</h3><p> 在做性能优化之前，去了解原理是必不可少的一个过程，熟悉并理解原理之后，我们才能做出更加成熟、稳定的优化方案。</p><h5 id="图像显示原理"><a href="#图像显示原理" class="headerlink" title="图像显示原理"></a>图像显示原理</h5><p> 还记得我们物理学中的电子枪、电子在磁场中的运动等知识，也就是这些基础的物理知识成就了现在的高科技电子产品。<br> 显示器中有两个同步信号用来控制电子枪。水平同步信号（HSync）和垂直同步信号（VSync）。其中水平同步信号会控制电子枪进行扫描换行，也就是同步好一帧画面的绘制工作，垂直同步信号则是用来控制帧与帧之间的同步，避免出现上一帧还没有绘制完就开始了下一帧的绘制工作。<br> 通常来讲，一帧画面的绘制，需要CPU和GPU来共同完成，其中CPU将会计算好需要显示的内容提交给GPU，而GPU会进行渲染工作，渲染完成后会提交到帧缓冲区中，随后视频控制器会根据VSync信号读取帧缓冲区中的数据，经过数模转换传递给显示器进行显示。</p><h5 id="UI卡顿原因"><a href="#UI卡顿原因" class="headerlink" title="UI卡顿原因"></a>UI卡顿原因</h5><p> 开篇的时候也提到了一点点原因，不过在这里较详细的提及一下。<br> 在绘制一帧画面的时候的时间轴节点是以VSync信号来进行的。当Vsync信号到来之时，系统会发出通知，告诉App主线程可以开始进行工作了，这时候CPU开始进行计算需要显示的内容，比如视图的创建、计算布局、图片解码、文本绘制等任务，随后将计算好的结果通过总线提交给GPU，有GPU进行变换、合成、渲染，随后GPU将渲染的结果提交到帧缓冲区，等待视频控制器读取显示。由于垂直同步的机制，如何CPU和GPU在一个VSync信号的时间内没有完成上述工作并没有提交到帧缓冲区。那么这一帧就会被丢弃，等待下一个VSync信号到来在读取，那么屏幕上面的内容将会保持不变，这就是卡顿的原因。</p><h3 id="寻找切入点"><a href="#寻找切入点" class="headerlink" title="寻找切入点"></a>寻找切入点</h3><p> 从原理背后我们可以发现，我可以从CPU和GPU做的工作进行入手进行优化，那么先来看看CPU和GPU具体做了哪些工作。</p><h4 id="CPU干了些什么"><a href="#CPU干了些什么" class="headerlink" title="CPU干了些什么"></a>CPU干了些什么</h4><h5 id="对象的创建与初始化调整"><a href="#对象的创建与初始化调整" class="headerlink" title="对象的创建与初始化调整"></a>对象的创建与初始化调整</h5><p> 在面向对象的编程世界里，视图显示的时候缺了对象怎么能行。CPU第一步工作就是需要创建好这次视图显示所需要的对象了。而创建对象需要分配内存、调整属性、有些还会涉及到一些文件读取初始化操作，这里就会消耗CPU资源。在创建好对象之后的初始化调整时也是非常消耗CPU资源的，我们熟知的CALayer：它内部并没有属性，当调用属性方法的时候，它内部通过OC强大的运行时机制，调用resolveInstanceMethod为对象临时添加一个方法，并能把把属性保存起来。</p><h5 id="视图布局（AutoLayout）"><a href="#视图布局（AutoLayout）" class="headerlink" title="视图布局（AutoLayout）"></a>视图布局（AutoLayout）</h5><p> 我们知道AutoLayout在iOS12之前如果在进行自动布局的时候没有把握好，消耗的CPU资源与时间会层指数级增长（这点笔者有幸看过一篇博文，iOS中的Layout是利用的Cassowary算法进行线性规划，算法在进行计算完后会以一组线性方程组呈现出来，求解这组线性方程组就依赖其复杂度，在iOS12之前的某些情况下没有利用好改算法，使得线性方程组的复杂度非常高，就出现了指数级增长[笔者看完博文后的思考，如有错误欢迎留言指出~]）。视图布局不管是利用AutoLayout进行布局还是原始的frame布局，最终转化出来都是以UIView的frame、bounds等属性的调整上。</p><h5 id="文本的计算与内容渲染"><a href="#文本的计算与内容渲染" class="headerlink" title="文本的计算与内容渲染"></a>文本的计算与内容渲染</h5><p> 大多数情况下我们需要对某一个Cell里面的Text内容进行高度、宽度计算，而与计算有关的事情肯定是耗CPU的，所以这一点也会影响到我们的滑动流畅性。再来看看文本内容的渲染，熟知的屏幕上能看到的所有内容都是由一个个位图显示合成而来，我们的文本控件在底层都是通过CoreText排版、绘制成bitmap显示。可想而知排版和绘制都会使CPU的消耗。</p><h5 id="图片解码与图像绘制"><a href="#图片解码与图像绘制" class="headerlink" title="图片解码与图像绘制"></a>图片解码与图像绘制</h5><p> 当我们调用UIImage(named:”xxxx”)的时候，图片的数据并不会立刻解码，这里可以参考我写的<a href="www.baidu.com">SDWebImage解读心得</a>。在图像显示的时候可以说万物皆图像了，这里指的就是UIView里面的drawRect方法了。这个绘制方法如果是在主线程做的话也是会大量消耗CPU资源</p><h4 id="GPU干了些什么"><a href="#GPU干了些什么" class="headerlink" title="GPU干了些什么"></a>GPU干了些什么</h4><p> 在我们学习计算机组成原理的时候老师可能会讲到GPU最擅长的事情就是与图像有关了，在计算机视觉的世界中GPU当然也是非常重要的。它做的事情相对于CPU来讲，比较专注于一件事：将CPU提交过来的结果，进行渲染、合成最终提交给屏幕帧缓冲区。</p><p> GPU在提交位图到帧缓冲区之前将会做:纹理渲染、视图合成、图形生成等工作。先来看看纹理渲染，纹理渲染是指所有的Bitmap都要由内存提交到显存，在这一提交过程中都是有GPU负责，避免不了消耗GPU资源。然我们在一个Cell里面加载大量图片的时候，CPU占有率很低，而GPU非常高，也会出现卡顿掉帧的情况。<br> 视图的合成，当我们把多个View叠加到一起的时候回发生什么呢？当然是消耗GPU资源了，在多个View混合合成的时候需要尤其是当顶层View的alpha值不为1的时候，这个时候就会进行像素叠加计算，如果视图混合过多，那么像素的叠加计算时间就会边长，从而影响性能。<br> 图形的生成是指CALayer的一些属性可能会发生离屏渲染，而离屏渲染通常发生在GPU中,会新开劈一个屏幕缓冲区(非当前屏幕缓冲区)这样需要消耗资源和时间。</p><h3 id="提出解决方案"><a href="#提出解决方案" class="headerlink" title="提出解决方案"></a>提出解决方案</h3><h4 id="1、减轻CPU压力"><a href="#1、减轻CPU压力" class="headerlink" title="1、减轻CPU压力"></a>1、减轻CPU压力</h4><p> 如何减轻CPU压力，那么根据项目现状，我想计算时间方面入手。</p><h5 id="提前计算"><a href="#提前计算" class="headerlink" title="提前计算"></a>提前计算</h5><p> 提前计算好Cell所有需要的数据高度，在进行刷新的时候保证在O（1）的时间内取出。</p><h5 id="异步计算"><a href="#异步计算" class="headerlink" title="异步计算"></a>异步计算</h5><p> 图片显示的时候我们可以将其异步到子线程中进行解码加载，不阻塞主线程的正常工作。</p><h5 id="减少计算"><a href="#减少计算" class="headerlink" title="减少计算"></a>减少计算</h5><p> 在使用Autolayout的时候，我们尽量不要依赖于同级视图进行布局计算，这样可以保证局部同级视频的优先级是统一的，从而不需要延长布局时间。</p><h4 id="2、减轻GPU压力"><a href="#2、减轻GPU压力" class="headerlink" title="2、减轻GPU压力"></a>2、减轻GPU压力</h4><p> 减轻GPU压力主要可以从 图像合成的时候规避不必要的离屏渲染和规避不必要的alpha值的使用。</p><h3 id="落地"><a href="#落地" class="headerlink" title="落地"></a>落地</h3><p> 提前计算O（1）时间内取出高度<br> <pre class="line-numbers language-none"><code class="language-none">func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -&gt; CGFloat &#123;    let data &#x3D; viewModel.momentDatas[indexPath.section].comments[indexPath.row]    return data.height&#125;func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -&gt; CGFloat &#123;    let data &#x3D; viewModel.momentDatas[section]    if data.contentHeight &gt;&#x3D; 250.fitW &amp;&amp; data.conntentIsFold &#123;        return data.height + 250.fit - data.contentHeight    &#125;    return data.height&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p><p> 异步解码：<br> swift中的Kinshfier与OC中间的SDWebImage已经帮我们做了。可以去了解弄清其中的原理。</p><p> 减少计算：在updateCell的时候利用一个 sumHeight 表示距离Cell顶部的距离，为参数进行布局。<br> <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 如此类布局        contentLabel.snp.remakeConstraints &#123; (make) in           make.top.equalTo(self).offset(sumHeight)            make.height.equalTo(contentHeight)            make.left.equalTo(self).offset(20.fitW)            make.width.equalTo(screenWidth - 40.fitW)        &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p><p> 在GPU这块，由于笔者的项目没有出现需要加入aplha值，所以没有进行调优。</p><h3 id="优化后"><a href="#优化后" class="headerlink" title="优化后"></a>优化后</h3><p> 能稳定达到55帧率，不影响用户体验。</p><h3 id="未来可以继续研究"><a href="#未来可以继续研究" class="headerlink" title="未来可以继续研究"></a>未来可以继续研究</h3><p> 1、重写UIView的drawRect方法 进行异步绘制<br> 2、可以利用贝塞尔曲线进行圆角的控制。<br> 3、利用runloop空闲时间进行预缓存。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 性能优化 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>2019年小结——余生，请不留余力地学习。</title>
+      <link href="/2019/12/30/2019_summary/"/>
+      <url>/2019/12/30/2019_summary/</url>
+      
+        <content type="html"><![CDATA[<p> 不知道从什么时候开始，喜欢上了一些东西，现在也想紧紧地拥抱这些自己喜欢的东西，可似乎又有一些东西是触不可及了。2019这一年，经历了很多事情，让我一步步成长。如果有人问我2019你最大的收获是什么，我想我会毫不犹豫地回答：余生，请不留余力地学习。<br> 这句话让我明白了自己真正想要达到的彼岸不是某喜欢高校的研究生通知书，也不是某想去大厂的offer，而是一直不断地学习，充实自己，做那些自己喜欢的事情，追寻人生的意义。</p><h2 id="关于孤独"><a href="#关于孤独" class="headerlink" title="关于孤独"></a>关于孤独</h2><p> 2019这一年，我懂得了孤独，说到孤独，我想我应该讲到了队友东哥，当我孤独而不想学习的时候，会跟队友东哥聊聊人生，聊聊比赛，聊聊技术。这一年里，与东哥一起在实验室里度过，一起比赛，中国设计大赛上我们做过并肩战斗的队友，移动应用赛上面 我们各自带队厮杀，他很厉害，他也很懂孤独，我欣赏他那份对朋友的真诚与对孤独的态度。他从不去教室上课而是天天泡实验室学习（还能拿奖学金），而我会去上上课，为了节约时间多写几行代码，多思考几个问题，中午或者晚上的时候 一句东哥，带饭，不用讲什么菜，他就会带我喜欢的。我们是很好的队友、朋友。2019年这一年，在iOS开发这条路上，他与我一起学习，很幸运地有这样一位队友一起泡在实验室里学习。为什么说我自己懂得了孤独，还是会扯回到前面出现的她，因为某种关系，暑假来到了上海实习，虽然住在亲戚（很亲）家，大概还是非常孤独吧，偶尔心里还会想起她，也没有同龄人一起，于是就在思考孤独是什么，时间慢慢地走过，也似乎慢慢的懂了，原来孤独是常态，也是我们人生的一种心境，要学会享受孤独。于是我说，2019年我也理解了孤独，要学会享受孤独。于是在孤独之下，2019我也做了很多其他事情。也有了不小的进步。</p><h2 id="关于进步"><a href="#关于进步" class="headerlink" title="关于进步"></a>关于进步</h2><p> 2019这一年，依旧没有忘记高考那时的那份不满，仍然朝着自己心中的彼岸前行。我知道这一路有很多阻碍，但是如果不朝着心中那份光奔跑，人生的意义也许就不知道是什么了吧。<br> 比赛<br> 2019年的几个比赛是我进步最大，也是最促使我进步的，首先是大学生创新创业项目的申报，我的大创项目是一个基于情感分析的记录类型的app，通过写大创的文档，规范格式，我的文档能力有了很大的提升，为我后面地比赛写文档也打下了基础，这个项目申报很顺利，是一个省级的项目，目前app也已经快要开发完了。<br> 接下来要提到的是中国设计大赛，那个时候我的作品还么有成型，队友东哥的作品差不多了，于是我跟他组队参加了比赛，暑假我们也来到了安徽师范大学进行决赛。最后我们获得了三等奖。然后想提到的是互联网+参加校赛，没过。这也让我有了一定的商业知识。因为需要进行商业计划书的编写。然后是移动应用创新赛，这个比赛是最锻炼到我的，因为队友的设计水平很高，设计稿一出来，我就恨不得马上实现，于是开始很有热情的做这样的事。暑假我们去到了apple设计开发加速器，这里我见识到了Apple的各类大佬，真的是非常大佬，膜拜。10月份 我们到了浙大进行了决赛，最后又是三等奖，我很生气吧，评委都没有来展台深入了解我的作品，就凭10分钟的答辩决出。于是很气馁的拿了三等奖，论设计，开发能力，我们团队都不差…却只拿了三等奖，于是明年我还想来。最后伴随着移动应用赛的结束，2019的比赛完结了。收获了很多很多，认识了浙大，福州大学，同济大学等很多学校的同学，格局和见识真的都不一样。我不想做一名坐井观天的青蛙呀，我得跳出来，看看他们。向他们学习。</p><h2 id="关于实习"><a href="#关于实习" class="headerlink" title="关于实习"></a>关于实习</h2><p> 暑假，因为某种关系，我来到了上海某家公司实习，iOS开发实习，体会到了 带薪自习，由于对实习生要求不高，师傅给了我一个项目，我去熟悉了整个实习期，虽然在技术水平上没有明显提升，但是我还是有很大对收获，对业务流程，对企业了解都有很大的收获。实习期间遇到的同事也非常好。整个实习下来，最大的收获就是上面提到对懂得了孤独，其次是我想要的人生是什么样子的。由于是带薪自习，能力没有明显提升，下面提到的二面面试官问我有没有实习经历过，都不好说出来有过。<br> 移动应用赛之后，我的大厂投简历找日常实习计划也开始了。11开始了我的复习准备面试。<br> 很感谢某学长的内推12月面试完了字节跳动，面试官都非常好，一面面试官在最后做算法题的时候我多用了一个变量，还提醒我可以少一用一个，二面面试官要我问了他三四个问题。hr面的hr姐姐聊得很来。后面hr告诉我面试都过了，目前在跟我申请offer，某学长说，实习offer一般不会被刷，如果不出很大意外的话，1月份我就要踏上深漂的道路了。很期待ing。面试字节跳动地收获不在于我想拿到实习offer，而是我知道了我自己很多地方的不足，要自己好好去弥补。收获真的非常大。 也让我更加坚信余生，请不留余力地学习 这句话的绝对正确。</p><h2 id="关于收获"><a href="#关于收获" class="headerlink" title="关于收获"></a>关于收获</h2><p> 参加了很多比赛也获得了一些荣誉，记录一下吧，也是年度总结呢。<br> 第十届蓝桥杯省级二等奖<br> 第十二届中国计算机设计大赛三等奖<br> 第四届中国计算机大赛移动应用创新赛三等奖<br> 2019学年 校级二等奖学金、三好学生。<br> 互联网+校赛 三等奖<br> 2019大学生创新训练计划省级项目<br> 第七届数媒大赛全国一等奖<br> 荣誉大概都是虚的，自己能力提升才是真的。这也是2019年我收获的一点。自己的能力才是最重要的，其他都是虚的，不要虚荣，不要那些虚的东西，能力不行都会一票否决。</p><h2 id="展望吧！"><a href="#展望吧！" class="headerlink" title="展望吧！"></a>展望吧！</h2><p> 2020，我想好好努力，好好沉淀自己的技术。那个2019年遇见的不可能的人，也许是有缘无份吧。我想2020年，也要做好准备去遇见可能的她。努力变优秀，之后慢慢遇见。<br> 余生，请不留余力地学习。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 程序人生 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 总结 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 内存管理ARC 以及循环引用思考</title>
+      <link href="/2019/11/09/Swift-arc/"/>
+      <url>/2019/11/09/Swift-arc/</url>
+      
+        <content type="html"><![CDATA[<p>内存管理是编程时一个不可回避的问题，在Swift中，是自动管理内存的，也就是ARC机制，自动引用计数机制。我们不需要关心内存的申请和分配。</p><h4 id="ARC工作机制"><a href="#ARC工作机制" class="headerlink" title="ARC工作机制"></a>ARC工作机制</h4><p>当我们每次创建一个类的新实例的时候，ARC会为我们分配一块内存来存储实例的信息。当该实例不在被使用时即一个实例没有引用的时候，ARC会为我们释放掉所占用的内存，也就是即使清除内存，不造成内存泄露。</p><p>如果我们正在使用的实例被ARC回收掉。当我们在此访问的时候会造成崩溃。为了保证真正使用的实例内存不会被回收，ARC会跟踪和计算每一个实例被引用的数量，如果不为0，就不会销毁或回收。</p><p>如果想要我们的实例不会被销毁，我们需要创建该类实例的强引用。</p><h4 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h4><p>当两个对象相互强引用对方的时候，其中都不能被释放，就出现了循环引用</p><pre class="line-numbers language-none"><code class="language-none">class Person:NSObject&#123;    var name:String    init(name:String) &#123;        print(&quot;\(name) 被初始化&quot;)        self.name &#x3D; name    &#125;    var car:Car? &#x3D; nil    deinit &#123;        print(&quot;\(name) 被释放&quot;)    &#125;&#125;class Car:NSObject&#123;    var id:String    init(id:String) &#123;        print(&quot;\(id) 被初始化&quot;)        self.id &#x3D; id    &#125;    var person:Person? &#x3D; nil    deinit &#123;        print(&quot;\(id) 被释放&quot;)    &#125;&#125;        var james:Person? &#x3D; Person(name: &quot;James&quot;)        var bmw:Car? &#x3D; Car(id: &quot;湘B:88888&quot;)        james!.car &#x3D; bmw        bmw!.person &#x3D; james        &#x2F;&#x2F; James 被初始化        &#x2F;&#x2F; 湘B:88888 被初始化        james &#x3D; nil        bmw &#x3D; nil        &#x2F;&#x2F; 并未打印 James 被释放        &#x2F;&#x2F; 湘B:88888 被释放<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>上述代码中就出现了循环引用，查找原因。两个对象相互强引用对方，导致谁都无法释放。也就james中间引用了bmw，而bmw中也引用了james,当我们尝试去释放james的时候，由于james的成员变量bmw无法被释放，导致自身也无法被释放。</p><h4 id="weak、unowned解决循环引用问题"><a href="#weak、unowned解决循环引用问题" class="headerlink" title="weak、unowned解决循环引用问题"></a>weak、unowned解决循环引用问题</h4><pre class="line-numbers language-none"><code class="language-none">weak var car:Car? &#x3D; nilweak var person:Person? &#x3D; nil<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>我们在两个类的成员变量前面加上 weak 关键字，很顺利的得到了我们想要的结果，两个实例被释放。</p><pre class="line-numbers language-none"><code class="language-none">james &#x3D; nilbmw &#x3D; nil&#x2F;&#x2F;  James 被释放&#x2F;&#x2F; 湘B:88888 被释放<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><p><strong>weak：</strong> 当一个对象被声明为weak时，表示父层级对改对象没有指向，该对象的ARC 引用计数不会+1。当对象被释放后，弱引用也随即消失。继续访问改对象，程序会得到nil,不会引起崩溃。<br><strong>unowned：</strong> 它与weak的本质是一样的，不同点在于，对象被释放后，依然有一个无效的指向引用，它不是可选，也不是nil,继续访问改对象，会引起奔溃</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 写时复制机制 以及值类型与引用类型思考</title>
+      <link href="/2019/11/09/Swift_cow/"/>
+      <url>/2019/11/09/Swift_cow/</url>
+      
+        <content type="html"><![CDATA[<p>记录Swift语言特性–偶遇操作系统Copy on Write<br>今天在学习操作系统fork函数的时候遇到了写时复制，联想起了Swift中也有一个写时复制机制。</p><h3 id="Swift-写时复制"><a href="#Swift-写时复制" class="headerlink" title="Swift 写时复制"></a>Swift 写时复制</h3><pre class="line-numbers language-none"><code class="language-none">var a &#x3D; [1,2,3,4]var b &#x3D; a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>当代码这样执行完的时候，数组a和数组b在内存上是同一块内容，也就是b目前还没有开辟新的内存，当 添加一条b.append(5) 并执行完之后，b和a在内存上就不是同一块内存了，系统给b新开辟了一块内存。即当b被复制但是还没有改变的时候，这时是没有发生新的内存开辟。</p><h3 id="值类型与引用类型思考"><a href="#值类型与引用类型思考" class="headerlink" title="值类型与引用类型思考"></a>值类型与引用类型思考</h3><p>Swift的类型分为两种：一种是值类型（如：Int类型），一种是引用类型（如：class类型），值类型在传递和赋值的时候是进行复制的，而引用类型则只会用一个指针指向这个对象，也就是内存中只存在一份。</p><h5 id="值类型："><a href="#值类型：" class="headerlink" title="值类型："></a>值类型：</h5><p>Swift语言在设计时，将struct、enum、String、Array这些类型都被设计成了值类型。这样做有什么好处？<br>一、线程安全：当新的线程对值类型进行访问的时候回copy出一份新的值，使用当线程会copy值类型内容时是线程安全的。<br>二、高效：在栈区进行操作相比于在堆区操作，更快速高效。<br>值类型在复制的时候也会产生额外的开销，但是Swift把这个开销控制在了最小范围内，也就是在没必要复制的时候，值类型不会进行复制。</p><h4 id="引用类型："><a href="#引用类型：" class="headerlink" title="引用类型："></a>引用类型：</h4><p>引用类型，即所有实例都共享一份数据。<br>在Swift中，除了class是引用类型，还有闭包也是引用类型。引用类型的复制是进行的浅拷贝，也就是复制了一份指向改对象的指针。指向一个对象的指针，其中任何一个对其内部数据改变的时候，其他对象的数据也会受到影响。</p><p>如果将引用类型声明为常量，意味着这个常量不能被同类型变量赋值修改，然而可以修改该常量指向的内存中的变量。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Git 使用总结</title>
+      <link href="/2019/10/31/Git_used_summary/"/>
+      <url>/2019/10/31/Git_used_summary/</url>
+      
+        <content type="html"><![CDATA[<p>从18年3月份接触iOS开发，使用git到现在快两年时间了，记录一次深入学习Git并总结。</p><h4 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h4><p>Git是目前世界上最先进的分布式版本控制系统(没有之一)，是有liunx之父管理liunx版本用C语言编写的版本控制系统。</p><h4 id="集中式与分布式（SVN与Git）"><a href="#集中式与分布式（SVN与Git）" class="headerlink" title="集中式与分布式（SVN与Git）"></a>集中式与分布式（SVN与Git）</h4><h5 id="集中式"><a href="#集中式" class="headerlink" title="集中式"></a>集中式</h5><p>集中式版本控制系统，版本库是集中存放在中央服务器的，而干活的时候，用的都是自己的电脑，所以要先从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。集中式最大的毛病是要联网才能工作，如果网路状况不好，提交一个文件需要很长时间，对于效率来讲，非常不友好。</p><h5 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h5><p>分布式版本控制系统没有中央服务器，每个主机都拥有一个完整版本库，如果A和B同时修了一个文件，只需要把修改的部分推送给对方即可。</p><h4 id="Git-常用命令使用"><a href="#Git-常用命令使用" class="headerlink" title="Git 常用命令使用"></a>Git 常用命令使用</h4><ul><li>git init 初始化仓库</li><li>git add readme.txt 把文件添加到仓库</li><li>git commit -m”添加了一个文件” 把文件提交到仓库</li><li>git status 查看仓库当前状态</li><li>git diff 查看修改内容</li><li>git log 查看历史提交记录 加上 –pretty=oneline参数</li><li>git reset –hard head^ 回退上一个版本， head~100 上100个版本 head^^ 上两个版本 其中Git内部有一个指向当前版本的HEAD指针，改变指针的指向即有速度快的特点。</li><li>git reflog 查看每一次（历史）命令</li><li>git checkout – readme.txt 撤回修改到最近一次git commit或者git add时的状态 – 重要，如果没有 命令的意思为 切换到另外一个分支</li><li>git reset head readme.txt 把暂存区的修改撤销掉。</li><li>git rm 删除一个文件</li><li>git push -u origin master 推送到远程仓库 第一次推送需要 -u</li><li>git remote add origin git@server-name:path/repo-name.git 关联一个远程库</li><li>git clone 从远程仓库克隆一个仓库</li><li>git checkout -b dev 创建并切换分支</li><li>git branch dev 创建分支</li><li>git checkout dev 切换分支</li><li>git branch 查看当前分支</li><li>git merge dev 将dev 分支合并到当前分支</li><li>git switch -c dev 创建并切换到dev分支</li><li>git switch master 切换到master</li><li>git branch -d dev 删除dev 分支</li><li>git log –graph命令可以看到分支合并</li><li>git branch -D <name>强行删除</li><li>git remote -v查看远程仓库的信息</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 编程效率 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 将代码更优雅 —— 枚举</title>
+      <link href="/2019/10/31/Swift-enum/"/>
+      <url>/2019/10/31/Swift-enum/</url>
+      
+        <content type="html"><![CDATA[<p>笔者枚举在swift中真正站起来了，想来聊聊枚举，枚举跟其他类型一样在swift中属于一等类型。它有很多种用法，如果你读过Alamofire的源码，你会发现，枚举在这个库中得到了完美的诠释。</p><h3 id="enum的用法："><a href="#enum的用法：" class="headerlink" title="enum的用法："></a>enum的用法：</h3><h5 id="常规枚举"><a href="#常规枚举" class="headerlink" title="常规枚举"></a>常规枚举</h5><pre class="line-numbers language-none"><code class="language-none">enum Movement &#123;    case Left    case Right    case Top    case Bottom&#125;let aMovement &#x3D; Movement.Leftswitch aMovement &#123;case .Left:    print(&quot;left&quot;)default:    print(&quot;Unknow&quot;)&#125;if case .Left &#x3D; aMovement &#123;    print(&quot;Left&quot;)&#125;if .Left &#x3D;&#x3D; aMovement &#123;    print(&quot;Left&quot;)&#125;&#x2F;&#x2F; 整型enum Season: Int &#123;    case Spring &#x3D; 0    case Summer &#x3D; 1    case Autumn &#x3D; 2    case Winter &#x3D; 3&#125;&#x2F;&#x2F; 字符串型enum House: String &#123;    case ZhangSan &#x3D; &quot;I am zhangsan&quot;    case LiSi &#x3D; &quot;I am lisi&quot;&#125;let zs &#x3D; House.ZhangSanprint(zs.rawValue)enum CompassPoint: String &#123;case North, South, East, West&#125;let n &#x3D; CompassPoint.Northprint(n.rawValue)let s &#x3D; CompassPoint(rawValue: &quot;South&quot;)&#x2F;&#x2F; ....各种类型 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="非常规枚举"><a href="#非常规枚举" class="headerlink" title="非常规枚举"></a>非常规枚举</h5><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;嵌套枚举enum Character &#123;    enum Weapon &#123;        case Bow        case Sword        case Lance        case Dagger    &#125;    enum Helmet &#123;        case Wooden        case Iron        case Diamond    &#125;    case Thief    case Warrior    case Knight&#125;let character &#x3D; Character.Thieflet weapon &#x3D; Character.Weapon.Bowlet helmet &#x3D; Character.Helmet.Iron&#x2F;&#x2F; 结构体枚举struct Scharacter &#123;    enum CharacterType &#123;        case Thief        case Warrior        case Knight    &#125;    enum Weapon &#123;        case Bow        case Sword        case Lance        case Dagger    &#125;    let type: CharacterType    let weapon: Weapon&#125;let sc &#x3D; Scharacter(type: .Thief, weapon: .Bow)print(sc.type)&#x2F;&#x2F;枚举值关联enum Trade &#123;    case Buy(stock: String, amount: Int)    case Sell(stock: String, amount: Int)&#125;let trade &#x3D; Trade.Buy(stock: &quot;Car&quot;, amount: 100)if case let Trade.Buy(stock, amount) &#x3D; trade &#123;    print(&quot;buy \(amount) of \(stock)&quot;)&#125;enum Trade0 &#123;    case Buy(String, Int)    case Sell(String, Int)&#125;let trade0 &#x3D; Trade0.Buy(&quot;Car0&quot;, 100)if case let Trade0.Buy(stock, amount) &#x3D; trade0 &#123;    print(&quot;buy \(amount) of \(stock)&quot;)&#125;&#x2F;&#x2F;枚举 函数enum Wearable &#123;    enum Weight: Int &#123;        case Light &#x3D; 2    &#125;    enum Armor: Int &#123;        case Light &#x3D; 2    &#125;    case Helmet(weight: Weight, armor: Armor)    func attributes() -&gt; (weight: Int, armor: Int) &#123;        switch self &#123;        case .Helmet(let w, let a):            return (weight: w.rawValue * 2, armor: a.rawValue * 4)        &#125;    &#125;&#125;let test &#x3D; Wearable.Helmet(weight: .Light, armor: .Light).attributes()print(test)enum Device &#123;    case iPad, iPhone, AppleTV, AppleWatch    func introduced() -&gt; String &#123;        switch self &#123;        case .AppleTV: return &quot;\(self) was introduced 2006&quot;        case .iPhone: return &quot;\(self) was introduced 2007&quot;        case .iPad: return &quot;\(self) was introduced 2010&quot;        case .AppleWatch: return &quot;\(self) was introduced 2014&quot;        &#125;    &#125;&#125;print (Device.iPhone.introduced())&#x2F;&#x2F; 枚举属性enum Device1 &#123;    case iPad, iPhone    var year: Int &#123;        switch self &#123;        case .iPad:            return 2010        case .iPhone:            return 2007    &#125;    &#125;&#125;let iPhone &#x3D; Device1.iPhoneprint(iPhone.year)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h4 id="枚举成员的遍历"><a href="#枚举成员的遍历" class="headerlink" title="枚举成员的遍历"></a>枚举成员的遍历</h4><p>有时候我们需要得到包含枚举所以成员的一个集合，这个时候就可以令枚举遵循 CaseIterable 协议。Swift 会生成一个 allCases 属性，用于表示一个包含枚举所有成员的集合。</p><pre class="line-numbers language-none"><code class="language-none">enum Beverage: CaseIterable &#123;    case coffee, tea, juice&#125;let numberOfChoices &#x3D; Beverage.allCases.countprint(&quot;\(numberOfChoices) beverages available&quot;)&#x2F;&#x2F; 打印“3 beverages available”&#x2F;&#x2F;也可以用for - in 进行遍历for beverage in Beverage.allCases &#123;    print(beverage)&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 官方文档阅读笔记与思考（一）</title>
+      <link href="/2019/10/31/Swift_doc1/"/>
+      <url>/2019/10/31/Swift_doc1/</url>
+      
+        <content type="html"><![CDATA[<p>2019年12月20号，通过了字节跳动的iOS开发实习面试，二面面试官给我提了一个建议：把Swift经典著作再通读几遍，每一次都会有不同的收获，于是我想开始这个计划吧。</p><h4 id="常量和变量"><a href="#常量和变量" class="headerlink" title="常量和变量"></a>常量和变量</h4><p>swift非常鼓励我们使用常量，当我们非常确定一个量不会改变时，我们最好是使用let声明常量，这样就可以很好的降低出错几率，在实力开发过程中，当我们的一个var声明的变量而没有改变时，Xcode通常会对我们发出“从未改变”的警告。</p><h4 id="浮点数类型与整数类型"><a href="#浮点数类型与整数类型" class="headerlink" title="浮点数类型与整数类型"></a>浮点数类型与整数类型</h4><p>提到这个是因为，突然想到了一个问题，为什么在同一机器字长的机器上，浮点数存储数据的范围更大？</p><h4 id="类型安全和类型推断"><a href="#类型安全和类型推断" class="headerlink" title="类型安全和类型推断"></a>类型安全和类型推断</h4><p>Swift是类型安全的，在编译阶段会对代码进行类型检查并标记错误。那么Xcode如何实现编译时进行类型安全检查的？</p><h4 id="可选类型"><a href="#可选类型" class="headerlink" title="可选类型"></a>可选类型</h4><p>最接近Swift可选类型的是OC中间的类结构，OC类结构的nil表示缺少一个合法的对象，也就是什么都没有，而Swift将这一特性充分发挥好，将可选类型与Int,class等等类型全部结合起来，当我们不确定一个变量是否有值时，我们可以定义一个可选类型，例如：var a:Int?<br>浅尝探究可选类型底层如何实现：通过查看可选类型的源码可知道，可选类型是一个枚举结构(Swift语言设计真的将枚举推向了一个很高的地位）。</p><h4 id="基础运算符"><a href="#基础运算符" class="headerlink" title="基础运算符"></a>基础运算符</h4><p>Swift在设计的时候尽可能使得开发者在运行前检查出错误（感叹Swift的设计非常值得称赞，作者也是一名小小Swifter啦~），进行了很多非常令人舒适的设计，例如：如何我们进行条件判断的时候把 == 写成 = ，这时会报错，因为在C语言中 = 是有返回值的，这样会存在很多由于代码编写疏忽存在的问题（非常不必要的问题），而到Swift中， = 号没有返回值了，编译器进行类型检查的时候报错。<br>比较运算：Swift 标准库只能比较七个以内元素的元组比较函数。如果你的元组元素超过七个时，需要自己实现比较运算符。<br>逻辑运算:Swift 逻辑操作符 &amp;&amp; 和 || 是左结合的，这意味着拥有多元逻辑操作符的复合表达式优先计算最左边的子表达式。</p><p>总结：当自己被自己被各种各样的知识点困扰着的时候，静下心来再一次阅读官方文档真有着不一样的收货。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 将代码更优雅 —— 控制流</title>
+      <link href="/2019/10/31/Swift-control_flow/"/>
+      <url>/2019/10/31/Swift-control_flow/</url>
+      
+        <content type="html"><![CDATA[<h3 id="if-let-可选绑定"><a href="#if-let-可选绑定" class="headerlink" title="if let 可选绑定"></a>if let 可选绑定</h3><pre class="line-numbers language-none"><code class="language-none">var optionalName : String? &#x3D; &quot;Cone&quot;var greet &#x3D; &quot;hello!&quot;if let name &#x3D; optionalName &#123;   greet &#x3D; &quot;Hello, \(name)&quot;&#125;print(greet)&#x2F;&#x2F; Hello, Cone<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这段代码如何运行呢？如果变量的可选值为nil，条件会判断为false，大括号中的代码会跳过，如果不是nil，会将值赋给let后面的常量，这样代码快中就可以使用这个值了。</p><h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><pre class="line-numbers language-none"><code class="language-none">let vegetable &#x3D; &quot;red pepper&quot;switch vegetable &#123;case &quot;celery&quot;:    let comment &#x3D; &quot;celery&quot;;    print(comment)case &quot;cucumber&quot;, &quot;watercress&quot;:    let comment &#x3D; &quot;cucumber, watercress&quot;;    print(comment)case let x where x.hasSuffix(&quot;pepper&quot;):    let comment &#x3D; &quot;It is a \(x)&quot;;    print(comment)default:    let comment &#x3D; &quot;nothing&quot;;    print(comment)&#125;&#x2F;&#x2F; It is a red pepper<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>Swift中的switch语句支持很多种情况，包括枚举、范围、元组等等。</p><h3 id="where"><a href="#where" class="headerlink" title="where"></a>where</h3><p>where关键字在Swift中非常强大，谈谈使用场景。</p><h5 id="与switch-做限定使用"><a href="#与switch-做限定使用" class="headerlink" title="与switch 做限定使用"></a>与switch 做限定使用</h5><pre class="line-numbers language-none"><code class="language-none">let name &#x3D; [&quot;王二&quot;,&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;]name.forEach &#123;     switch $0 &#123;    case let x where x.hasPrefix(&quot;王&quot;):           print(&quot;\(x)是笔者本家&quot;)    default: print(&quot;你好，\($0)&quot;)&#125; &#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 王二是笔者本家&#x2F;&#x2F; 你好，张三&#x2F;&#x2F; 你好，李四&#x2F;&#x2F; 王五是笔者本家<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="在-for中做限定"><a href="#在-for中做限定" class="headerlink" title="在 for中做限定"></a>在 for中做限定</h5><pre class="line-numbers language-none"><code class="language-none">let num: [Int?] &#x3D; [48, 99, nil]    let n &#x3D; num.flatMap &#123;$0&#125;for score in n where score &gt; 60 &#123;    print(&quot;及格啦 - \(score)&quot;)&#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 及格啦 - Optional(99)        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="对协议扩展做条件限制"><a href="#对协议扩展做条件限制" class="headerlink" title="对协议扩展做条件限制"></a>对协议扩展做条件限制</h5><pre class="line-numbers language-none"><code class="language-none">extension Sequence where Self.Iterator.Element : Comparable &#123;public func sorted() -&gt;[Self.Iterator.Element]&#125;    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>谈谈Swift里面的闭包</title>
+      <link href="/2019/10/31/swift_block/"/>
+      <url>/2019/10/31/swift_block/</url>
+      
+        <content type="html"><![CDATA[<p>闭包是Swift中很重要的一点，也是难点。学习了Swift很久，记录一下对闭包的思考。</p><h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>1、闭包可以讲是一段代码的集合与函数类似，也是引用类型。<br>2、闭包的使用：主要用与回调（异步回调等等）<br>3、闭包可以作为函数参数传递等。<br>4、闭包表达式风格简洁，官方鼓励在一些常见的场景中进行语法优化，虽然在一定程度上会降低代码的可读性。<br>5、Swift的语法非常适合函数式编程的使用，而闭包正是函数式编程的核心概念之一了。</p><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><pre class="line-numbers language-none"><code class="language-none">&#123; (parameters) -&gt; return type in    statements&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>闭包表达式参数 可以是 in-out 参数，但不能设定默认值。如果你命名了可变参数，也可以使用此可变参数。</p><h3 id="几种类型"><a href="#几种类型" class="headerlink" title="几种类型"></a>几种类型</h3><h5 id="普通闭包"><a href="#普通闭包" class="headerlink" title="普通闭包"></a>普通闭包</h5><pre class="line-numbers language-none"><code class="language-none">let closure &#x3D; &#123;(x:Int) -&gt; Int in    return x*x&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><h5 id="尾随闭包"><a href="#尾随闭包" class="headerlink" title="尾随闭包"></a>尾随闭包</h5><pre class="line-numbers language-none"><code class="language-none">func someFunctionThatTakesAClosure(closure: () -&gt; Void) &#123;    &#x2F;&#x2F; 函数体部分&#125;&#x2F;&#x2F; 以下是不使用尾随闭包进行函数调用someFunctionThatTakesAClosure(closure: &#123;    &#x2F;&#x2F; 闭包主体部分&#125;)&#x2F;&#x2F; 以下是使用尾随闭包进行函数调用someFunctionThatTakesAClosure() &#123;    &#x2F;&#x2F; 闭包主体部分&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>我们都知道闭包可以作为函数的参数，当我们最好一个参数为一个闭包表达式的时候，这个时候尾随闭包就出现了。<br>当一个闭包表达式很长，以至于不在一行编写的时候，尾随闭包就变得非常有用。<br>通过尾随闭包的语法，优雅地在函数后封装了闭包的具体功能，而不再需要将整个闭包包裹在 某个函数function(_ : ) 方法的括号内</p><h5 id="逃逸闭包"><a href="#逃逸闭包" class="headerlink" title="逃逸闭包"></a>逃逸闭包</h5><p>当一个闭包作为参数传到一个函数中，但是这个闭包在函数返回之后才被执行，这类型的闭包会在函数中逃逸。一种能使闭包“逃逸”出函数的方法是，将这个闭包保存在一个函数外部定义的变量中。举个例子，很多启动异步操作的函数接受一个闭包参数作为 completion handler。</p><pre class="line-numbers language-none"><code class="language-none">var completionHandlers: [() -&gt; Void] &#x3D; []func someFunctionWithEscapingClosure(completionHandler: @escaping () -&gt; Void) &#123;    completionHandlers.append(completionHandler)&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><h5 id="自动闭包"><a href="#自动闭包" class="headerlink" title="自动闭包"></a>自动闭包</h5><p>自动闭包是一种自动创建的闭包，用于包装传递给函数作为参数的表达式。简单来说 @autoclosure 做的事情就是把一句表达式自动地封装成一个闭包(closure)，<br>自动闭包不接受任何参数，当它被调用的时候，会返回被包装在其中的表达式的值。<br>自动闭包让你能够延迟求值，因为直到你调用这个闭包，代码段才会被执行。延迟求值对于那些有副作用和高计算成本的代码来说是很有益处的，因为它使得你能控制代码的执行时机。例如：</p><pre class="line-numbers language-none"><code class="language-none">var customersInLine &#x3D; [&quot;Chris&quot;, &quot;Alex&quot;, &quot;Ewa&quot;, &quot;Barry&quot;, &quot;Daniella&quot;]print(customersInLine.count)&#x2F;&#x2F; 打印出“5”let customerProvider &#x3D; &#123; customersInLine.remove(at: 0) &#125;print(customersInLine.count)&#x2F;&#x2F; 打印出“5”print(&quot;Now serving \(customerProvider())!&quot;)&#x2F;&#x2F; Prints &quot;Now serving Chris!&quot;print(customersInLine.count)&#x2F;&#x2F; 打印出“4”<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这里联想到了系统 ?? 这个操作符，根据延迟求值的这个特性，猜测一下这个方法的具体实现。</p><pre class="line-numbers language-none"><code class="language-none">func ??&lt;T&gt;(optional: T?, defaultValue: @autoclosure () -&gt; T) -&gt; T &#123;    switch optional &#123;    case .Some(let value):         return value    case .None:         return defaultValue()&#125;    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>在我们需要返回的时候，一般思路是需要对optional进行求值，如果optinal不为nil的话，我们完全可以避免这个求值的计算，即将求值计算推迟到optional 判定为nil 之后。</p><h3 id="值捕获"><a href="#值捕获" class="headerlink" title="值捕获"></a>值捕获</h3><p>闭包可以在其被定义的上下文中捕获常量或变量。即使定义这些常量和变量的原作用域已经不存在，闭包仍然可以在闭包函数体内引用和修改这些值。</p><pre class="line-numbers language-none"><code class="language-none">func makeAdd(addNum amount: Int) -&gt; () -&gt; Int &#123;    var total &#x3D; 0    func add() -&gt; Int &#123;        total +&#x3D; amount        return total    &#125;    return add&#125;let addTen &#x3D; makeAdd(addNum: 10)addTen() &#x2F;&#x2F;10addTen() &#x2F;&#x2F; 20let answer &#x3D; addTen() print(answer) &#x2F;&#x2F; 30let addTenAnother &#x3D; makeAdd(addNum: 10)print(addTenAnother()) &#x2F;&#x2F; 10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>上面这段代码makeAdd函数返回的是一个 () -&gt; Int 内嵌函数类型也就是闭包的一种类型，是一个引用类型，然后创建了一个addTen函数类型对象，这个对象内部对total这个变量进行了值捕获，当这个函数类型对象消亡时，Swift也会为我们进行total这类的变量回收。</p><p>随便聊聊闭包，来总结一下：闭包是Swift里面的一个特别重要的概念，因为它，让swift的代码更加优雅，笔者目前也正在努力学习着，期待着有一天能写出非常优雅的代码。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>2019比赛总结</title>
+      <link href="/2019/10/30/2019_match_summary/"/>
+      <url>/2019/10/30/2019_match_summary/</url>
+      
+        <content type="html"><![CDATA[<p>伴随着移动应用赛的结束，终于可以开始好好沉淀自己的技术了！2019年，因为它，学到了很多东西，很久没有写博客了。想把这一切都记录下来。那就从这篇博客开始吧~</p><h3 id="杭州决赛（10-25-27）——-结束"><a href="#杭州决赛（10-25-27）——-结束" class="headerlink" title="杭州决赛（10.25-27）—— 结束"></a>杭州决赛（10.25-27）—— 结束</h3><p>比赛结束。从初赛到决赛，我们经历了大半年的时间。团队付出了很多，同时也收货了很多，我们拿到了三等奖。得到了Apple的奖励、认识了很多其他高校的同学……，收货了很多很多。这么长的比赛周期，发自内心的有点累，《行迹》这个作品，写了四个版本的代码。每一次推到重建都是在进步。作为队长，负责项目的全部程序任务，产品分析，鼓励团队成员，不能放弃。<br>在结束之际，有很多要写的吧。但是又不知道从哪里说起。我想，终于可以开始好好沉淀自己的技术啦。喜欢的iOS开发，终于有时间好好地去理解了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 程序人生 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 总结 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>这充实的岁月，正是奋斗的最好年华 — 2018年总结</title>
+      <link href="/2018/12/30/2018_summary/"/>
+      <url>/2018/12/30/2018_summary/</url>
+      
+        <content type="html"><![CDATA[<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>梦想着远方，哪怕它遥远而一无所有，做一个向着光奔跑的程序员。</p><h1 id="生活"><a href="#生活" class="headerlink" title="生活"></a>生活</h1><h2 id="游戏"><a href="#游戏" class="headerlink" title="游戏"></a>游戏</h2><p>大一下的时候，那时候喜欢上了玩吃鸡，很多很多次都借着别人的电脑玩吃鸡，五一那几天假期，和室友在寝室里面，不分白天黑夜的玩，还立下不吃鸡不睡觉的flag。过了五一假期，整个人都精神涣散，后来慢慢调整，慢慢淡出游戏，之后就没有借电脑玩游戏了。<br>大一期末考完高数，分了班，换了寝室，从爬6楼到只要爬4楼了。也换了室友，室友是自己选的（这个自由选择室友的分寝室方法真的很不错），志同道合的我们四个湖南人走到了一起。</p><h2 id="晚睡与早起"><a href="#晚睡与早起" class="headerlink" title="晚睡与早起"></a>晚睡与早起</h2><p>记得之前高中的时候晚上11点了，觉得已经很晚了。然后到了大学，经常性的12点甚至12点之后才睡。有些时候是玩手机到12点，有些时候是写代码到凌晨，有些时候是寝室交流到12点，不管是哪种，熬夜伤身体，不好。<br>关于早起，记得大一入党积极分子交谈的时候，很有底气的说：大学从来没有晚于7点30起来，到了大二下学期12月份，没课了，经常性的8-9点起来，甚至10-11点才起来。</p><h2 id="篮球与健身"><a href="#篮球与健身" class="headerlink" title="篮球与健身"></a>篮球与健身</h2><p>不知道从高一还是初三那一年开始，我喜欢上了科比，喜欢上了篮球，在高中三年，只要有空闲时间总会拿着球，喊着其他人一起去打球，似乎慢慢的这种爱好变成了一种习惯。但是到了大学，时间变多了，打球的次数却变少了，由于学习或者打球场地较远，或者时间不够，打球的次数也渐渐变少了。不过当自己拿起球的时候，那种感觉还是依然存在。<br>来大学前就想着，要把自己全身多余的肉炼成肌肉，在大二开始跑了35km之后，就去报了健身房，连续去了两次之后，跟很多人一样，就没去健身了。</p><h2 id="朋友圈与娱乐"><a href="#朋友圈与娱乐" class="headerlink" title="朋友圈与娱乐"></a>朋友圈与娱乐</h2><p>有一句是：你在青春热血的年纪，拿着手机，刷着微博，看着新闻，做着我八十岁能做的事，你要青春干什么。诚然，这句话反应了很多年轻人的现状，反思自己，不经常做这些事，看抖音也是看一些学习或者提升自己的短视频，在自己学习类了的时候，偶尔会拿出来做做八十岁能做的事。</p><h1 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h1><h2 id="iOS开发"><a href="#iOS开发" class="headerlink" title="iOS开发"></a>iOS开发</h2><p>从小白终于到了入门阶段了，如果当初学长要我入门学的是OC语言，不是swift的话，可能会快一点，查了很多swift的资料，查出来很多很多OC的，前期不知道怎么办，进度慢。<br>目前能够自己解决掉大部分开发中遇到的问题，学会了如何解决问题，同时也在用swift重写工大助手，已经写了约70%的功能了，能够看懂OC代码了。<br>大一暑假 当初去写老来宝app的时候，由于要搬到江西去写，之后由于一些特殊情况就放弃了，其实不应该放弃的，这让队友一个人在写，导致最后没有写出来而没有拿到钱，我在那里可能也写不出，但是不应该放弃队友。</p><h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>大一下学期，报了蓝桥杯，在3月开学的第一个月里，自己在慢慢的摸索学习算法，蓝桥杯只拿了省三，不过对于初次比赛的我，很开心，那个时候以及知足了。由于三月分的算法学习，导致了4月1号打完蓝桥杯，4月份一整月都没做什么事，都在玩。<br>到了年底，期间把时间花在了iOS上面，水平还是不够，只会基本的dp 搜索等基础题目。</p><h2 id="数学与英语"><a href="#数学与英语" class="headerlink" title="数学与英语"></a>数学与英语</h2><p>本想着大一参加数学竞赛的，却无奈时间不够用， 没有准备数竞。英语四级是一个做的不好的地方，裸考了第一次 397分，到了12月份的这次，感觉又很悬了。</p><h2 id="大学课程成绩"><a href="#大学课程成绩" class="headerlink" title="大学课程成绩"></a>大学课程成绩</h2><p>大一一年绩点3.7，班级排名第一，年级好像是12名。一等奖学金。对于一个喜欢代码，不喜欢其他课程的程序员来讲，平均85+ 也有点难度。</p><h1 id="能力"><a href="#能力" class="headerlink" title="能力"></a>能力</h1><p>记得大一来的时候，去面试学习部，被刷了，当时很郁闷。后来反思，自己能力不足，有问题。经过这一年多的努力，担任班上学习委员，18级新生小班助。能力有所提高。学习部应该会收我了！！！</p><h1 id="感悟"><a href="#感悟" class="headerlink" title="感悟"></a>感悟</h1><p>在大学，作为学计算机的程序员，应该耐得住寂寞，心应该静下来。如果学计算机的不能够静心的话，那应该在这一领域上走不远。</p><h1 id="总结与展望2019"><a href="#总结与展望2019" class="headerlink" title="总结与展望2019"></a>总结与展望2019</h1><p>2018这一年，走过许多坎坎坷坷，让自己明白：什么事情都要全力以赴，不要管结果怎么样，尽力了，不后悔就是最好的。2018 这年已经过去了，已经翻篇了，人生很重要的2019 和2020 就要来了，希望接下来的两年： 我自己所做的，都是因为自己想做，自己喜欢。那些不足的地方，自己应该好好改进。希望能在大二结束的时候拿到实习offer。加油吧！2019！！！ 热爱生活，专注能力提升，追逐自己心中那份光！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 程序人生 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 总结 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>getchar()用法</title>
+      <link href="/2018/12/05/getchar/"/>
+      <url>/2018/12/05/getchar/</url>
+      
+        <content type="html"><![CDATA[<h1 id="c语言getchar-字符串题坑-的用法："><a href="#c语言getchar-字符串题坑-的用法：" class="headerlink" title="c语言getchar(字符串题坑)的用法："></a>c语言getchar(字符串题坑)的用法：</h1><p>1.从缓冲区读走一个字符，相当于清除缓冲区</p><p>2.前面的scanf()在读取输入时会在缓冲区中留下一个字符’\n’（输入完s[i]的值后按回车键所致），所以如果不在此加一个getchar()把这个回车符取走的话，gets(）就不会等待从键盘键入字符，而是会直接取走这个“无用的”回车符，从而导致读取有误</p><p>3.getchar()是在输入缓冲区顺序读入一个字符(包括空格、回车和Tab)<br>getchar()使用不方便,解决方法：<br>（1）使用下面的语句清除回车：<br>while(getchar()!=’\n’);<br>（2）用getche()或getch()代替getchar()，其作用是从键盘读入一个字符（不用按回车），注意要<br>包含头文件&lt;conio.h&gt;</p><p>4.PS：看的其他人，讲的很好，就搬了过来<br>getchar()是stdio.h中的库函数，它的作用是从stdin流中读入一个字符，也就是说，如果stdin有数<br>据的话不用输入它就可以直接读取了，第一次getchar()时，确实需要人工的输入，但是如果你输了多<br>个字符，以后的getchar()再执行时就会直接从缓冲区中读取了。<br>实际上是 输入设备-&gt;内存缓冲区-&gt;程序getchar<br>你按的键是放进缓冲区了,然后供程序getchar<br>你有没有试过按住很多键然后等一会儿会滴滴滴滴响,就是缓冲区满了,你后头按的键没有存进缓冲区.键盘输入的字符都存到缓冲区内,一旦键入回车,getchar就进入缓冲区读取字符,一次只返回第一个字符作为getchar函数的值,如果有循环或足够多的getchar语句,就会依次读出缓冲区内的所有字符直到’\n’.要理解这一点,之所以你输入的一系列字符被依次读出来,是因为循环的作用使得反复利用getchar在缓冲区里读取字符,而不是getchar可以读取多个字符,事实上getchar每次只能读取一个字符.如果需要取消’\n’的影响,可以用getchar();来清除,这里getchar();只是取得了’\n’但是并没有赋给任何字符变量,所以不会有影响,相当于清除了这个字符.还要注意的是这里你在键盘上输入ssss看到的回显正是来自于getchar的作用,如果用getch就看不到你输入了什么.<br>综上所述：回车键顶替了输入字符的第一个字符，如果不添加getchar()；就会输出错误。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 编程语言 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> C语言 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于刷题入门（冒泡、选择排序）总结</title>
+      <link href="/2018/12/05/acm_4/"/>
+      <url>/2018/12/05/acm_4/</url>
+      
+        <content type="html"><![CDATA[<h3 id="简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。"><a href="#简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。" class="headerlink" title="简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。"></a>简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。</h3><h3 id="冒泡排序："><a href="#冒泡排序：" class="headerlink" title="冒泡排序："></a>冒泡排序：</h3><p>冒泡排序：顾名思义就是 小的数往上面冒，大的数往下沉（升序）。当然也可以反过来进行（降序）。</p><p>冒泡排序是常用的一种排序方法，其基本方法就是逐次比较。即一次比较两个数，若它们的顺序错误，则它们交换；重复进行，直到没有需要交换为止。</p><p>以升序为例：</p><p>            1、比较相邻数字的大小，若第一个数比第二个数大，则相互交换；<br>           <br>            2、对每一对相邻的数作相同的工作，那么最后的数应该是最大的数；<br>           <br>            3、针对所有数（除了最后一个）重复上述步骤，直到没有任何一对数字需要比较为止。<br>           <br>            需要注意的是，第3条中所谓的“最后一个”是指前几步中已经处理过的最大的数，而不是整个数列的最后一个数<br>           <br>            例如，将下列数列用冒泡排序法从小到大重新排列;<br>           <br>                                  48 37 64 96 75 12 26 48<br>                                 <br>                                           每次排序后数列的变化如下：<br>                                           <br>                                                    第一次排序：37 48 64 75 12 26 48 96   第一次排序之后 最大的已经到了最后面（最下面）<br>                                                    <br>                                                             第二次排序：37 48 64 12 26 48 75 96  第二次排序之后，第二大的到了倒数第二个位置 （往下也是这样）<br>                                                             <br>                                                                      第三次排序：37 48 12 26 48 64 75 96 ……<br>                                                                      <br>                                                                               第四次排序：37 12 26 48 48 64 75 96 ……<br>                                                                               <br>                                                                                                    :<br>                                                                                                    <br>                                                                                                                         :<br>                                                                                                                        <br>                                                                                                                                              :<br>                                                                                                                                             <br>                                                                                                                                                        经过一系列过程，最终数列次序为：12 26 37 48 48 64 75 96.<br>                                                                                                                                                       <br>                                                                                                                                                        冒泡排序原理弄清之后，接下来就是代码实现了：<br>                                                                                                                                                       <br>                                                                                                                                                        <pre class="line-numbers language-none"><code class="language-none">                                                                                                                                                        &#x2F;&#x2F;冒泡排序                                                                                                                                                        &#x2F;&#x2F;设数组a 有n个元素                                                                                                                                                        int t;                                                                                                                                                        for(i&#x3D;0;i&lt;n-1;i++)&#x2F;&#x2F;n个数的数列总共扫描n-1次                                                                                                                                                        &#123;                                                                                                                                                        for(j&#x3D;0;j&lt;n-i-1;j++)&#x2F;&#x2F;每一趟扫描到a[n-i-2]与a[n-i-1]比较为止结束                                                                                                                                                        &#123;                                                                                                                                                        if(a[j]&gt;a[j+1])&#x2F;&#x2F;后一位数比前一位数小的话，就交换两个数的位置（升序）                                                                                                                                                        &#123;                                                                                                                                                        t&#x3D;a[j+1];                                                                                                                                                        a[j+1]&#x3D;a[j];                                                                                                                                                        a[j]&#x3D;t;                                                                                                                                                        &#125;                                                                                                                                                        &#125;                                                                                                                                                        &#125;                                                                                                                                                        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><br>                                                                                                                                                       <br>                                                                                                                                                        <img src="https://upload-images.jianshu.io/upload_images/13179799-d120a1423224aac0.gif?imageMogr2/auto-orient/strip"><br>                                                                                                                                                       <br>                                                                                                                                                        ### 选择排序：<br>                                                                                                                                                       <br>                                                                                                                                                        选择法排序是相对好理解的排序算法。假设要对含有n个数的序列进行升序排列，算法步骤是：<br>                                                                                                                                                       <br>                                                                                                                                                           1、从数组存放的n个数中找出最小数的下标（算法见下面的“求最值”），然后将最小数与第1个数交换位置；<br>                                                                                                                                                           <br>                                                                                                                                                              2、除第1个数以外，再从其余n-1个数中找出最小数（即n个数中的次小数）的下标，将此数与第2个数交换位置；<br>                                                                                                                                                              <br>                                                                                                                                                                 3、重复步骤1  n-1趟，即可完成所求。<br>                                                                                                                                                                 <br>                                                                                                                                                                 <pre class="line-numbers language-none"><code class="language-none">                                                                                                                                                                 &#x2F;&#x2F;选择排序                                                                                                                                                                 &#x2F;&#x2F;设数组a 为待排序数组                                                                                                                                                                 int k,i,j;                                                                                                                                                                 for(i&#x3D;0;i&lt;n-1;i++)         &#x2F;*处理n-1趟*&#x2F;                                                                                                                                                                 &#123;                                                                                                                                                                 k &#x3D; i;      &#x2F;*总是假设此趟处理的第一个（即全部数的第i个）数最小，k记录其下标*&#x2F;                                                                                                                                                                 for(j&#x3D;i+1;j&lt;n;j++)                                                                                                                                                                 &#123;                                                                                                                                                                 if(a[j] &lt; a[k])                                                                                                                                                                 k &#x3D; j;                                                                                                                                                                  &#125;                                                                                                                                                                 if (k !&#x3D; i)                                                                                                                                                                 &#123;                                                                                                                                                                  t &#x3D; a[i];                                                                                                                                                                  a[i] &#x3D; a[k];                                                                                                                                                                  a[k] &#x3D; t;                                                                                                                                                                  &#125;                                                                                                                                                                 &#125; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><br>                                                                                                                                                                 <br>                                                                                                                                                                 <img src="https://upload-images.jianshu.io/upload_images/13179799-d114702e2a48e4cb.gif?imageMogr2/auto-orient/strip"><br>                                                                                                                                                                 <br>                                                                                                                                                                 本文详细举例讲了冒泡排序，在刷题前期中 会冒泡排序了，基本上就很少用到选择排序，所以对于选择排序没有详细讲解。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 刷题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于刷题入门(时间和空间复杂度)的总结</title>
+      <link href="/2018/12/05/acm_3/"/>
+      <url>/2018/12/05/acm_3/</url>
+      
+        <content type="html"><![CDATA[<h2 id="时间和空间复杂度"><a href="#时间和空间复杂度" class="headerlink" title="时间和空间复杂度"></a>时间和空间复杂度</h2><p>在刷题过程中会遇到一些超时的现象，这就说明你的算法不符合题目要求的运行时间，称为超时。</p><p>时间复杂度：目前通俗来讲就是程序在完成后台测试数据（每组数据对应一个时间，所有时间都符合才可以）要花的时间，如果这个时间超过题目要求的时间（通常是1000ms）就会超时。它的具体定义以及公式计算等等会在数据结构这本书上出现。</p><p>空间复杂度：通俗来讲就是程序所占的内存。刷题中，这种情况很少出现这个超出限制。</p><h3 id="Time-Limited-Exceed（超时）"><a href="#Time-Limited-Exceed（超时）" class="headerlink" title="Time Limited Exceed（超时）"></a>Time Limited Exceed（超时）</h3><p>简称TLE。通常需要进行算法优化来降低时间复杂度，加快代码运行的时间。 <br>常见的TLE有以下几种情况：</p><p>1、程序中出现无法终止的死循环<br>2、读取输入流和输出流的时间太长。（C++的输入输出中，cin和cout没有scanf和printf快，不要问我是怎么知道的，我都已经在输入输出上载过无数跟头了….建议同学们养成用scanf和printf的好习惯）<br>3、时间复杂度大，常常是多层循环或者深递归导致。建议大家能不用循环的时候，就不用循环，因为循环费时。</p><p>如何判断自己的程序是否会超时：  首先看题目数据的大小， 会给一个数据范围，比如0&lt;N &lt;1000， 接下来看你的程序的代码的语句一共运行多少次， 基本上就是看 循环的层数（一般是看有多少个for嵌套或者while）。N为上面那个范围，要考虑极限数据 就是 N = 1000的情况， 三个for嵌套 就是 1000的三次方 等于10亿 对于这个数量级程序就会超时。 程序执行语句次数一般控制在10^7 到10^8以下 就不会超时，这个是因为计算机每秒可以运行大概10^8条语句。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 刷题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于刷题入门(简单题操作)的总结</title>
+      <link href="/2018/12/05/acm_2/"/>
+      <url>/2018/12/05/acm_2/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Cone-总结"><a href="#Cone-总结" class="headerlink" title="Cone 总结"></a>Cone 总结</h2><p>一、判断一个数的奇偶性</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 判断奇偶性 只需要对2取模即可，模为1位奇数，反之为偶int a;if(a%2&#x3D;&#x3D;1)&#123;printf(&quot;a为奇数&quot;)；&#125;else&#123;printf(&quot;a为偶数&quot;);&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-c4bfc98579f31a15.gif?imageMogr2/auto-orient/strip"> </p><p>二、判断闰年</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;1、能整除4且不能整除100  2、能整除400 二者成立一个即可int y;if((y%400&#x3D;&#x3D;0)||(y%4&#x3D;&#x3D;0&amp;&amp;y%100!&#x3D;0))&#123;printf(&quot;这年为闰年&quot;);&#125;else&#123;printf(&quot;这年为平年&quot;)；&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-a80c3adb3d79fe6a.gif?imageMogr2/auto-orient/strip"> </p><p>三、判断三边是否能够构成一个三角形</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;在已知三边都大于0的情况下 任意两边之和大于第三边即可int a,b,c;if((a+b&gt;c)&amp;&amp;(a+c&gt;b)&amp;&amp;(c+b&gt;a))&#123;printf(&quot;a,b,c三边可以构成三角形&quot;);&#125;else&#123;printf(&quot;a,b,c三边无法构成三角形&quot;);&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-15544cad285d0b89.gif?imageMogr2/auto-orient/strip"> </p><p>四、关于三个数比较大小并排序</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 利用if判断是否需要交换值 int a,b,c,t;if(a&gt;b) &#x2F;&#x2F;保证a&lt;&#x3D;b&#123;t&#x3D;a;a&#x3D;b;b&#x3D;t;&#125;if(a&gt;c) &#x2F;&#x2F;保证a&lt;&#x3D;c，这样，a就最小了&#123;t&#x3D;a;a&#x3D;c;c&#x3D;t;&#125;if(b&gt;c) &#x2F;&#x2F;对比a大的两个字符，保证b&lt;&#x3D;c&#123;t&#x3D;b;b&#x3D;c;c&#x3D;t;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-07ec189cf94148b5.gif?imageMogr2/auto-orient/strip"> </p><p>五、关于求一个数中各个位数上的数字算法：</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;这里以三位数为例int i; &#x2F;&#x2F; i 为三位数a&#x3D;i&#x2F;100;b&#x3D;(i-a*100)&#x2F;10;c&#x3D;i%10;&#x2F;&#x2F; a为百位上的数 b为十位上的数 c为个位上的数；&#x2F;&#x2F;例如 i&#x3D;123  a&#x3D;1 b&#x3D;2 c&#x3D;3; 看懂运算符 &#x2F; 的用法就很好掌握这个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-775044f577b7ea88.gif?imageMogr2/auto-orient/strip"> </p><h3 id="关于简单数学知识的总结："><a href="#关于简单数学知识的总结：" class="headerlink" title="关于简单数学知识的总结："></a>关于简单数学知识的总结：</h3><p>一、两点间的距离公式</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 初中知识，就不解释了 坐标（x1,y1）(x2,y2)double x1,y1,x2,y2;double d &#x3D; 0;d &#x3D; sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));&#x2F;&#x2F;d 为距离<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-49cdff256108af12.gif?imageMogr2/auto-orient/strip" alt="image.gif"> </p><p>二、球的体积公式</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 好像也是初中知识，设P &#x3D; π ;double V,r;V&#x3D;4*P*(r*r*r)&#x2F;3;&#x2F;&#x2F;V为体积<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-129e92ca80453544.gif?imageMogr2/auto-orient/strip"> </p><p>三、数列求和公式</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;此处为等差数列求和 一 1，2，3，4，5 ………… t 为例int sum&#x3D;0;int t,n:if(t%2&#x3D;&#x3D;0)&#123;n&#x3D;t&#x2F;2;t&#x3D;t+1;&#125;else&#123;n&#x3D;(t+1)&#x2F;2;&#125;sum &#x3D; t*n;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p><img src="https://upload-images.jianshu.io/upload_images/13179799-b9f7d2966d335c27.gif?imageMogr2/auto-orient/strip"> </p><h3 id="最后一些小坑坑洼洼的总结："><a href="#最后一些小坑坑洼洼的总结：" class="headerlink" title="最后一些小坑坑洼洼的总结："></a>最后一些小坑坑洼洼的总结：</h3><p>1、要看清楚题目，题目给出的数是整数还是浮点数。</p><p>2、如果题目给出一个范围区间的两个数m,n，题目没有说明m&lt;n 或者n&lt;m，就需要判断m，n的大小关系。</p><p>3、小数点的保留要注意。（%.alf）a 为要保留的位数小数点 例如%.2lf 保留两位小数。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 刷题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于输入、输出的总结</title>
+      <link href="/2018/12/05/acm_1/"/>
+      <url>/2018/12/05/acm_1/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Cone"><a href="#Cone" class="headerlink" title="Cone"></a>Cone</h1><p>写博客是一个输出的过程，对于自己学习的一个总结，从这篇博客开始，以后坚持写博客，把踩过的坑以及总结记录下来，以后自己还可以慢慢看 回忆大学四年学习历程。</p><p>总结一下踩过的坑：第一次开始接触杭电1000题，C语言语法才掌握小部分，就开始刷题，1000题错了20多次，最后还是百度到的多组输入数据才过。</p><p>对于读题：那时候以为题目中的 A B N这种字母， 我的程序变量就要定义为A B N这种，这个显然是错的，变量是随便自己定义的。定义为 a,b都可以 例如 杭电1000题 定义为 int a,b; 然后使用a,b都可以。</p><p>对于输入和输出： 输入时要从键盘输入，输出通俗就打印结果在运行窗口上面，每输入一组数据 就打印一组结果，输入输出刚开始看也一知半解的。</p><p>Sample Input</p><pre class="line-numbers language-none"><code class="language-none">1 510 20<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>Sample Output</p><pre class="line-numbers language-none"><code class="language-none">630<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>例如这种，先输入1 和 5 在打印6 然后输入10 20 在打印30 。<br>对于AC：oj系统后台很多测试数据，你的程序要通过全部的测试数据才能AC </p><p>入门：杭电1000 A+B<br>题目： 要求输入多组数据到程序结束。<br>这种多组数据输入需要用到!=EOF 或者~ 这种格式 例如：</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;!&#x3D;EOF 情况int a,b;while(scanf(&quot;%d%d&quot;,&amp;a,&amp;b)!&#x3D;EOF)&#123;&#125;&#x2F;&#x2F; ~ 情况while(~scanf(&quot;%d%d&quot;,&amp;a,&amp;b))&#123;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>两种方法可以达到同一效果。还有其他方法，这里就不列举。掌握这两种情况 对于以后这种多组数据输入题目就可以处理解决。<br>输出：要求每一行输出一个测试数据答案。即加上一个换行符(‘\n’)就可以轻松解决</p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;假设sum 为输出结果printf(&quot;%d\n&quot;,sum);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><h1 id="输入情形"><a href="#输入情形" class="headerlink" title="输入情形"></a>输入情形</h1><h3 id="一、要求输入N组测试数据-："><a href="#一、要求输入N组测试数据-：" class="headerlink" title="一、要求输入N组测试数据  ："></a>一、要求输入N组测试数据  ：</h3><p>Input<br>Input contains an integer N in the first line, and then N lines follow. Each line consists of a pair of integers a and b, separated by a space, one pair of integers per line. </p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 这种情况 要用到循环， 我用的是while 这种循环int N;while(N--)&#123;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h3 id="二、要求输入数据到为0结束："><a href="#二、要求输入数据到为0结束：" class="headerlink" title="二、要求输入数据到为0结束："></a>二、要求输入数据到为0结束：</h3><p>Input<br>Input contains multiple test cases. Each test case contains a pair of integers a and b, one pair of integers per line. A test case containing 0 0 terminates the input and this test case is not to be processed. </p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;这种为0的情况处理，我用的跳出循环语句：breakint a,b;while(~scanf(&quot;%d%d&quot;,&amp;a,&amp;b))&#123;if(a &#x3D;&#x3D; 0 &amp;&amp; b &#x3D;&#x3D; 0)&#123;break;   &#125;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这是两个数为0的情况， 一个数为0的情况 去掉一个 b == 0 即可，多个数据为0 也是同样处理 </p><h3 id="三、要求输入多组数据，输出结果中一空行隔开："><a href="#三、要求输入多组数据，输出结果中一空行隔开：" class="headerlink" title="三、要求输入多组数据，输出结果中一空行隔开："></a>三、要求输入多组数据，输出结果中一空行隔开：</h3><p>Input<br>The input will consist of a series of pairs of integers a and b, separated by a space, one pair of integers per line.<br>Output<br>For each pair of input integers a and b you should output the sum of a and b, and followed by a blank line. </p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 多加一个\n即可解决&#x2F;&#x2F;假设sum为输出结果printf(&quot;%d\n\n&quot;,sum);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><h3 id="四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行"><a href="#四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行" class="headerlink" title="四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行"></a>四、要求输入N组数据，每个输出结果之间以空行隔开。注意是输出结果之间，最后一组数据不要空行</h3><p>Input<br>Input contains an integer N in the first line, and then N lines follow. Each line starts with a integer M, and then M integers follow in the same line. </p><p>Output<br>For each group of input integers you should output their sum in one line, and you must note that there is a blank line between outputs. </p><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;采用if判断int t;scanf(&quot;%d&quot;,&amp;t);while(t--)&#123;if(t!&#x3D;0)   &#123;printf(&quot;\n&quot;);&#125;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h2 id="最后oj系统的提交结果出现的情况："><a href="#最后oj系统的提交结果出现的情况：" class="headerlink" title="最后oj系统的提交结果出现的情况："></a>最后oj系统的提交结果出现的情况：</h2><h3 id="Accepted-正确"><a href="#Accepted-正确" class="headerlink" title="Accepted (正确)"></a>Accepted (正确)</h3><p>当你在某一ACM在线测评系统上提交了你的代码后，如果你得到了一个Accepted，简称AC，恭喜你，通过了这道题，你的代码是正确的。除了Accepted之外的所有结果，都是不符合要求的。</p><h3 id="Compile-Error（编译错误）"><a href="#Compile-Error（编译错误）" class="headerlink" title="Compile Error（编译错误）"></a>Compile Error（编译错误）</h3><p>简称CE。通常是指语法错误，这是最最简单的错误了，因为你完全可以在提交之前，在本地的编译器上测试出来，然后改正。</p><h3 id="Wrong-Answer（错误）"><a href="#Wrong-Answer（错误）" class="headerlink" title="Wrong Answer（错误）"></a>Wrong Answer（错误）</h3><p>简称WA。很多ACM新手们，在千辛万苦写好一份代码并且自认为是正确的，但是提交之后却得到了Wrong Answer的结果，他们百思不得其解，其实，OJ的后台有很多组测试数据，就算你的代码可以通过样例，但并不代表可以通过后台的所有数据，只要你有一组数据输出与测试输出不一样，你就无法AC。所以建议同学们，可以自己脑补一些特殊数据，看看是否能够得到正确的结果。除此之外，还要再次认真读题，很多时候Wrong Answer都是因为没有正确理解题目的意思。</p><h3 id="Presentation-Error-格式错误"><a href="#Presentation-Error-格式错误" class="headerlink" title="Presentation Error(格式错误)"></a>Presentation Error(格式错误)</h3><p>简称PE。这种错误还是比较容易发现并改正的，通常产生的原因是由于你的代码输出的格式与题目要求的不一致。 </p><p>常见的PE有以下几种：<br>1、大小写错误<br>2、行末不应该有空格<br>3、分号 冒号 逗号等中英文标点符号傻傻分不清<br>4、换行和空格乱用</p><h3 id="Time-Limited-Exceed（超时）"><a href="#Time-Limited-Exceed（超时）" class="headerlink" title="Time Limited Exceed（超时）"></a>Time Limited Exceed（超时）</h3><p>简称TLE。通常需要进行算法优化来降低时间复杂度，加快代码运行的时间。<br>常见的TLE有以下几种情况：<br>1、程序中出现无法终止的死循环<br>2、读取输入流和输出流的时间太长。（C++的输入输出中，cin和cout没有scanf和printf快，不要问我是怎么知道的，我都已经在输入输出上载过无数跟头了….建议同学们养成用scanf和printf的好习惯）<br>3、时间复杂度大，常常是多层循环或者深递归导致。建议大家能不用循环的时候，就不用循环，因为循环费时。</p><h3 id="Runtime-Error（运行错误）"><a href="#Runtime-Error（运行错误）" class="headerlink" title="Runtime Error（运行错误）"></a>Runtime Error（运行错误）</h3><p>简称RE。这种错误也是好避免的。<br>常见的RE有以下几种：<br>1、数组开得太小了，导致访问到了不该访问的内存区域<br>2、发生除零错误<br>3、大数组定义在函数内，导致程序栈区耗尽<br>4、指针用错了，导致访问到不该访问的内存区域<br>5、程序抛出了未接受的异常</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 刷题 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mac系统 利用github+hexo 搭建自己的Blog</title>
+      <link href="/2018/12/04/FirstBlog/"/>
+      <url>/2018/12/04/FirstBlog/</url>
+      
+        <content type="html"><![CDATA[<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><h2 id="1-Git"><a href="#1-Git" class="headerlink" title="1.Git"></a>1.Git</h2><p>用来将本地Hexo内容提交到Github上。Xcode自带Git。</p><h2 id="2-Node-js"><a href="#2-Node-js" class="headerlink" title="2.Node.js"></a>2.Node.js</h2><p>用来生成静态页面。<a href="https://nodejs.org/en/download/">Node.js官网</a>。 下载下图红色箭头所指向的文件！<img src="https://upload-images.jianshu.io/upload_images/13179799-2bf72161dcd8dfe7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"><br><img src="https://upload-images.jianshu.io/upload_images/13179799-ebbfca5e3b697d2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"> 最后一路按照即可！</p><h1 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h1><p>打开终端执行以下命令</p><blockquote><p>$ sudo npm install -g hexo  </p></blockquote><p>执行该命令后hexo即安装完成</p><h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>在桌面创建一个名为hexo的文件夹 然后终端进入到该文件夹执行如下命令：</p><blockquote><p>$ hexo init</p></blockquote><p>然后执行如下命令打开hexo 服务器</p><blockquote><p>$ hexo s</p></blockquote><p>打开<a href="http://localhost:4000/">http://localhost:4000</a> , 能看到如下界面 <img src="https://upload-images.jianshu.io/upload_images/13179799-e814287874919b62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"></p><p>本地搭建完成，下面关联Github</p><h1 id="关联Github"><a href="#关联Github" class="headerlink" title="关联Github"></a>关联Github</h1><h2 id="1-登录Github"><a href="#1-登录Github" class="headerlink" title="1.登录Github"></a>1.登录Github</h2><p>登陆你的GitHub，新建仓库，名为用户名.github.io固定写法。如下图所示：<img src="https://upload-images.jianshu.io/upload_images/13179799-2a63e9ea44cd6d28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"><br>本地内容如下:<img src="https://upload-images.jianshu.io/upload_images/13179799-457d98575321f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"><br> 终端cd到本地 hexo 文件夹下，打开文件夹下 _config.yml 文件，终端输入命令：</p><blockquote><p>$ vim _config.yml</p></blockquote><p>打开之后往下滑到最后修改成如下样子：<img src="https://upload-images.jianshu.io/upload_images/13179799-86b622bab7259975.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"><br>把红框内容改成自己的github用户名即可</p><p>接下来执行如下命令： </p><blockquote><p>$ hexo g </p></blockquote><p>若出现找不到博客错误则执行:</p><blockquote><p>$ npm install hexo –save</p></blockquote><p>在执行如下命令</p><blockquote><p>$ hexo d</p></blockquote><p>若出现无法连接git或找不到git，则执行如下命令来安装：</p><blockquote><p> $ npm install hexo-deployer-git –save  </p></blockquote><p>若你未关联Github，则执行hexo deploy命令时终端会提示你输入Github的用户名和密码，即</p><blockquote><p>Username for ‘<a href="https://github.com&/#39;">https://github.com&#39;</a>:<br>  Password for ‘<a href="https://github.com&/#39;">https://github.com&#39;</a>:</p></blockquote><p>hexo d 命令成功后 打开：<a href="http://zhangchione.github.io/">http://zhangchione.github.io</a> 将zhangchione改成你的 用户名即可。和之前打开的一样。</p><p>本地和git关联成功 </p><h2 id="属于自己的博客搭建成功！！"><a href="#属于自己的博客搭建成功！！" class="headerlink" title="属于自己的博客搭建成功！！"></a>属于自己的博客搭建成功！！</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> 网页搭建 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 博客 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2018/06/22/hello-world/"/>
+      <url>/2018/06/22/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 博客 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>

@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Cone的编程小屋</title>
+  <icon>https://www.gravatar.com/avatar/378e1c88ff6a10d6cae0393dbd63eb58</icon>
+  <subtitle>Cone的编程小屋</subtitle>
+  <link href="https://www.zhangchione.com/atom.xml" rel="self"/>
+  
+  <link href="https://www.zhangchione.com/"/>
+  <updated>2021-11-27T02:40:15.849Z</updated>
+  <id>https://www.zhangchione.com/</id>
+  
+  <author>
+    <name>Cone</name>
+    <email>1525163730@qq.com</email>
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>深入浅出CPU的两种工作模式</title>
+    <link href="https://www.zhangchione.com/2021/11/11/cpu-work-model/"/>
+    <id>https://www.zhangchione.com/2021/11/11/cpu-work-model/</id>
+    <published>2021-11-11T02:27:46.000Z</published>
+    <updated>2021-11-27T02:40:15.849Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;上期文章 是关于Linux启动的，在启动的时候会切换CPU模式，从实模式到保护模式，有小伙伴咨询到我说想详细了解下这两种模式。&lt;/p&gt;
+&lt;p&gt;那么，本期来跟你们唠嗑一下CPU工作模式，一起彻底理解CPU工作模式。&lt;/p&gt;
+&lt;h1 id=&quot;前置知识&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="Liunx" scheme="https://www.zhangchione.com/categories/Liunx/"/>
+    
+    
+    <category term="启动" scheme="https://www.zhangchione.com/tags/%E5%90%AF%E5%8A%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于Liunx启动，你想知道的全都在这!</title>
+    <link href="https://www.zhangchione.com/2021/11/10/LiunxStart/"/>
+    <id>https://www.zhangchione.com/2021/11/10/LiunxStart/</id>
+    <published>2021-11-10T01:20:52.000Z</published>
+    <updated>2021-11-27T02:41:49.844Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Liunx是我们日常学习工作中，打交道最多的一个系统，似乎我们很少关注它的启动初始化，那么本文就带你捋一捋Liunx启动初始化那些事。&lt;/p&gt;
+&lt;p&gt;全文结构大致如下：首先会讲解一些基础知识，这为你阅读本文减小一些压力，然后会从整体启动流程上带你简要梳理一遍Liunx启动，</summary>
+        
+      
+    
+    
+    
+    <category term="Liunx" scheme="https://www.zhangchione.com/categories/Liunx/"/>
+    
+    
+    <category term="启动" scheme="https://www.zhangchione.com/tags/%E5%90%AF%E5%8A%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>保持页面滑动流畅性的一次工程实践</title>
+    <link href="https://www.zhangchione.com/2020/03/30/iOS_UI_fps/"/>
+    <id>https://www.zhangchione.com/2020/03/30/iOS_UI_fps/</id>
+    <published>2020-03-30T07:47:31.000Z</published>
+    <updated>2021-11-27T02:31:34.777Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;最近在做自己的独立App的时候又出现到了UItableView的滑动流畅性问题，于是这一次想彻底的解决这一问题，并总结解决方法，待以后工作开发中可以快速复用，提高效率。&lt;br&gt; 界面滑动流畅一般是指系统会在一秒钟之内刷新60次界面，也就是60FPS（Frames Per</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="性能优化" scheme="https://www.zhangchione.com/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2019年小结——余生，请不留余力地学习。</title>
+    <link href="https://www.zhangchione.com/2019/12/30/2019_summary/"/>
+    <id>https://www.zhangchione.com/2019/12/30/2019_summary/</id>
+    <published>2019-12-30T02:47:31.000Z</published>
+    <updated>2021-11-27T01:32:04.041Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt; 不知道从什么时候开始，喜欢上了一些东西，现在也想紧紧地拥抱这些自己喜欢的东西，可似乎又有一些东西是触不可及了。2019这一年，经历了很多事情，让我一步步成长。如果有人问我2019你最大的收获是什么，我想我会毫不犹豫地回答：余生，请不留余力地学习。&lt;br&gt;</summary>
+        
+      
+    
+    
+    
+    <category term="程序人生" scheme="https://www.zhangchione.com/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/"/>
+    
+    
+    <category term="总结" scheme="https://www.zhangchione.com/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 内存管理ARC 以及循环引用思考</title>
+    <link href="https://www.zhangchione.com/2019/11/09/Swift-arc/"/>
+    <id>https://www.zhangchione.com/2019/11/09/Swift-arc/</id>
+    <published>2019-11-09T07:47:31.000Z</published>
+    <updated>2021-11-27T01:33:05.610Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;内存管理是编程时一个不可回避的问题，在Swift中，是自动管理内存的，也就是ARC机制，自动引用计数机制。我们不需要关心内存的申请和分配。&lt;/p&gt;
+&lt;h4 id=&quot;ARC工作机制&quot;&gt;&lt;a href=&quot;#ARC工作机制&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 写时复制机制 以及值类型与引用类型思考</title>
+    <link href="https://www.zhangchione.com/2019/11/09/Swift_cow/"/>
+    <id>https://www.zhangchione.com/2019/11/09/Swift_cow/</id>
+    <published>2019-11-09T05:42:00.000Z</published>
+    <updated>2021-11-27T01:33:00.049Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;记录Swift语言特性–偶遇操作系统Copy on Write&lt;br&gt;今天在学习操作系统fork函数的时候遇到了写时复制，联想起了Swift中也有一个写时复制机制。&lt;/p&gt;
+&lt;h3 id=&quot;Swift-写时复制&quot;&gt;&lt;a href=&quot;#Swift-写时复制&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git 使用总结</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Git_used_summary/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Git_used_summary/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:32:45.289Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;从18年3月份接触iOS开发，使用git到现在快两年时间了，记录一次深入学习Git并总结。&lt;/p&gt;
+&lt;h4 id=&quot;Git&quot;&gt;&lt;a href=&quot;#Git&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="编程效率" scheme="https://www.zhangchione.com/categories/%E7%BC%96%E7%A8%8B%E6%95%88%E7%8E%87/"/>
+    
+    
+    <category term="Git" scheme="https://www.zhangchione.com/tags/Git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 将代码更优雅 —— 枚举</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift-enum/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift-enum/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:33:51.827Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;笔者枚举在swift中真正站起来了，想来聊聊枚举，枚举跟其他类型一样在swift中属于一等类型。它有很多种用法，如果你读过Alamofire的源码，你会发现，枚举在这个库中得到了完美的诠释。&lt;/p&gt;
+&lt;h3 id=&quot;enum的用法：&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 官方文档阅读笔记与思考（一）</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift_doc1/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift_doc1/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:33:25.959Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;2019年12月20号，通过了字节跳动的iOS开发实习面试，二面面试官给我提了一个建议：把Swift经典著作再通读几遍，每一次都会有不同的收获，于是我想开始这个计划吧。&lt;/p&gt;
+&lt;h4 id=&quot;常量和变量&quot;&gt;&lt;a href=&quot;#常量和变量&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习笔记" scheme="https://www.zhangchione.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 将代码更优雅 —— 控制流</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift-control_flow/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift-control_flow/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:33:36.307Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;if-let-可选绑定&quot;&gt;&lt;a href=&quot;#if-let-可选绑定&quot; class=&quot;headerlink&quot; title=&quot;if let 可选绑定&quot;&gt;&lt;/a&gt;if let 可选绑定&lt;/h3&gt;&lt;pre class=&quot;line-numbers</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>谈谈Swift里面的闭包</title>
+    <link href="https://www.zhangchione.com/2019/10/31/swift_block/"/>
+    <id>https://www.zhangchione.com/2019/10/31/swift_block/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:34:42.624Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;闭包是Swift中很重要的一点，也是难点。学习了Swift很久，记录一下对闭包的思考。&lt;/p&gt;
+&lt;h3 id=&quot;理解&quot;&gt;&lt;a href=&quot;#理解&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2019比赛总结</title>
+    <link href="https://www.zhangchione.com/2019/10/30/2019_match_summary/"/>
+    <id>https://www.zhangchione.com/2019/10/30/2019_match_summary/</id>
+    <published>2019-10-30T07:47:31.000Z</published>
+    <updated>2021-11-27T01:32:20.676Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;伴随着移动应用赛的结束，终于可以开始好好沉淀自己的技术了！2019年，因为它，学到了很多东西，很久没有写博客了。想把这一切都记录下来。那就从这篇博客开始吧~&lt;/p&gt;
+&lt;h3 id=&quot;杭州决赛（10-25-27）——-结束&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="程序人生" scheme="https://www.zhangchione.com/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/"/>
+    
+    
+    <category term="总结" scheme="https://www.zhangchione.com/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>这充实的岁月，正是奋斗的最好年华 — 2018年总结</title>
+    <link href="https://www.zhangchione.com/2018/12/30/2018_summary/"/>
+    <id>https://www.zhangchione.com/2018/12/30/2018_summary/</id>
+    <published>2018-12-30T05:43:00.000Z</published>
+    <updated>2021-11-27T01:31:54.158Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;结束语&quot;&gt;&lt;a href=&quot;#结束语&quot; class=&quot;headerlink&quot; title=&quot;结束语&quot;&gt;&lt;/a&gt;结束语&lt;/h1&gt;&lt;p&gt;梦想着远方，哪怕它遥远而一无所有，做一个向着光奔跑的程序员。&lt;/p&gt;
+&lt;h1 id=&quot;生活&quot;&gt;&lt;a href=&quot;#生活&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="程序人生" scheme="https://www.zhangchione.com/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/"/>
+    
+    
+    <category term="总结" scheme="https://www.zhangchione.com/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>getchar()用法</title>
+    <link href="https://www.zhangchione.com/2018/12/05/getchar/"/>
+    <id>https://www.zhangchione.com/2018/12/05/getchar/</id>
+    <published>2018-12-05T05:43:00.000Z</published>
+    <updated>2021-11-27T01:32:32.995Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;c语言getchar-字符串题坑-的用法：&quot;&gt;&lt;a href=&quot;#c语言getchar-字符串题坑-的用法：&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="编程语言" scheme="https://www.zhangchione.com/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"/>
+    
+    
+    <category term="C语言" scheme="https://www.zhangchione.com/tags/C%E8%AF%AD%E8%A8%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于刷题入门（冒泡、选择排序）总结</title>
+    <link href="https://www.zhangchione.com/2018/12/05/acm_4/"/>
+    <id>https://www.zhangchione.com/2018/12/05/acm_4/</id>
+    <published>2018-12-05T03:43:00.000Z</published>
+    <updated>2021-11-27T01:34:34.149Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;简单题刷了一定数量以后，肯定会遇到排序的一些题要进行排序才能解决，排序先从这两种简单的排序掌握，在去接触快速排序和归并排序。&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="刷题" scheme="https://www.zhangchione.com/categories/%E5%88%B7%E9%A2%98/"/>
+    
+    
+    <category term="算法" scheme="https://www.zhangchione.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于刷题入门(时间和空间复杂度)的总结</title>
+    <link href="https://www.zhangchione.com/2018/12/05/acm_3/"/>
+    <id>https://www.zhangchione.com/2018/12/05/acm_3/</id>
+    <published>2018-12-05T02:43:00.000Z</published>
+    <updated>2021-11-27T01:34:26.819Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;时间和空间复杂度&quot;&gt;&lt;a href=&quot;#时间和空间复杂度&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="刷题" scheme="https://www.zhangchione.com/categories/%E5%88%B7%E9%A2%98/"/>
+    
+    
+    <category term="算法" scheme="https://www.zhangchione.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于刷题入门(简单题操作)的总结</title>
+    <link href="https://www.zhangchione.com/2018/12/05/acm_2/"/>
+    <id>https://www.zhangchione.com/2018/12/05/acm_2/</id>
+    <published>2018-12-05T01:43:00.000Z</published>
+    <updated>2021-11-27T01:34:21.775Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Cone-总结&quot;&gt;&lt;a href=&quot;#Cone-总结&quot; class=&quot;headerlink&quot; title=&quot;Cone 总结&quot;&gt;&lt;/a&gt;Cone 总结&lt;/h2&gt;&lt;p&gt;一、判断一个数的奇偶性&lt;/p&gt;
+&lt;pre class=&quot;line-numbers</summary>
+        
+      
+    
+    
+    
+    <category term="刷题" scheme="https://www.zhangchione.com/categories/%E5%88%B7%E9%A2%98/"/>
+    
+    
+    <category term="算法" scheme="https://www.zhangchione.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于输入、输出的总结</title>
+    <link href="https://www.zhangchione.com/2018/12/05/acm_1/"/>
+    <id>https://www.zhangchione.com/2018/12/05/acm_1/</id>
+    <published>2018-12-05T01:41:00.000Z</published>
+    <updated>2021-11-27T01:34:17.074Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;Cone&quot;&gt;&lt;a href=&quot;#Cone&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="刷题" scheme="https://www.zhangchione.com/categories/%E5%88%B7%E9%A2%98/"/>
+    
+    
+    <category term="算法" scheme="https://www.zhangchione.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mac系统 利用github+hexo 搭建自己的Blog</title>
+    <link href="https://www.zhangchione.com/2018/12/04/FirstBlog/"/>
+    <id>https://www.zhangchione.com/2018/12/04/FirstBlog/</id>
+    <published>2018-12-04T07:47:31.000Z</published>
+    <updated>2021-11-26T23:53:48.762Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;环境配置&quot;&gt;&lt;a href=&quot;#环境配置&quot; class=&quot;headerlink&quot; title=&quot;环境配置&quot;&gt;&lt;/a&gt;环境配置&lt;/h1&gt;&lt;h2 id=&quot;1-Git&quot;&gt;&lt;a href=&quot;#1-Git&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="网页搭建" scheme="https://www.zhangchione.com/categories/%E7%BD%91%E9%A1%B5%E6%90%AD%E5%BB%BA/"/>
+    
+    
+    <category term="博客" scheme="https://www.zhangchione.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://www.zhangchione.com/2018/06/22/hello-world/"/>
+    <id>https://www.zhangchione.com/2018/06/22/hello-world/</id>
+    <published>2018-06-22T03:05:30.000Z</published>
+    <updated>2021-11-26T23:59:43.126Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="博客" scheme="https://www.zhangchione.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+  </entry>
+  
+</feed>
