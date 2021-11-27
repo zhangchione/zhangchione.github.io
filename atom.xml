@@ -223,32 +223,6 @@
   </entry>
   
   <entry>
-    <title>Swift 官方文档阅读笔记与思考（一）</title>
-    <link href="https://www.zhangchione.com/2019/10/31/Swift_doc1/"/>
-    <id>https://www.zhangchione.com/2019/10/31/Swift_doc1/</id>
-    <published>2019-10-31T07:47:31.000Z</published>
-    <updated>2021-11-27T01:33:25.959Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;2019年12月20号，通过了字节跳动的iOS开发实习面试，二面面试官给我提了一个建议：把Swift经典著作再通读几遍，每一次都会有不同的收获，于是我想开始这个计划吧。&lt;/p&gt;
-&lt;h4 id=&quot;常量和变量&quot;&gt;&lt;a href=&quot;#常量和变量&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="学习笔记" scheme="https://www.zhangchione.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Swift 将代码更优雅 —— 枚举</title>
     <link href="https://www.zhangchione.com/2019/10/31/Swift-enum/"/>
     <id>https://www.zhangchione.com/2019/10/31/Swift-enum/</id>
@@ -268,6 +242,32 @@
     
     
     <category term="iOS" scheme="https://www.zhangchione.com/categories/iOS/"/>
+    
+    
+    <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 官方文档阅读笔记与思考（一）</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift_doc1/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift_doc1/</id>
+    <published>2019-10-31T07:47:31.000Z</published>
+    <updated>2021-11-27T01:33:25.959Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;2019年12月20号，通过了字节跳动的iOS开发实习面试，二面面试官给我提了一个建议：把Swift经典著作再通读几遍，每一次都会有不同的收获，于是我想开始这个计划吧。&lt;/p&gt;
+&lt;h4 id=&quot;常量和变量&quot;&gt;&lt;a href=&quot;#常量和变量&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="学习笔记" scheme="https://www.zhangchione.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
     <category term="Swift" scheme="https://www.zhangchione.com/tags/Swift/"/>
