@@ -4,9 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Linux启动">
-    <meta name="description" content="Liunx是我们日常学习工作中，打交道最多的一个系统，似乎我们很少关注它的启动初始化，那么本文就带你捋一捋Liunx启动初始化那些事。
-全文结构大致如下：首先会讲解一些基础知识，这为你阅读本文减小一些压力，然后会从整体启动流程上带你简要梳理">
+    <meta name="keywords" content="大学四年">
+    <meta name="description" content="首先，解释一下什么是双非，通俗易懂，两个不是，既不是985高校，又不是211高校。本科也就是本科学历，至于是本一还是本二，其实差别不大，至少差别不那么离谱。要肯定一点的是：双非有机会能进入BAT这类大厂，但是难度也大。拿自己身边举个例子，周">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -29,7 +28,7 @@
 </script>
 
 
-    <title>关于Liunx启动，你想知道的全都在这! | Cone的编程小屋</title>
+    <title>双非本科成功上岸BAT大厂，大学四年我经历了些什么？ | Cone的编程小屋</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -215,12 +214,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">关于Liunx启动，你想知道的全都在这!</h1>
+                    <h1 class="description center-align post-title">双非本科成功上岸BAT大厂，大学四年我经历了些什么？</h1>
                 </div>
             </div>
         </div>
@@ -336,8 +335,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                                <span class="chip bg-color">启动</span>
+                            <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+                                <span class="chip bg-color">经验分享</span>
                             </a>
                         
                     </div>
@@ -348,8 +347,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Liunx/" class="post-category">
-                                Liunx
+                            <a href="/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/" class="post-category">
+                                程序人生
                             </a>
                         
                     </div>
@@ -361,7 +360,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-10
+                    2021-09-20
                 </div>
                 
 
@@ -370,14 +369,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    6.4k
+                    3.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    23 分
+                    12 分
                 </div>
                 
 
@@ -400,224 +399,48 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Liunx是我们日常学习工作中，打交道最多的一个系统，似乎我们很少关注它的启动初始化，那么本文就带你捋一捋Liunx启动初始化那些事。</p>
-<p>全文结构大致如下：首先会讲解一些基础知识，这为你阅读本文减小一些压力，然后会从整体启动流程上带你简要梳理一遍Liunx启动，然后会分开深入到各个阶段去彻底理解每个阶段在干什么，之后为了检验自己是否大致掌握Liunx启动，我会以问答的形式留下几个问题，最后会对全文启动流程做一个简单的总结。</p>
-<p>话不多说，先来几个问题热热身</p>
-<h1 id="那些你会迷惑的问题"><a href="#那些你会迷惑的问题" class="headerlink" title="那些你会迷惑的问题"></a>那些你会迷惑的问题</h1><ul>
-<li>为什么开机的时候是从BIOS里的代码开始执行而不是内存或外存里的？</li>
-<li>0xFFFF0这个地址存在于哪里？</li>
-<li>BIOS到底又做了些什么</li>
-<li>为什么一开始只有1M的寻址空间？</li>
-<li>为什么需要有GRUB引导程序，不要它行不行？</li>
-<li>我们能调用fork并创建出系统的第一个进程吗？</li>
-<li>ps -ef 里面有很多父进程是1，这个1号进程是啥？</li>
-<li>…..</li>
-</ul>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>下面是两点基础知识，阅读前，回忆一下，话不多说，上图。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127085544.png"></p>
-<ul>
-<li>计算机是由CPU、内存、磁盘、IO设备等硬件组成，其中在运行前，操作系统会将我们的二进制程序加载到内存中，这个时候才能被CPU运行。CPU就会去内存中读取相关的指令。需要注意一点的是：<strong>CPU只能读取内存中的指令，它不能和磁盘等这类外存设备交互。</strong></li>
-<li>CPU分为三个单元：计算、控制、数据单元，其中数据单元主要由一些寄存器组成，主要存储运行过程中产生的值，控制单元就是控制从哪里读取指令并控制计算单元去算，计算单元很好理解了，就是做苦力，给我算！！！，而CPU取代码指令是由CS（代码寄存器）和IP（指令寄存器）共同完成的，CPU会改变这两个寄存器的值，然后控制单元通过地址总线来到相应的内存地址取值。</li>
-</ul>
-<p>好了两点基础知识回忆完了，进入正题！</p>
-<h1 id="启动整体流程"><a href="#启动整体流程" class="headerlink" title="启动整体流程"></a>启动整体流程</h1><p>老规矩，先上图，一目了然，这张图描述了启动的几个阶段，其中前面三个红色阶段是重点。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090033.png"></p>
-<p>上图大致解读：当机器通电后，整个机器就开始运行了，最先来到的是BIOS时期，这个时候CPU控制权在BIOS手里，会进行开机自检，自检完了之后会 会查找可启动设备，加载主引导目录（MBR），加载完MBR之后，将CPU的控制权转交给了GRUB引导，经过GRUB的几个引导步骤之后，GRUB完成就加载了内核代码，接下来，内核就会接管CPU控制权并完成接下来的内核初始化启动任务。内核初始化完成最后会运行sbin/init进行系统的初始化，等系统初始化完了之后会启动终端，输入密码，就完成了一次启动，整个流程大致就是这样了。</p>
-<p>下面我们深入各个阶段来看看，每个阶段具体干了些什么。</p>
-<h1 id="深入各阶段分析"><a href="#深入各阶段分析" class="headerlink" title="深入各阶段分析"></a>深入各阶段分析</h1><h3 id="BIOS-时期"><a href="#BIOS-时期" class="headerlink" title="BIOS 时期"></a>BIOS 时期</h3><p>首先是 BIOS 时期阶段，BIOS（Basic Input and Output System，基本输入输出系统）系统程序在厂家出厂的时候被固化在了一个叫 ROM（Read Only Memory）的东西上，它是一个只读的存储器，显然这是一个只能读取，不能写入的存储器。了解完 BIOS 是被固化的程序之后，你肯定好奇，BIOS 程序是如何被找到的？</p>
-<p>其实这得多亏了 CPU 设计的硬件程序员们在设计 CPU 时已经将特定的值写好了。</p>
-<p>通电之后，CS 寄存器和 IP 寄存器会被强制赋值，其中 CS 被设成：0xFFFF，IP 设成 0x0000。在前缀知识，我们了解到了 CS 寄存器是代码段寄存器，全称是 Code Segment，它存放的是内存代码段区域的段基址。IP 寄存器是指令寄存器，全称是 Instruction Pointer，他存放的是下一条要执行指令的段内偏移地址。</p>
-<p>有了段基址和段内偏移地址，我们就能得到下一条程序的地址。在 8086 16 位处理器中为了兼容 20 根地址总线的寻址能力，就将 cs 寄存器左移四位 + ip 寄存器 = 下一条程序地址。例如：cs = 0xFFFF， IP = 0x0000，计算出来的地址 address = CS &lt;&lt;&lt;&lt; 4 + IP = 0xFFFF0。</p>
-<p>这里 CPU 本身只能处理 16 位数据，如果超过了 16 位，比如 18 位 0000 0000 0000 0001 00 那么就超出了 cpu 的处理范围，但是地址总线有 20 跟， 也就是可以传输 20 位的数据 例如 0000 0000 0000 0001 0001，那么 16 位和 20 位怎么兼容呢？CPU 工程师们就想到了 讲 cs 寄存器左移四位在加上 ip 寄存器的值不就是 20 位了吗？这个计算方法就是这么来的。看图，一目了然。</p>
-<p>有框相加 就是最终值 20 位了。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090156.png"></p>
-<p>通过 CS 寄存器和 IP 地址得到的内存地址 0xFFFF0，属于连接了主板的 ROM 芯片上，这类芯片的寻址方式和内存 RAM 是一样的，也就是上面提到的 BIOS 程序固化在上面了。</p>
-<p>CPU 拿到 0xFFFF0 这个地址，就跳转到这里来执行 BIOS 代码，BIOS 就开始执行起来了。这个 0xFFFF0 地址是在 ROM 上，这和 X86 架构下 CPU 实模式工作原理有关，X86 系统会将 0xF0000 到 0xFFFFF 这 64K 空间映射给 ROM 上，而 0x00000 ~ 0xDFFFF 这段空间映射给 RAM。所以其实最开始内存没有初始化的时候，是从 ROM 读取的 BIOS 程序，具体内存布局看下图：</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090206.png"></p>
-<p>你仔细一看就知道了 0xFFFF0 落在了 倒数第二上面的 ROM 区域。</p>
-<p>那么 BIOS 系统做了什么呢？</p>
-<p>首先 BIOS 会进行 CPU，内存的初始化工作，这个时候我们说的 8G 16G 内存就真正初始化完了，可以用了。然后会把自己的一部分复制到内存中去，这一步就是为了以后建立中断向量表和服务程序做准备以及把相关的启动区程序加载进去，最后跳转告诉 CPU 跳转到内存去执行代码，这个跳转地址是：</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">jmp far f000:e05b<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>可以看到会跳转到 0xfe05b（cs=0xf000 + ip=0xe05b =&gt; cs &lt;&lt;&lt;&lt; 4 + ip = 0xfe05b） 执行内存中的代码，这也是最早内存中的代码。<br>跳转到内存之后，会进行本地设备的初始化工作，并进行检查，看看硬件是否损坏等，这个时候 BIOS 就会开始调用显卡、网卡等烧写好的固件程序了。</p>
-<p>以上都完成好之后，还会建立一个中断向量表和中断服务程序，我们用到的鼠标和键盘都是要通过中断实现的，这也是启动 Liunx 非常重要的工作。</p>
-<p>做完中断的初始化工作，下一步就是准备加载引导程序了。</p>
-<p>为了能够启动外部存储器中的程序，BIOS 会搜索可引导的设备，至于按照什么顺序搜索，这些都是在出厂芯片中设定好了的，可以是从硬盘中、U 盘中、网络中等等。</p>
-<p>当然，一般都是从硬盘中启动的。硬盘上的第一个扇区，512 个字节的大小，这也是每个扇区的标准大小，被称为 MBR（Master Boot Record，主启动记录），这个里面包含三个重要的信息，如图：</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090220.png"></p>
-<ul>
-<li>引导加载程序（Boot loader) 446 字节</li>
-</ul>
-<p>存储操作系统相关的信息，比如名称、内核位置等等。</p>
-<ul>
-<li>分区表 64 字节</li>
-</ul>
-<p>也就是磁盘分区了，每个主分区占 16 个字节，</p>
-<ul>
-<li>分区表有效性标记 2 字节</li>
-</ul>
-<p>BIOS 会把 MBR 加载到内存中执行，这个执行地址是 0x7c00，也就是说把主启动记录程序 MBR 全部加载到从 0x7c00 这个开始地址中了，为什么是 0x7c00 这么一个奇怪的地址呢？这是由于 IMB 公司最早的个人电脑 IBM PC6160 上市的时候搭载操作系统是 86-DOS，用到的芯片是 Intel 的第一代个人电脑芯片 8088，86-DOS 操作系统运行时需要的内存至少是 32KB，32KB 的范围就是 0x0000 ~ 0x7FFF，而 8088 本身需要占 0x0000 ~ 0x03FF 来保存中断向量表和中断服务程序，所以还剩 0x0400 ~ 0x7FFF 给操作系统用，为了尽可能的将多的连续内存空间留给 86-DOS，MBR 被放到了内存地址的末尾，而 MBR 本身也会产生数据，所以最后计算方式就变成了 最高地址 0x7FFF + 1 - 512 -512 = 0x7c00 这里 +1 是因为取值是从 0 开始。</p>
-<p>到这里 BIOS 的任务完成了，把控制器交给 MBR，Liunx 中是 GRUB 了。</p>
-<h3 id="GRUB-引导"><a href="#GRUB-引导" class="headerlink" title="GRUB 引导"></a>GRUB 引导</h3><p>GRUB 全称叫全称 Grand Unified Bootloader Version。顾明思议就是搞系统启动的，当前都是用 GRUB2 了。这里为了简便就交 GRUB 吧</p>
-<p>GRUB 的配置，我们可以在 /boot/grub2/ 目录下查看 grub.cfg，例如：</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">### BEGIN /etc/grub.d/10_Linux ###
-menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos --class gnu-linux --class gnu --class os --unrestricted $menuentry_id_option 'gnulinux-3.10.0-514.26.2.el7.x86_64-advanced-59d9ca7b-4f39-4c0c-9334-c56c182076b5' &#123;
-	load_video
-	set gfxpayload=keep
-	insmod gzio
-	insmod part_msdos
-	insmod ext2
-	set root='hd0,msdos1'
-	if [ x$feature_platform_search_hint = xy ]; then
-	  search --no-floppy --fs-uuid --set=root --hint='hd0,msdos1'  59d9ca7b-4f39-4c0c-9334-c56c182076b5
-	else
-	  search --no-floppy --fs-uuid --set=root 59d9ca7b-4f39-4c0c-9334-c56c182076b5
-	fi
-	linux16 /boot/vmlinuz-3.10.0-1160.45.1.el7.x86_64 root=UUID=59d9ca7b-4f39-4c0c-9334-c56c182076b5 ro crashkernel=auto   net.ifnames=0  idle=halt console=tty0 console=ttyS0,115200n8 LANG=en_US.UTF-8
-	initrd16 /boot/initramfs-3.10.0-1160.45.1.el7.x86_64.img
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>这就是一个启动项，如果 grub 引导加载完成后，会让你选择操作系统，在那个选择菜单的界面就是这里配置而来的。<br>GRUB 引导启动阶段主要包含三个阶段，同时也分成了多个文件，两个重要的文件：boot.img 和 core.img，</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127090243.png"></p>
-<p>话不多说，上图。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG215_20211127090322.png"></p>
-<p>下面来具体看看这两个文件是怎么样被加载的。</p>
-<p>boot.img 主要在 1 阶段被加载。</p>
-<h4 id="Stage1-阶段"><a href="#Stage1-阶段" class="headerlink" title="Stage1 阶段"></a>Stage1 阶段</h4><p>这个阶段 BIOS 时期最后跳转的入口地址程序——BootLoader。</p>
-<p>由于 512 个字节实在太有限了，它做不了太多的事情。仅仅就加载了 boot.img。</p>
-<p>而 boot.img 的一个位置写入了 core.img 的文件位置，类似于你去问路，某大爷告诉你应该怎么怎么走，这个时候 boot.img 就相当于这位大爷了。</p>
-<p>boot.img 之后就跳转 core.img 入口地址，开始进入 Stage1.5 阶段了</p>
-<h4 id="Stage1-5-阶段"><a href="#Stage1-5-阶段" class="headerlink" title="Stage1.5 阶段"></a>Stage1.5 阶段</h4><p>这个阶段是 Stage1 和 Stage2 之间的过渡步骤，主要是加载 Stage2 阶段用到的 core.img，core.img 包含 diskboot.img、lzma_decompress.img、kernel.img 和一些列模块。</p>
-<p>这个阶段首先会加载 diskboot.img，这个文件中以文件块列表的方式保存着 core.img 这个文件内容，所以 diskboot 能够找到 core.img 剩下的内容并将其他的内容加载进来，在这阶段主要是做让系统具有识别文件的能力，也是一个从 Stage1 到 Stage2 的过渡期。</p>
-<h4 id="Stage2-阶段"><a href="#Stage2-阶段" class="headerlink" title="Stage2 阶段"></a>Stage2 阶段</h4><p>这个过程主要是执行上面 Stage1.5 阶段存放的加载指令，主要是 core.img 的解压文件和内核文件。在解压加载 kernel.img 之前，lzma_decomprees.img 会调用 real_to_prot，从实模式切换到保护模式。为什么要做这一步骤呢，因为实模式下的 1M 空间实在太小了，寻址不到超过 1M 的地址，而内核加载到内存中大于 1M 了，所以得寻求更大的空间。就会切到保护模式下，这样就能有更大的寻址空间，加载更多的东西了，保护模式下是 32 位寻址空间，也就是 2^32B = 4G，这也就足够寻址到内核在内存中的地址了。</p>
-<p>所以 CPU 工作模式从实模式到保护模式的切换就是在 GRUB 引导阶段进行的。</p>
-<p>有了更大的寻找空间之后，就会对 Kernel.img 进行解压缩，然后跳转到 Kernel.img 开始执行，这个时候会开始读取 grub.cfg 文件里的配置信息。如果启动正常，最后就会显示出让你选择操作系统的列表画面。</p>
-<p>当你选择完操作系统之后，grub 的任务也就要完成了，这个时候就开始加载内核代码，也就开始进入到下一阶段了。</p>
-<p>内核初始化阶段就真正来到了操作系统层面了，这里就是操作系统程序启动的入口！！！</p>
-<h3 id="内核初始化"><a href="#内核初始化" class="headerlink" title="内核初始化"></a>内核初始化</h3><p>内核初始化主要分为三个部分，也就是 0、1、2 三个进程的建立三部分，首先 grub 引导 Liunx 内核加载完之后，从 start_kernel() 方法开始进行内核初始化，这个方法非常有名，因为这里是内核的开始，Liunx 的入口。</p>
-<h4 id="著名的-start-kernel"><a href="#著名的-start-kernel" class="headerlink" title="著名的 start_kernel()"></a>著名的 start_kernel()</h4><p>来看 start_kernel() 中的代码，这里删除了很多代码，这个方法有 200 多行，主要是一个包装方法，里面调用了各个部分的初始化方法，这里选取了几个比较重要的方法，稍作说明。</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">void start_kernel(void)&#123;    
-    //零号进程初始化
-    set_task_stack_end_magic(&amp;init_task)
-    //中断门初始化
-    trap_init();
-    //内存初始化    
-    mm_init();
-    ftrace_init();
-    //调度器初始化
-    sched_init();
-    //fork初始化建立进程的 
-    fork_init();    
-    //VFS数据结构内存池初始化  
-    vfs_caches_init();
-    //运行第一个进程 
-    arch_call_rest_init();
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="万物之源——0-号进程"><a href="#万物之源——0-号进程" class="headerlink" title="万物之源——0 号进程"></a>万物之源——0 号进程</h4><p>首先我们来看看万物之源——0 号进程</p>
-<p>0 号进程的初始化代码</p>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token function">set_task_stack_end_magic</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>init_task<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>可以看到这句初始化需要传入一个 init_task 参数，来看看这个 init_task 怎么来的</p>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token comment">/* Initial task structure */</span>
-<span class="token keyword">struct</span> task_struct init_task <span class="token operator">=</span> <span class="token function">INIT_TASK</span><span class="token punctuation">(</span>init_task<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token function">EXPORT_SYMBOL</span><span class="token punctuation">(</span>init_task<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>通过了一个叫做 EXPORT_SYMBOL 的宏进行的初始化。<br>这个宏里面主要是对 init_task 做了写死赋值，所以我们的 0 号进程的信息，都来源是硬编码！！！这就是道生一呀。</p>
-<p>可以看到这个结构是 task_struct，它是个什么东西呢？</p>
-<p>顾名思义，task 是任务，也就是任务结构，任务？ 好像和我们 CPU 执行任务有点联系。</p>
-<p>没错！ 它就是 CPU 执行任务的结构，也是表示进程和线程的数据结构。具体的解读请期待下一期。这里我们紧扣主题——Liunx 启动。</p>
-<p>好了 0 号进程有了，也就是 万物之源的 一 出来了。接下来内核会做更多的初始化，例如：</p>
-<ul>
-<li>中断模块初始化 trap_init()</li>
-</ul>
-<p>这个方法里面设置了很多中断门，用于处理各类中断，BIOS 时期也建立了中断向量表和服务程序，没错这里会根据之前建立的，为操作系统重新建立一次。</p>
-<ul>
-<li>内存模块初始化 mm_init()</li>
-</ul>
-<p>这个方法里面会初始化内存管理模块，内存是这个时候才开始被操作系统初始化的，在操作系统层面要使用内存，就必须在这个之后了。</p>
-<ul>
-<li>调度模块初始化 sched_init()</li>
-</ul>
-<p>这个方法会初始化调度模块，主要是用于 CPU 调度任务。</p>
-<ul>
-<li>fork 创建初始化 fork_init()</li>
-</ul>
-<p>fork 在这里才被初始化，未被初始化之前都无法使用 fork，1 号进程的初始化也是在 fork 之后进行的。所以我们 0 号进程是无法通过 fork 进行初始化的。</p>
-<ul>
-<li>文件系统初始化 vfs_caches_init()</li>
-</ul>
-<p>这里会初始化基于内存的文件系统 rootfs,文件系统是存储信息的，要兼容各类文件系统，系统会抽象出一层虚拟文件系统（VFS Virtual File System）.</p>
-<ul>
-<li>其他初始化 rest_init()</li>
-</ul>
-<p>这里会做很多其他方面的初始化工作，比如 1 号、2 号进程的初始化。</p>
-<h4 id="1-号进程建立"><a href="#1-号进程建立" class="headerlink" title="1 号进程建立"></a>1 号进程建立</h4><p>1 号进程是在 rest_init() 方法里调用 kernel_thread(kernel_init, NULL, CLONE_FS) 进行的初始化，它对于操作系统来讲有着很重要的意义，可以说是“标志性划时代的”，在 1 号进程没有初始化的时候，所有资源都是操作系统内核本身的，而 1 号进程初始化完之后，要讲一些资源分配给它进行使用。这也就从改变了系统的运行方式。这里就设计到了，有哪些资源是内核所可以调用的，哪些资源是给类似 1 号用户进程调用的，x86 架构给我们提供了权限机制，就很好的解决了这个问题，这里简单提一点：内核拥有 Ring0 最高权限，我们把关键的资源和代码放在这里，也叫做内核态，而普通用户程序放在 Ring3，也叫做用户态。他们之间是通过系统调用进行沟通的，话不多说，看图，从里往外权限依次降低，可以看到内核态具有最高权限。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG216_20211127090345.png"></p>
-<p>1 号进程的建立，CPU 的执行权限，将会从内核态转到用户态。在 1 号进程建立时，是调用下面的</p>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ramdisk_execute_command<span class="token punctuation">)</span>
-    ramdisk_execute_command <span class="token operator">=</span> <span class="token string">"/init"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p>也就是这个 ramdisk，进行了用户空间的初始化，从虚拟根文件系统切换到真正的根文件系统。<br>这一部分主要是通过在内存中建立虚拟根文件系统实现相关设备的驱动并建立和切换到真正的根文件系统。</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG217_20211127090419.png"></p>
-<p>如上图，我们当前在 / 目录下，也就是根文件目录， 它的功能就是讲内核与真正的根建立联系，内核通过它加载根文件系统的驱动程序，然后以读写方式挂载根文件系统，在 initrd 程序建立 ramdisk 内存虚拟根文件系统后 内核开始驱动基本硬件，例如：CPU，I/O 等等，在驱动加载完后，会根据 grub.cfg 文件中的 root=”xxxxx”指定的内容创建一个根设备，可以往上面看 grubp 配置文件里有下面这段代码。</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">set root='hd0,msdos1'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>然后将跟文件系统以只读的方式挂载，这就切换到真正的根文件系统上了。这也就是 ramdisk 的作用。<br>1 号用户进程初始化完了，用户进程的祖先有了，那么内核进程的祖先还没，你可能会有疑惑，我们的 0 号进程不就是内核进程吗？对没错，但是 0 号进程后续会变成 CPU 的 idle 进程，要另作他用。idle 进程，你可以理解为 CPU 不工作时，他就开始运行的一个进程，他的主要作用是：节能和低退出延迟。所以得创建一个 2 号进程来作为所有内核态的祖先。</p>
-<h4 id="2-号进程建立"><a href="#2-号进程建立" class="headerlink" title="2 号进程建立"></a>2 号进程建立</h4><p>2 号进程是调用 kernel_thread 方法创建的，其具体方法如下</p>
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token function">kernel_thread</span><span class="token punctuation">(</span>kthreadd<span class="token punctuation">,</span> NULL<span class="token punctuation">,</span> CLONE_FS <span class="token operator">|</span> CLONE_FILES<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>2 号进程是用来管理内核态的线程调度，是所有内核线程的祖先<br>2 号进程初始化完，到目前用户态和内核态都有祖先进程管理了，系统初始化也完成了。</p>
-<p>2 号进程完成后会调用/sbin/init 程序，开始进入系统初始化阶段。</p>
-<p>到这里， 内核就加载完成，接下来就是对整个系统进行初始化。</p>
-<h3 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h3><p>经过了内核的初始化，系统其实已经跑起来了，已经可以开始运行程序了，但是为了更好的提供给用户使用，需要对一些常用的东西进行封装成服务，以进程的形式加载进来。</p>
-<p>系统初始化阶段首先会通过/etc/inittab 进行运行级别的确认，运行级别是为了系统的允许而定的机制，下面例举了 7 种级别：</p>
-<p>0、关机，shutdown</p>
-<p>1、单用户模式，这个就是 root 用户，最高权限；</p>
-<p>2、多用户维护模式，会启动网络功能，但不会启动 NFS</p>
-<p>3、多用户完全功能模式，文本界面，这个是默认的运行级别</p>
-<p>4、预留级别：目前无特别使用目的，但习惯以同 3 级别功能使用；</p>
-<p>5、多用户完全功能模式，图形界面，与 3 不同的是这是图形化界面模式；</p>
-<p>6、重启，reboot</p>
-<p>然后会去执行系统初始化脚本/erc/rc.sysinit，为用户初始化用户空间，完成之后，根据运行级别，系统开启对应的服务，关闭那些不要的服务。</p>
-<p>系统初始化脚本主要做的一些事：设置 host 名和欢迎信息、挂在/etc/fstab 定义的文件系统、设置系统时钟、加载额外设备的驱动程序等等。</p>
-<p>系统的初始化工作主要执行这个脚本程序，到此系统就进行了正常的初始化。</p>
-<h3 id="启动终端"><a href="#启动终端" class="headerlink" title="启动终端"></a>启动终端</h3><p>默认运行级别情况下，会打开 6 个纯文本终端，这是 Liunx 设定的。</p>
-<p>系统初始化完成后，会给出相应的用户登录提示，用户输入密码后，系统调用 login 程序，核验密码，如果正确，会分配 uid 和 gid，这两个 id 用于检测用户的身份信息，之后就从文件 /etc/passwd/读取登录用户指定的 shell 并启动。</p>
-<p>到这里，整个系统就启动好了！！</p>
-<p>接下里看看最上面提到的几个问题</p>
-<h1 id="几惑问题"><a href="#几惑问题" class="headerlink" title="几惑问题"></a>几惑问题</h1><ul>
-<li>为什么开机的时候是从BIOS里的代码开始执行而不是内存或外存里的？</li>
-</ul>
-<p>内存是需要进程初始化之后才能使用，而内存初始化是在 start_kernel 方法才进行，所以开机通电就读内存的代码是不行的。而文章中提到了 CPU 是不能和外存打交道的，所以开机读外存的代码也是不可行的。由于 BIOS 的代码是存放在 ROM 中的，在 CPU 运行的时候与内存 RAM 相似，</p>
-<p>所以 CPU 开机的时候可以在这里读取代码。</p>
-<ul>
-<li>0xFFFF0这个地址存在于哪里？</li>
-</ul>
-<p>回答完上面那个问题，相信，你也知道了，0xFFFF0 这个 BIOS 入口地址是在 ROM 中了。</p>
-<ul>
-<li>BIOS到底又做了些什么？</li>
-</ul>
-<p>在上面 BIOS 时期中已经提到了它做的一些事，可以参考上面。</p>
-<ul>
-<li>为什么一开始只有1M的寻址空间？</li>
-</ul>
-<p>当前 CPU 有三种工作模式， 实模式，保护模式，长模式，最开始的时候 CPU 处理实模式下，也就对应在最早的 8086CPU 工作模式，而这个模式下虽然处理数据的位数只有 16 位，但是地址总线有 20 位，20 位的地址总线的寻址空间有 2^20B = 1M 这么大，这也就是最开始的寻址空间大小了，后面随着 CPU 的工作模式切换，这个寻址空间也变大了。</p>
-<ul>
-<li>为什么需要有GRUB引导程序，不要它行不行？</li>
-</ul>
-<p>这个问题和上个问题也有牵连，由于最开始的寻址空间只有 1M，所以无法直接一次加载操作系统内核那么大的程序，如果将超过 1M 的空间地址加载到内存中，而这是能够获取到内存的最大地址是 1M， 1M 以后的数据都获取不到，所以得一步步引导并扩大，最后全部加载进来。</p>
-<p>整个 Liunx 的启动，就像重定向一样，BIOS 告诉 CPU 你去 加载 GRUB，而 GRUB 告诉 CPU 我是启动引导程序，用户选择完操作系统后，你就可以进行加载了，而且我还要切换你的工作模式。</p>
-<p>就这样一步步引导，Liunx 就初始化完成了。</p>
-<ul>
-<li>我们能调用fork并创建出系统的第一个进程吗？</li>
-</ul>
-<p>通过上面的讲解，想必你也能回答这个问题了，fork 是系统调用，需要在操作系统内核初始化之后才能调用，比如 1 号进程就是 fork 出来的。</p>
-<ul>
-<li>ps -ef 里面有很多父进程是1，这个1号进程是啥？</li>
-</ul>
-<p>阅读完全文，想必你也知道了这个 1 就是 1 生万物 的 1，由于有了 1 号进程，用户态下的所有进程的鼻祖，它的作用不言而喻。</p>
-<h1 id="简要总结"><a href="#简要总结" class="headerlink" title="简要总结"></a>简要总结</h1><p>本文从 Liunx 系统的启动初始化，与你一起了解了计算机启动原理，一起深入理解了 BIOS 时期，它干的一些事情，以及 GRUB 引导程序的相关知识，还有根据 Liunx 源码解读了内核初始化过程，最后回答了文章开头提出的相关问题。</p>
+                <p>首先，解释一下什么是双非，通俗易懂，两个不是，既不是985高校，又不是211高校。本科也就是本科学历，至于是本一还是本二，其实差别不大，至少差别不那么离谱。要肯定一点的是：双非有机会能进入BAT这类大厂，但是难度也大。拿自己身边举个例子，周围大学同学进大厂的很少，一个科班计算机院也就那几个同学进入BAT大厂，从这些同学身上发现有一个共同的特点：努力且不服输。</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>那双非的本科如何才能进BAT这类大厂呢？ </p>
+<p>答案显而易见：首先你得努力，其次你得掌握方法，总结学习技巧，然后你得抓住机会。有人会跟你说：”学习编程天赋最重要”，请不要听他瞎说！请不要听他瞎说！！请不要听他瞎说！！！学习编程，通过面试，进入大厂，这一过程远远、远远、远远不到要拼天赋的地步（这里是指通过努力进入大厂，不指大学期间的一些ACM算法竞赛）。</p>
+<h1 id="编程入门的摸爬滚打"><a href="#编程入门的摸爬滚打" class="headerlink" title="编程入门的摸爬滚打"></a>编程入门的摸爬滚打</h1><p>拿我自己的亲身经历来说，大一上学期学校实验室招新，c语言入门的第一个程序：Hello,world 都学了大半个月，学了就忘、忘了又学，反反复复。在那些认为需要天赋的同学眼中这应该属于天赋很差了吧。我也开始自我怀疑，是不是不适合学习编程？是不是自己天赋不够？是不是自己太过于愚笨？现在来看，至少可以肯定的是：我能够努力学习并且成功通过BAT大厂的面试进入到这个行业中，并且实习1年多，工作也较顺利。回到Hello,world学习！通过大半个月的摸索，我发现了自己的问题：学习方法不对，我仅仅是看书本上面的表面知识，然后死记硬背的把格式背下来，</p>
+<p>#include&lt;stdio.h&gt; ……</p>
+<p>根本没有理解程序是怎么运行的，为什么要这么写，include背后又发生了什么？所以大半个月的学习都是在瞎折腾，我开始去百度一些相关讲解，尝试去理解为什么要这么写，后来我放弃了，因为我根本看不懂他们讲解的CPU通过PC寄存器读取指令，又怎么通过总线传递数据。</p>
+<p>后来我又跑去问室友，他是怎么理解的，他的答案告诉我：当前也没理解这么多，先记忆下来，慢慢写程序多了会理解的吧。这回我又有信心了（编程入门的时候结伴学习是一个很好的学习方法，自己如果一个埋头苦干，很容易陷入自我怀疑）。<br>最后顺利的通过了实验室的最后一轮初试面试，赶上了末班车。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/1331632702887_.pic_hd_20211127133916.jpg"></p>
+<p>但是进入招新训练营之后，又开始慢慢自闭了。每周训练题不会做，全靠百度看题解写题，周末训练赛排名垫底水平，极大的打击了我的信心。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/1341632702917_.pic_hd_20211127133928.jpg"></p>
+<p>又开始陷入自我天赋的怀疑了，开始反思，为什么其他人可以很快地将训练题做完，又可以很好的适应周末训练赛，于是我开始观察晚上自习的时候，旁边的人都在干什么，我发现旁边的人也在做非常基础题目，比如打印三角形之类的。我发现旁边的人也跟我一样，基础没打好，就开始做较难的算法题，没开始走就开始跑了，当然你会跑不快，也跑不远，甚至跑不动。所以我开始补基础题了，从基础题出发，一步一步掌握相关知识，有一次在课堂上又让我重新找回来了自信，老师提问了一个GCD的问题，大家都在思考鸦雀无声，我很快写出来了，其中有一个数据防止溢出的细节被老师表扬，于是自信又回来了，原来大家都一样都不会而已，就这样一边补基础一边做周训练题。慢慢地找到了编程感觉了,于是后来也顺利的进入了实验室学习，在有一次比赛上还拿了第一名。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/1351632702937_.pic_hd_20211127133941.jpg"></p>
+<p>回过头来看那一段招新训练营的时光，因为是纯算法，又是刚刚入门编程，非常容易打击人的自信，又迫于被淘汰的风险，压力也大。也很容易产生厌烦情绪，因为本身做算法题是枯燥的，大部分人在一开始很难顺风顺水地对待它。后来加入实验室没有再选择ACM校队继续做算法题，深知自己天赋不足。到现在也非常佩服那些在ACM算法竞赛上付出超于常人的努力，最后取得不错成绩的同学。</p>
+<p>有很多学弟学妹会来问我，该怎么样去掌握编程知识，因为自己经历过那些坑坑洼洼，都建议从前端开始入手，至少前端入手，会让你感觉到有成就感，不会像算法那样一头雾水还很枯燥。</p>
+<p>所以这样一个没有天赋、又没有学校背景的渣本科班，肯定是不能进入大厂了吧。但是大学四年的努力下来，最终看到了希望，也成功抓住了希望，最后上岸了。</p>
+<h1 id="迷茫的大一"><a href="#迷茫的大一" class="headerlink" title="迷茫的大一"></a>迷茫的大一</h1><p>大一上学期都是在学校的实验室招新集训队度过的，上面也提到了，直到寒假也在不停学习一些c的基础知识和算法。 </p>
+<p>大一下学期因为顺利加入实验室了就轻松了也就比较放飞了，在寝室和室友一块玩吃鸡，还立下了不吃鸡不睡觉的flag，后来还直接在晚自习实验室打游戏，追剧。</p>
+<p>每天浑浑噩噩的过着，后来醒悟过来，这样下去不行，加入实验室并不是终点，应该好好利用实验室的资源学习起来，好好学习，当初压根不敢想我们那个学校出来的能进入BAT这类大厂。后面在大一下学期就努力学习，努力把数据结构的基础打好。也接触和尝试各个方向的编程技能。</p>
+<h1 id="坚定的大二"><a href="#坚定的大二" class="headerlink" title="坚定的大二"></a>坚定的大二</h1><p>经历过了大一迷茫，在大一末尾，和同学组队参加了一个Apple举办的iOS移动开发大赛，很遗憾地没能进入决赛，但是获得了夏令营的资格，于是和同学在暑假一起来到了浙江大学参加夏令营，全程免费，四星级酒店住宿, 体验非常好。非常感谢我的一位学长，给了我很多帮助，包括后来找实习都给了很多建议。浙大，这是我高中一直梦想考上的大学，可惜只是梦想，来到浙大以后许下了一个愿望，三年后来这里读研（当即就买了19年王道考研408全套）。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/1371632702996_.pic_hd_20211127134003.jpg"></p>
+<p>事与愿违，三年多过去了，我也没有去到那里读研，而是选择了走入社会大学修炼。经过了夏令营的学习，格局、见识都打开了不少，认识了很多其他高校的同学，了解到他们在做什么，差距在哪里，也成为了大二坚定选择iOS开发深入学习的重要原因。<br>于是大二就开始坚定的选择了iOS移动开发，在iOS移动开发这一路上也是坑坑不断，不过因为在算法上踩过的坑，很好的锻炼了自己的编程耐力，借有位老师的话。</p>
+<p>“学计算机，搞编程，一定要耐得出寂寞”。</p>
+<p>因为全校没有人做iOS，没有老师懂iOS，第一位在我们学校做iOS的同学就是上面提到的那位15级学长，18年那一年，他正在字节跳动实习。所以iOS开发学习的路上只能单枪匹马了，也没有人能够及时解答自己的一些问题，对比同实验室的学安卓的同学会有学长亲自指导，不过好在有一位实验室的同学一起搞iOS，一个人走得快，两个人走得远，后来我们两成为了非常好的挚友。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127134357.png"></p>
+<p>大二这一年还成为了实验室移动开发小组的组长，成为指导大一新生学习的学长，也成为了新生们眼中那个很强的学长，深知自己还很菜，为了对得起学弟们的期待，于是大二上学期，像拼命了一样在实验室疯狂学习，早上8点之前准时到，晚上通过10：30之后 才回宿舍。这样的生活在每一个没有课的日子和每个周末必定出现，甚至还带着女朋友一起去实验室学习！！！（直男本男）。</p>
+<p>有人会好奇这样一天天在实验室学习咋还有女朋友，也是非常偶然的机会，在下一届新生工作上认识的她，后来大二下学期，我们分手了，是那个传说中的恋爱会影响学习的理由。</p>
+<p>为了更好的参加Apple 举办的那个比赛， 要涉及开发一整个APP，从idea到产品原型到设计搞，到程序开发，到上架，到部署，这一整条链路要花费我非常多的时间，因为心思都在编程上，自然也会影响两个人之间的关系，后来就演变成了分手。</p>
+<p>大学最重要的就是大二这一年，度过了大一的迷茫，也没用大三、大四的压力，可以放手干一些自己喜欢的事，去做那些有意思的事情，经过大二的一年摸索，对未来也会更加清晰。</p>
+<p>下图是18年年底写下的总结<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127134424.png"></p>
+<h3 id="动摇的大三"><a href="#动摇的大三" class="headerlink" title="动摇的大三"></a>动摇的大三</h3><p>我是选择考研呢(学校太差，没有保研资格)，还是选择面试参加工作呢。后来我沿用了18年年底写下的两条路策略。</p>
+<p>一手准备面试，一手准备考研，先投简历面试，如果能进BAT这类大厂，那就放弃考研。</p>
+<p>因为考研的知识408 是和面试重合的，所以就从408开始下手，两手抓，如果你在大三比较动摇，那你也可以 跟我一样两手抓，既不耽误考研，也不耽误面试，面试不顺就掉头开始做数学题，准备考研。</p>
+<p>这里需要注意就是给自己一个面试期限，当初我给自己定的是4月20。也就是春招实习，如果4月20还没能找到实习，那就放弃，开始做数学题。距离12月20考研刚好还剩8个月，对付数学、英语，自己全力以赴，也不会差很多。</p>
+<p>数据结构与算法是我最早开始复习的知识，大三上学期才开始学操作系统、计算机网络等课，大三上的课也很多，所以数据结构与算法的一些书籍，在上课的时候去复习，时间会利用得比较好，不上课的时候就在寝室做一些算法题，按照《剑指offer》这本上的题一个个解决。数据结构与算法是程序的基石，也是面试必定会问到的，也是其他知识的基础，就从他开始下手了。</p>
+<p>计算机网络、操作系统、计算机组成原理等这类计算机体系知识，就把吃灰很久的王道考研拿了出来，开始做题，复习，总结。</p>
+<p>因为疫情，似乎大三过得非常非常快，在面试的时候，跟双非同学找工作遇到的问题一样：前期简历被拒，被捞起来刷KPI一面挂。非常打击人的自信。又如同大一那会开始慢慢自闭了。。自我反问，双非面试大厂真的有这么难嘛？我为什么这么菜，自闭总归要过去，还是要向前看，于是我告诉自己要稳住心态。开始查漏补缺，一步步复习，到了4月初终于拿到了一个快手的offer，也放 下了心，就安安心心去实习吧。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127134435.png"></p>
+<p>有一个自己坚信的点是：如果能去大厂实习，首先争取在实习的时候转正，其次在参加其他公司的秋招，有过大厂实习经历了也不至于简历被疯狂拒绝那么惨痛，所以决定不考研了。</p>
+<h1 id="初入社会的大四"><a href="#初入社会的大四" class="headerlink" title="初入社会的大四"></a>初入社会的大四</h1><p>在快手实习3个月之际，拿到了字节跳动抖音的秋招提前批offer，一路面试下来非常顺利，在快手实习过了，加成非常大！因为字节跳动是我所有公司中最想去的公司，这也是算是小小的圆梦。于是很快就从快手离职，回家修整。半个月之后，我正式踏上了实习的大四之旅。大四过程中一直在实习，也就是公司里的一些事情，后续会做一次专门的分享，在字节的工作感受。</p>
+<p>到这里，我的大学结束了，时间很快，收获也很大。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>大学四年，我像大多数人一样谈过恋爱，逃过课，打过游戏，我也和很多人一样努力学习进到了自己想去的公司。也从Hello world 都要学半个月的那个菜鸡，到拿到微信，抖音、百度、美团等大厂offer的”offer收割机”，所经历的一切，都离不开自己的努力，更加 离不开运气，如果没有认识那位15级学长的，可能连大厂的门槛都够不着，又或者是另外一种风景。</p>
+<p>However, 大学四年给了我一个让自己满意的结果。</p>
 <p>更多内容你可以关注公众号： 「<strong>ConeZhang</strong>」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>
 
                 
@@ -645,7 +468,7 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
                     </i>
                     </span>
                 <span class="reprint-info">
-                    <a href="https://www.zhangchione.com/2021/11/10/LiunxStart/">https://www.zhangchione.com/2021/11/10/LiunxStart/</a>
+                    <a href="https://www.zhangchione.com/2021/09/20/ex-my-university/">https://www.zhangchione.com/2021/09/20/ex-my-university/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -683,8 +506,8 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                                    <span class="chip bg-color">启动</span>
+                                <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+                                    <span class="chip bg-color">经验分享</span>
                                 </a>
                             
                         </div>
@@ -850,9 +673,9 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://www.zhangchione.com/2021/11/10/LiunxStart/';
-        this.page.identifier = '/2021/11/10/LiunxStart/';
-        this.page.title = '关于Liunx启动，你想知道的全都在这!';
+        this.page.url = 'https://www.zhangchione.com/2021/09/20/ex-my-university/';
+        this.page.identifier = '/2021/09/20/ex-my-university/';
+        this.page.title = '双非本科成功上岸BAT大厂，大学四年我经历了些什么？';
     };
     let disqus_shortname = 'zhangchione';
 
@@ -908,13 +731,13 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/11/11/cpu-work-model/">
+                <a href="/2021/10/16/books-study-xiuyang/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="深入浅出CPU的两种工作模式">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="《程序员的自我修养》导读">
                         
-                        <span class="card-title">深入浅出CPU的两种工作模式</span>
+                        <span class="card-title">《程序员的自我修养》导读</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -925,14 +748,14 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-11
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-10-16
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Liunx/" class="post-category">
-                                    Liunx
+                            <a href="/categories/%E4%B9%A6%E7%B1%8D%E5%AF%BC%E8%AF%BB/" class="post-category">
+                                    书籍导读
                                 </a>
                             
                             
@@ -942,8 +765,8 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                        <span class="chip bg-color">启动</span>
+                    <a href="/tags/%E4%B9%A6%E7%B1%8D/">
+                        <span class="chip bg-color">书籍</span>
                     </a>
                     
                 </div>
@@ -1196,7 +1019,7 @@ menuentry 'CentOS Linux (3.10.0-1160.45.1.el7.x86_64) 7 (Core)' --class centos -
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">25.5k</span>
+                        class="white-color">51.3k</span>
             
             
             

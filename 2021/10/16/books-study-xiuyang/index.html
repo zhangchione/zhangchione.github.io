@@ -4,11 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="CPU工作模式">
-    <meta name="description" content="上期文章 是关于Linux启动的，在启动的时候会切换CPU模式，从实模式到保护模式，有小伙伴咨询到我说想详细了解下这两种模式。
-那么，本期来跟你们唠嗑一下CPU工作模式，一起彻底理解CPU工作模式。
-前置知识
-寄存器就是用来存取数据的，在C">
+    <meta name="keywords" content="程序员自我修养">
+    <meta name="description" content="今天来和大家分享《程序员的自我修养————链接、装载与库》这本书的全书导读，它在去年我拿下微信、抖音、百度等大厂sp以级上offer有非常大的帮助，分享与你，希望能够对你带来启发。
+前言最近在工作之余，重新认真阅读学生时代读过的书籍，阅读到">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -31,7 +29,7 @@
 </script>
 
 
-    <title>深入浅出CPU的两种工作模式 | Cone的编程小屋</title>
+    <title>《程序员的自我修养》导读 | Cone的编程小屋</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -217,12 +215,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">深入浅出CPU的两种工作模式</h1>
+                    <h1 class="description center-align post-title">《程序员的自我修养》导读</h1>
                 </div>
             </div>
         </div>
@@ -338,8 +336,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                                <span class="chip bg-color">启动</span>
+                            <a href="/tags/%E4%B9%A6%E7%B1%8D/">
+                                <span class="chip bg-color">书籍</span>
                             </a>
                         
                     </div>
@@ -350,8 +348,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/Liunx/" class="post-category">
-                                Liunx
+                            <a href="/categories/%E4%B9%A6%E7%B1%8D%E5%AF%BC%E8%AF%BB/" class="post-category">
+                                书籍导读
                             </a>
                         
                     </div>
@@ -363,7 +361,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-11-11
+                    2021-10-16
                 </div>
                 
 
@@ -372,14 +370,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.8k
+                    2.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    8 分
                 </div>
                 
 
@@ -402,70 +400,42 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>上期文章 是关于Linux启动的，在启动的时候会切换CPU模式，从实模式到保护模式，有小伙伴咨询到我说想详细了解下这两种模式。</p>
-<p>那么，本期来跟你们唠嗑一下CPU工作模式，一起彻底理解CPU工作模式。</p>
-<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><ul>
-<li>寄存器就是用来存取数据的，在CPU运算的时候主要靠寄存器来进行数据存取。</li>
-<li>寄存器的位数就代表这CPU能运行的位数，比如32位机器，就是说寄存器的位数有32位，一般32位的话，就是EAX 这种，包含高16位和低16位，，低16位有包含高八位AH和低八位AL。</li>
-</ul>
-<p>进入正题。</p>
-<h1 id="实模式部分"><a href="#实模式部分" class="headerlink" title="实模式部分"></a>实模式部分</h1><p>CPU的工作模式，简单概括就是CPU在工作的时候是如何寻址的，那么在实模式下，我们很容易猜测到是寻找实实在在的内存地址，没错，实模式工作时，是<strong>寻找真实的物理地址</strong>，而且<strong>没有加任何限制</strong>，下面我们先来看看历史起源。</p>
-<h3 id="历史起源"><a href="#历史起源" class="headerlink" title="历史起源"></a>历史起源</h3><p>CPU的实模式工作模式就起源于8086处理器，这也是第一款支持内存分段的处理器，此时的CPU就工作在实模式下，8086这款处理的寄存器位数只有16位，寄存器只有16位的话，那么它最大的表示范围为：2^16 = 64 K，也就是说此时寄存器能够存储的最大的值就是64K - 1，大于这个值就放不下了，但8086处理器的地址总线有20根，也就是20位，20位的寻址空间可达到 2^32B = 1024K = 1M，所以地址总线能传这么大的数，但是寄存器却存不下，</p>
-<p>为了解决这一不匹配带来的问题，必须要采用一种方式给它俩匹配上，而这种方式，就是下面寻址原理提到的方式。</p>
-<h3 id="寻址原理"><a href="#寻址原理" class="headerlink" title="寻址原理"></a>寻址原理</h3><p>在上一期关于<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/_hSLAZPSw_zSZQ0W9V-Fiw">Linux启动</a>的文章中，我们知道内存地址的表示是由代码段寄存器CS和指令寄存器IP完成的，前者代表段基地址，后者代表段内偏移地址。他们都是16位的，为了和20位地址总线匹配，会进行如下：<strong>先将cs寄存器的值左移四位，然后再与ip寄存器的值相加</strong>，这么以转换，就得到了一个20位的数据大小了，如下所示：</p>
-<p><strong>真实物理地址 = 段基址 &lt;&lt;&lt;&lt; 4  + 段内偏移地址</strong></p>
-<p>我们现在假设 段基址的值也就是cs寄存器的值 =  0xFFFF , 段内偏移地址也就是 ip寄存器的值为 0x0000， 那么最终的真实物理地址为：</p>
-<p><strong>0xffff &lt;&lt;&lt;&lt; 4 + 0x0000 = 0xffff0 + 0x0000 = 0xffff0</strong></p>
-<p>最终结果就是 0xffff0 了</p>
-<p>通过原理的介绍以及例子的讲解，我们弄清楚了实模式下的CPU寻址原理，也就是（cs:ip）</p>
-<p>其实还有一点没有跟你提到，我们前面所描述的寻址原理，是通过段基地址和段内偏移地址找到的内存地址，这就是在操作系统进行内存管理的第一大跨越，著名的内存分段模型。</p>
-<h3 id="8086CPU的问题"><a href="#8086CPU的问题" class="headerlink" title="8086CPU的问题"></a>8086CPU的问题</h3><p>通过上面的描述，细心的你，肯定发了问题。</p>
-<p>你会发现用到的既然都是真实的物理地址，是不是随意一个能表示的地址都可以访问？</p>
-<p>这就出现了两个程序之间的地址空间没有界限，就可以相互随意干扰，所以就得给内存地址加上保护机制。</p>
-<p>你还会发现代码段寄存器和指令寄存器所能表示的最大寻址地址为0xFFFF:0xFFFF = 0x10FFEF</p>
-<p>这个地址已经比1M要大了，那超过1M怎么办呢，地址总线就那么20根，这个时候8086CPU采取的办法就是高位被抛弃，也就是我们现在说的数据溢出（Overflow）了。</p>
-<p>为了解决这些问题保护模式机制就诞生了。</p>
-<h1 id="保护模式部分"><a href="#保护模式部分" class="headerlink" title="保护模式部分"></a>保护模式部分</h1><p>保护模式出现的原因就是为了解决实模式下出现的问题，保护，顾名思义：就是保护进程地址空间，程序A的地址空间，不能随意被程序B访问。</p>
-<p>保护模式下的概念稍多，我们先来看看几个概念。</p>
-<h2 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h2><h3 id="执行权限（CPU特权级）"><a href="#执行权限（CPU特权级）" class="headerlink" title="执行权限（CPU特权级）"></a>执行权限（CPU特权级）</h3><p>既然是需要保护内存地址空间，那么肯定有些指令得有执行的权限控制，CPU就实现了特权级，如图</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/WechatIMG216_20211127102824.png"></p>
-<p>从里往外权限依次降低，可以看到内核态具有最高权限即Ring 0 拥有最高权限，可以访问低特权级的资源，而反过来却不行。</p>
-<h3 id="段描述符"><a href="#段描述符" class="headerlink" title="段描述符"></a>段描述符</h3><p>这里32位CPU中的寄存器相比于16位发生了改变，原来16位寄存器可以存放下段基地址和段内偏移地址，而变到32位，还需要存储其他信息，肯定放不下了。放不下，就需要想办法去解决，这个时候就去找内存借用空间，然后把描述一个段的信息封装成特定格式的描述符，存放在内存中，这个描述符就被称为段描述符，它包含两个双字，也就是64位8字节数据，里面包含了段基地址、段长度、权限、类型等等信息，具体就来看图吧！</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127102906.png"></p>
-<p>那么段描述符肯定不止一个，多个段描述符在内存中，就形成了一个表，这个表叫做全局段描述符表（GDT，Global Descriptor Table），这个表的基地址是由GDTR寄存器指向。这个寄存器在保护模式初始化的时候会加载一个值，这个值就指向了GDT，这样要寻址的时候就会先来到这里，而在寄存器中，不在是存放段基址，而是一个指向段描述符表的索引。所以这里就从根本上改变了寻址方式了。</p>
-<h3 id="段选择子"><a href="#段选择子" class="headerlink" title="段选择子"></a>段选择子</h3><p>上面提到的指向段描述符表的索引就属于段选择子的一部分，具体结构如下图：</p>
-<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127102920.png"></p>
+                <p>今天来和大家分享《程序员的自我修养————链接、装载与库》这本书的全书导读，它在去年我拿下微信、抖音、百度等大厂sp以级上offer有非常大的帮助，分享与你，希望能够对你带来启发。</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在工作之余，重新认真阅读学生时代读过的书籍，阅读到了这本对我秋招帮助很大的书，重新思考了一些原来读这本书时的问题，比如：windows系统相关知识，我到底要不要精读？一些晦涩难懂的知识该怎么办？等等，所以打算梳理一篇该书的导读内容，希望对你能够有所帮助。<br>PS：如果你还没有读过本书，建议你去认真阅读本书，你肯定能收获不小。</p>
+<h1 id="阅读前所需要具备的基础知识"><a href="#阅读前所需要具备的基础知识" class="headerlink" title="阅读前所需要具备的基础知识"></a>阅读前所需要具备的基础知识</h1><p>下面为你整理了，你阅读本书前，最好所具备的前言知识，这样能够在你阅读的时候减少很多阅读障碍。如果你缺少一些前言知识，也没关系，努努力，啃一啃，遇到问题时，去努力解决，也会有不小收获。</p>
 <ul>
-<li>索引：表示在段描述附表中的索引位置</li>
-<li>TL：Table Indicator 表示是去GDT表查找还是LDT（局部描述符表）</li>
-<li>RPL：请求特权级，以什么样的特权级访问段信息。</li>
+<li>C/C++编程语言基础</li>
+<li>汇编语言基础</li>
+<li>操作系统基础</li>
+<li>计算机组成原理基础</li>
 </ul>
-<p>段选择子又属于属于段寄存器的一部分，它是一个16位的整数（这是16位可见部分）记录了GDT表的段描述符的具体索引位置，以及请求特权级和描述符表类型以及段描述符表索引。</p>
-<h2 id="寻址原理-1"><a href="#寻址原理-1" class="headerlink" title="寻址原理"></a>寻址原理</h2><p>保护模式的寻址原理，就没有实模式那么简单了，首先在保护模式下，cs寄存器的低16位存储的是上面提到的段选择子的信息，在寻址的时候，会根据GDTR寄存器找到基址，然后根据cs寄存器里面的段选择子信息，进行偏移读取，读取完了之后，其实这个时候已经找到了程序执行的地址，接下来就<strong>会根据段描述符进行对段寄存器的填充，主要是填充不可见的那一部分</strong>，段寄存器的大致分布如下。</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">struct Segment
-&#123;
-  WORD selector;  //16位段选择子        
-  WORD attribute; //16位表示的段属性
-  DWORD base;     //32位表示的基址始
-  DWORD limit;    //32位表示
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>我们前面提到了，段选择子是段寄存器的一部分，如上面代码 selector 就是表示选择子，而下面的三个属性是不可见的。attribute 属性标注了段的属性，是可读还是可写还是可执行的，base属性表示了段从哪里开始，limit和base就可以确定一个段的大小。<br>除了段选择子可见外，后面的三个部分对程序员是不可见的，那么我们如何得知这三部分的存在呢？这里需要做一些相关的实验室，后续见~</p>
-<p>填充完了之后，段寄存器中有内存地址信息了。</p>
-<p>弄清楚了保护模式的寻址原理了，是不是还想知道，实模式下，究竟如何切到到保护模式呢？</p>
-<h1 id="实模式切换到保护模式"><a href="#实模式切换到保护模式" class="headerlink" title="实模式切换到保护模式"></a>实模式切换到保护模式</h1><p>x86的CPU在每次加电或者reset的时候，都是先进入到的是实模式，如果要切换到保护模式得需要程序引导，这个引导，我们上期提到过了，在启动的时候是存在GRUB中的，根据上文，我们回忆一下，切到保护模式的寻址方式发生了根本改变，那么是不是先得准备好保护模式所需要的寻址资料呢。</p>
-<h3 id="屏蔽中断"><a href="#屏蔽中断" class="headerlink" title="屏蔽中断"></a>屏蔽中断</h3><p>其实在准备寻址资料之前还需要一步叫屏蔽中断，保护模式下的中断和实模式下的可不一样，所以为了安全第一步就得屏蔽实模式下的中断，指令如下</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">cli<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="准备全局段描述符"><a href="#准备全局段描述符" class="headerlink" title="准备全局段描述符"></a>准备全局段描述符</h3><p>然后得准备好全局段描述符 GDT用来存放实模式下的CS和IP的段地址信息；</p>
-<p>接下来得有一个指向GDT的寄存器，它叫 GDTR寄存器 初始化这个值使其指向GDT基地址。</p>
-<h3 id="设置CR0"><a href="#设置CR0" class="headerlink" title="设置CR0"></a>设置CR0</h3><p>CR0也是CPU的寄存器之一，它可以控制CPU的重要特性，其中有一个位置就是代表了是否进入保护模式，是它的最低位——保护允许位，将这个位设置成1，就代表要开启保护模式。</p>
-<h3 id="长跳转"><a href="#长跳转" class="headerlink" title="长跳转"></a>长跳转</h3><p>设置完CR0之后，就开始进入保护模式了，这个时候得需要长跳转指令，如下，</p>
-<pre class="line-numbers language-plain" data-language="plain"><code class="language-plain">jmp 08h:_32bits_mode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>为什么是长跳转？<br>长跳转的一个作用是可以清空CPU的指令流水线，在切换到保护模式前，有很多实模式下的指令进入到了指令流水线中，而这个时候CPU又切换了工作模式，就得把之前的指令都清空。</p>
-<p>长跳转到08h这个地址执行，这个时候cs的值也就被重新赋值了。</p>
-<h3 id="初始化相关寄存器"><a href="#初始化相关寄存器" class="headerlink" title="初始化相关寄存器"></a>初始化相关寄存器</h3><p>长跳转完之后，最后就是进行相关寄存器的初始化，比如ax、bx、sp等，初始化完之后就按照保护模式的寻址方式进行寻址。</p>
-<p>到此，CPU进入了保护模式运行，完了模式切换。</p>
-<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>回顾上面的内容，主要讲解了实模式的一些历史起源、寻址原理，以及保护模式下的几个概念和寻址方式，最后对两种模式的切换步骤做了描述，你可能有疑问了，是不是还有64位的工作模式，没错，是还有64位的工作模式——长模式，它的寻址原理和32位差不多，也是会有一个段描述符来存储信息，只是在校验方面有些不同，弄懂保护模式就很好理解长模式了。</p>
-<p>更多内容你可以关注公众号： 「ConeZhang」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>
+<h1 id="全书概览"><a href="#全书概览" class="headerlink" title="全书概览"></a>全书概览</h1><p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB_20211127132746.png"></p>
+<p>如上图所示，全书分为四个部分。<br>第一部分：温故而知新<br>第二部分：静态链接<br>第三部分：装载与动态链接<br>第四部分：库与运行库</p>
+<h1 id="章节概览"><a href="#章节概览" class="headerlink" title="章节概览"></a>章节概览</h1><p>下面是一些章节的概览，有些知识Windows的知识也不需要去完全掌握，毕竟我们可能很少接触windows开发吧。<br>第一章：温故而知新<br>本章也就是全书概览上的第一部分，主要介绍一些背景知识和阅读本书的一点铺垫知识，比如：CPU、内存等硬件，操作系统进程、线程相关知识。<br>第二章：编译和链接<br>本章主要介绍基本的编译概念以及编译几大过程还有链接器相关知识。<br>第三章：目标文件<br>本章介绍了Windows和Liunx量大系统的目标文件，回答了目标文件是什么，目标文件类型，目标文件如存储等问题。<br>第四章：静态链接<br>本章主要讲解静态链接基础知识和静态链接基本步骤和过程，还讲解举例了最“小”链接。<br>第五章：Windows PE/COFF<br>本章介绍Windows平台的目标文件和可执行文件。<br>第六章：可执行文件的转载与进程<br>本章通过介绍进程的基本概念，地址空间布局等知识引申出了可执行文件的加载过程。<br>第七章：动态链接<br>本章主要讲解Liunx系统下的.so动态库的动态链接过程。<br>第八章：Liunx动态库<br>本章主要详解介绍动态库的相关知识，包括动态库的分布和组织等。<br>第九章：Windows下的动态链接<br>这章主要讲Windows下面的动态链接机制<br>第十章：内存<br>这章主要讲运行时内存相关知识，包括堆与栈，堆的分配算法，函数调用栈等。<br>第十一章：运行库<br>这章主要介绍运行库的概念、c/c++运行库、Glibc和MSVC CRT相关知识。<br>第十二章：系统调用与API<br>这章主要讲系统调用知识，包括系统调用流程以及相关API介绍。<br>第十三张：运行库实现<br>这章主要实现了一个支持堆、基本文件操作等功能的Mini CRT.</p>
+<h1 id="导读建议"><a href="#导读建议" class="headerlink" title="导读建议"></a>导读建议</h1><p>通常阅读一本书，我们会有一个问题：我需要从书中得到一些什么？可能是已有知识的总结回顾、也可能是新知识的获取。不管怎么样，我们会有想要得到的收获，那么阅读《程序员的自我修养》这本书，你能得到什么呢？</p>
+<ul>
+<li>以CPU会为核心回顾计算机体系知识</li>
+<li>了解代码编译的基本概念和步骤</li>
+<li>Liunx系统下目标文件格式以及如何存储</li>
+<li>静态链接基本概念，为什么要有静态链接</li>
+<li>目标文件如何被静态链接到一起行程可执行文件</li>
+<li>静态链接时的空间地址分配、符号决议和重定位如何进行</li>
+<li>可执行文件如何被系统加载，与进程的地址空间如何映射</li>
+<li>动态链接基本概念以及链接时相关问题</li>
+<li>运行时的内存分配以及入口程序初始化<br>上面是一些基本能得到的收获，我们从中抽象为三个重要问题：</li>
+<li>源码是如何被编译成可执行程序的？</li>
+<li>可执行程序是如何被加载到内存的？</li>
+<li>内存中的进程空间布局是怎么样的？</li>
+</ul>
+<p>带着这个三个问题，去阅读本书，效果会更好。首先我们从书本脉络出发，尝试回答第一个问题</p>
+<h3 id="源码是如何被编译成可执行程序的？"><a href="#源码是如何被编译成可执行程序的？" class="headerlink" title="源码是如何被编译成可执行程序的？"></a>源码是如何被编译成可执行程序的？</h3><p>这个涉及相关编译问题，从上面的章节概览可以得到，在第二章：编译和链接就能找到相关答案，所以你需要认真阅读第二章全部内容，不过这里只稍微展开讲了编译的大致过程，但是生成可执行文件还需要链接，所以顺着下去需要搞懂链接。<br>那么在学习链接之前，书本第三章：目标文件里面有什么，就讲解了需要链接的输入产物长什么样子，以及链接前的基本知识：链接的接口（基本单位），所以第三是一个基础知识，是为后面章节做铺垫的，你需要大致清楚目标文件的基本知识，第三章也是需要全部认真阅读的。<br>接下来就是链接了，第四章：静态链接，本章首先根据目标文件，讲解了两种链接方法，之后讲解了链接的两个步骤，然后引申出C++的相关问题，其次讲解了静态库的链接，最后有一个小实验，让你动手体验。<br>到这里你很好的回答上面的这个问题了。<br>接下来我们继续下一个问题。</p>
+<h3 id="可执行程序是如何被加载到内存的？"><a href="#可执行程序是如何被加载到内存的？" class="headerlink" title="可执行程序是如何被加载到内存的？"></a>可执行程序是如何被加载到内存的？</h3><p>回答完前面那个问题后，你了解了可执行程序的文件内容以及格式，前文开篇提到需要由操作系统的基础知识，操作系统知识中程序运行的基本单位是进程，可执行程序加载到内存肯定首先需要了解进程的地址空间，其次需要知道是以上面方式加载到内存的。在加载到内存之前需要进行进程的建立等操作，所以在本书第六章主要为你解答这些问题。<br>认真理解静态链接之后，我们会有一个疑问，那些在静态链接没有被重定位的符号怎么办？符号表里都是存在的偏移地址，那真实地址如何确定。这就涉及到了动态链接了，在静态链接没有完成的工程，由程序加载时进行动态链接完成。本书在第七章详细介绍了动态链接的相关知识，包括步骤实现、懒加载等等。<br>在了解完动态链接之后，还需要了解动态库的特性，所以在第八章介绍了Liunx下动态库相关的知识。<br>读完前面八章内容，你已经非常熟悉编译链接加载相关知识了。<br>那么加载完了之后是运行，所以接下来一个问题就是关于运行的了。</p>
+<h3 id="内存中的进程空间布局是怎么样的？"><a href="#内存中的进程空间布局是怎么样的？" class="headerlink" title="内存中的进程空间布局是怎么样的？"></a>内存中的进程空间布局是怎么样的？</h3><p>进程的空间布局直接影响会影响程序的运行，运行时也需要用到一些堆、栈等空间，所以在本书第十章讲解了内存相关知识，包括进程的空间布局、栈与调用惯例、堆与内存管理等知识，读完本章，你能够大致明白，程序运行时的一些地址是怎么回事。<br>程序运行你肯定好奇入口，也就是计算机是如何进入执行程序的。那么本书第十章：运行库，第一节为你讲解了相关知识。<br>读到这里你对于计算机的编译、链接、加载、运行有了很深刻的认识，从全局层面进行了系统性的学习。</p>
+<p>回答完三个问题，接下来对本书的内容做一个小小的总结</p>
+<h3 id="导读总结"><a href="#导读总结" class="headerlink" title="导读总结"></a>导读总结</h3><p>p1-109，建议精读，读懂读透，读完就能系统的计算机编译链接相关知识。<br>P127，使用ld链接脚本，本节需要自己动手尝试，计算机是一门工科，多动手体会。<br>P149-175，讲解可执行文件的转载和进程，需要精读。<br>P179-P219，讲解动态链接，这一部分内容稍有难度，需要花些精力认真读。<br>P229-P248 讲解动态库，如果动态链接有些吃力，这一章可跳过也不影响。<br>P283-334，这一部分就需要回到上面的第三个问题了，也需要认真弄懂。</p>
+<p>整体下来前面175页的知识读下来会比较轻松，同时也能掌握很多的知识，从动态链接开始难度有会有提升了。但是只有理解了动态链接，你才能理解程序编译链接时给动态链接留下接口是为什么，当然你也可以大致把动态库理解为一堆功能代码的共享。导读总结就到这里了，希望你读完有所收获。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>正如这本书的取名一样，程序员也需要由自身的技术修养，在自我修养这条路上，笔者和大家一起成长。</p>
+<p>更多内容你可以关注公众号： 「<strong>ConeZhang</strong>」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>
 
                 
             </div>
@@ -492,7 +462,7 @@
                     </i>
                     </span>
                 <span class="reprint-info">
-                    <a href="https://www.zhangchione.com/2021/11/11/cpu-work-model/">https://www.zhangchione.com/2021/11/11/cpu-work-model/</a>
+                    <a href="https://www.zhangchione.com/2021/10/16/books-study-xiuyang/">https://www.zhangchione.com/2021/10/16/books-study-xiuyang/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -530,8 +500,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                                    <span class="chip bg-color">启动</span>
+                                <a href="/tags/%E4%B9%A6%E7%B1%8D/">
+                                    <span class="chip bg-color">书籍</span>
                                 </a>
                             
                         </div>
@@ -697,9 +667,9 @@
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'https://www.zhangchione.com/2021/11/11/cpu-work-model/';
-        this.page.identifier = '/2021/11/11/cpu-work-model/';
-        this.page.title = '深入浅出CPU的两种工作模式';
+        this.page.url = 'https://www.zhangchione.com/2021/10/16/books-study-xiuyang/';
+        this.page.identifier = '/2021/10/16/books-study-xiuyang/';
+        this.page.title = '《程序员的自我修养》导读';
     };
     let disqus_shortname = 'zhangchione';
 
@@ -751,18 +721,17 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/11/11/cpu-work-model/">
+                <a href="/2021/11/10/os-liunx-start/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="深入浅出CPU的两种工作模式">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="关于Liunx启动，你想知道的全都在这!">
                         
-                        <span class="card-title">深入浅出CPU的两种工作模式</span>
+                        <span class="card-title">关于Liunx启动，你想知道的全都在这!</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -772,9 +741,9 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-11
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-10
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -787,7 +756,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -806,13 +774,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/11/10/LiunxStart/">
+                <a href="/2021/09/20/ex-my-university/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="关于Liunx启动，你想知道的全都在这!">
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="双非本科成功上岸BAT大厂，大学四年我经历了些什么？">
                         
-                        <span class="card-title">关于Liunx启动，你想知道的全都在这!</span>
+                        <span class="card-title">双非本科成功上岸BAT大厂，大学四年我经历了些什么？</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -823,14 +791,14 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-10
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-20
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Liunx/" class="post-category">
-                                    Liunx
+                            <a href="/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/" class="post-category">
+                                    程序人生
                                 </a>
                             
                             
@@ -840,8 +808,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E5%90%AF%E5%8A%A8/">
-                        <span class="chip bg-color">启动</span>
+                    <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+                        <span class="chip bg-color">经验分享</span>
                     </a>
                     
                 </div>
@@ -1045,7 +1013,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">25.5k</span>
+                        class="white-color">51.3k</span>
             
             
             

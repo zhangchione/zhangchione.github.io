@@ -1,0 +1,1293 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="操作系统发展史">
+    <meta name="description" content="操作系统的文章写了 3-4 篇，还没有聊过操作系统的由来，操作系统的发展等话题，今天就来和你谈谈操作系统发展史。那么就一起回顾历史，展望未来！
+首先，我们思考一个问题。
+
+为什么会有操作系统？
+
+在我们教科书上会提到分时系统、批处理系统等等">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EC7VKD5N0V"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-EC7VKD5N0V');
+</script>
+
+
+    <title>清晰！一起穿梭操作系统发展史 | Cone的编程小屋</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Cone的编程小屋" type="application/atom+xml">
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Cone的编程小屋</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Cone的编程小屋</div>
+        <div class="logo-desc">
+            
+            这里是Cone的编程小屋，分享原创易懂的计算机体系知识，还有百般滋味的程序人生。
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">清晰！一起穿梭操作系统发展史</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%91%E5%B1%95/">
+                                <span class="chip bg-color">计算机发展</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="post-category">
+                                操作系统
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-11-25
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    14 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>操作系统的文章写了 3-4 篇，还没有聊过操作系统的由来，操作系统的发展等话题，今天就来和你谈谈操作系统发展史。那么就一起回顾历史，展望未来！</p>
+<p>首先，我们思考一个问题。</p>
+<blockquote>
+<p>为什么会有操作系统？</p>
+</blockquote>
+<p>在我们教科书上会提到分时系统、批处理系统等等现代操作系统前的中间产物，都也会讲到管理硬件的功能，但似乎没有讲到为什么有操作系统这个东西，诞生操作系统是为了解决什么样的问题？那下面来通俗易懂的讲讲为什么有这个东西。</p>
+<p>假设在远古时代的计算机需要由人工进行运行操作，但是运行期间又不需要更多的人为干预，这个时候人就空闲下来了，但是<strong>计算机被这个任务占据了，啥也干不了，白白的浪费时间</strong>（程序员的工资那么高，时间这么浪费了的话，损失惨重！），而且对于计算机的核心部件 CPU 来说，并不是一直有数据可以来运行，也有对于其他部件的操作，比如 IO 操作，<strong>在等待 IO 的时间里特别漫长</strong>，这就浪费了宝贵的 CPU 资源。所以这样的计算机运行状况是非常低效的，那么操作系统解决的一个问题就是<strong>提高效率</strong>，提高 CPU 的使用率，不让 CPU 休息，疯狂压榨它！！！</p>
+<p>同时，计算机操作人员直接操作计算机硬件的话，非常麻烦，还容易出错，所以人们总是寻求一些办法来解决现有问题，这种解决问题的方法论在哪个学科都成立，既然麻烦，那何不根据计算机领域哲学方法论：<strong>添加一个中间层来解决现有问题</strong>，那么操作系统就是这个相对于硬件的中间层。它的出现就屏蔽了底层硬件的细节，从而让出错的概率大大降低，以及让计算机操作人员更加顺风顺水的操作，程序也开始可以被操作系统自动管理。</p>
+<p>上面提到的两个问题可以归结于三个字：<strong>自动化</strong>。 程序员总是趋向于追求自动化，比如自动化测试等等。自动化有什么好处呢？借用一句工业革命时期的话那就是：<strong>解放生产力</strong>。代替那些重复性工作</p>
+<p>所以操作系统的出现也是可比喻成生产力的解放，使得程序运行更加高效。</p>
+<p>既然我们知道了需要这么一个操作系统来进行自动化运行，那么什么是操作系统呢，为什么叫操作系统而不叫管理系统或者其他名字呢？</p>
+<blockquote>
+<p>什么是操作系统？</p>
+</blockquote>
+<p>操作系统的英语翻译为：Operating Systems. 翻译为操作系统，操作二字有点流水线工人操作员的意味，是不是感觉有点土。这么理解的话，那就有些许偏差了，再来一个英语词汇：Operating Surgeon. 这个词汇的意思是主刀大夫. 主刀大夫是什么人物？在整个手术室里是权威呀，说上麻药，麻醉师马上就位，说要 xx 手术刀，助理大夫马上送到，是<strong>主宰手术室一切的人物</strong>。所以<strong>操作系统也是主宰一切的系统，计算机体系世界里的一把手。</strong></p>
+<p>那么操作系统主宰的一切，这一切包含什么呢？</p>
+<p>当然是计算机上里发生的一切事情。在最原始的计算机并没有操作系统，而是直接由人来掌控事情，即所谓的单一控制终端、单一操作员模式。但是随着计算机复杂性的增长，人已经不能胜任直接掌控计算机了。于是我们编写出操作系统来掌控计算机，<strong>将人类从日益复杂的掌控任务中解脱出来</strong>。</p>
+<p>所以明确的说操作系统就是 <strong>掌控计算机一切的舵主，权威至上。</strong></p>
+<p>我们知道操作系统管理计算机的一切，那操作系统具体管理哪些东西？</p>
+<blockquote>
+<p>操作系统管理哪些东西？</p>
+</blockquote>
+<p>还是来张图更加清晰。如下图。操作系统的 4 个核心管理，当然还有其他的一些安全性等等管理。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125705.png"></p>
+<p>如图，第一个是<strong>进程管理</strong>，管理要素包含三个：第一个是<strong>公平</strong>，即每个程序都有机会被 CPU 执行。第二个是<strong>非阻塞</strong>，任何一个程序不能无限制的阻塞 CPU 给其他程序执行。如果一个程序在运行过程中需要输入输出或者因别的什么事情而发生阻塞，这个阻塞不能妨碍其他进程继续运行。第三个是<strong>优先级</strong>，CPU 也是分优先级的，也就说优先级高的进程会首先被 CPU 执行，都优先级其次。</p>
+<p><strong>内存管理</strong>主要是管理缓存、主存、磁盘、磁带等存储介质所形成的内存架构。为实现这一内存架构，设计了虚拟内存这一层结构，即将物理内存扩充到外部存储介质上。这样内存的空间就大大地增加了，能够运行的程序的大小也大大地增加了。内存管理的另一个目的是让很多程序 共享同一个物理内存。这就需要对物理内存进行分割和保护，不让一个程序访问另一个程序所占的内存空间。</p>
+<p><strong>外存管理</strong>通常也称为存储管理，它也就是文件系统管理了。文件系统的主要目的是将磁盘变成一个很容 易使用的存储媒介以提供给用户使用。这样我们在访问磁盘时无须了解磁盘的物理属性或数据在磁盘上的精确位置，诸如磁道、磁柱、扇面等。当然，文件系统还可以建立在光盘和磁带上。只是使用最为频繁的文件 系统都以磁盘为介质。</p>
+<p><strong>I/O 管理</strong>也称为设备管理，就是管理输入输出设备。I/O 管理的目的有两个：一是屏蔽不同设备的差异性，即用户用同样的方式访问不同的设备，从而降低编程的难度，你要知道目前存在有上万种 IO 设备，每个 IO 设备的适配都是在这里进行的，这是<strong>抽象和封装的魅力</strong>；二是提供并发访问，即将那些看上去并不具备共享特性的设备（如打印机等）变得可以共享。</p>
+<p>上面三个问题，我们走进了操作系统的世界，了解了操作系统为何而来，它又在干些什么，下面还是来进入主题，操作系统历史，那么操作系统到底经历了些什么呢？老规矩：一图胜千言。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125714.png"></p>
+<p>我们就从萌芽阶段的状态机系统来讲起。</p>
+<h3 id="第一阶段：状态机系统"><a href="#第一阶段：状态机系统" class="headerlink" title="第一阶段：状态机系统"></a>第一阶段：状态机系统</h3><p>状态机系统是计算机在萌芽阶段出现的，也就是大概 1940 年以前。其实这种系统其实都不能算做操作系统，因为他就是一种简单的状态转换程序，通过特定的输入和特定的状态进行转换。能做的计算也非常简单，也就仅限于加减法，也不支持命令交互等等功能。当然，它有一个非常大的好处，没有安全风险，没几个人能解除到它，自然就不存在安全问题了。</p>
+<h3 id="第二阶段：单一控制系统"><a href="#第二阶段：单一控制系统" class="headerlink" title="第二阶段：单一控制系统"></a>第二阶段：单一控制系统</h3><p>学过计算机导论的话，你应该了解计算机领域的的经典模型——冯若依曼体系结构原理，它是 1945 年左右提出的，属于这个时期，那还记得我们全世界的第一台电子计算机是什么时候出现的吗？没错，也是这个时期出现的，时间是 1946 年 2 月，诞生在美国的宾夕法尼亚大学，名称叫做 ENIAC。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125723.png"></p>
+<p>这台电子计算机其实没有搭载所谓的操作系统，他只是提供了一些<strong>标准的命令给用户使用</strong>，这些标准的命令集就构成了原始的操作系统 SOSC（System Operation Support Center）。这些 SOSC 满足了系统运行的基本功能，<strong>提供人机交互功能</strong>，在这种情况下，任何时刻却只能做一件事，不支持并发也不支持多道程序设计。在这种系统下的资源利用率很低很低，你<strong>输入一个命令它就执行一次</strong>，类似于拨一下就动一下，但是动的拿一下又全部占用计算机。这种情况，我们可以理想成只有一个程序能运行。从机器的角度出发，时时刻刻都要等着人来操作，效率真的太低了，详细情况看看下图更清晰。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125734.png"></p>
+<p>多个人需要使用这台计算机，指令就会断断续续，就会影响效率，就算是一个人输入多个命令，相比于计算机来讲，人输入的指令速度也会很慢。</p>
+<p>那有没有不等人的操作让其自己执行呢？随着计算机的发展那当然有了，接下来就打破这种过于笨拙的情况，来到自动化一点的时代。</p>
+<h3 id="第三阶段：批处理系统"><a href="#第三阶段：批处理系统" class="headerlink" title="第三阶段：批处理系统"></a>第三阶段：批处理系统</h3><p>在仔细考察了 SOSC 后，人们发现，SOSC 效率之所以低下，是因为<strong>计算机总是在等待人的下一步动作，而人的动作总是很慢</strong>。因此，人们觉得，如果去掉等待人输入命令的时间，即让所有的人先想好自己要运行的命令构成一个程序，然后列成一个清单，打印在纸带上，然后交给一个操作人员来一批一批地处理，效率不就提高了吗？这样就形成了批处理操作系统。这是又大大提高单一控制终端的操作系统 SOSC 的效率。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125742.png"></p>
+<p>显然，在这种工作模式下，系统的功能得到了提升，必然复杂性也随之提升，在这种系统下，用户只管把程序放在磁带上，用户自己可以不在场而去干别的，接下里就是由操作员操作批处理系统来处理一个个任务，处理完了就给出结果。最早的自动化处理雏形出现了。但是这个时候也<strong>只能一个个任务处理，一个任务读取 IO 的时候 CPU 就等待下来了</strong>，还是在一定程度上会影响 CPU 运行的效率，有没有办法再提高一些呢。这个时候就抓住了 CPU 和 I/O 设备运行时串行的这点，做了文章。</p>
+<h3 id="第四阶段：多道批处理系统"><a href="#第四阶段：多道批处理系统" class="headerlink" title="第四阶段：多道批处理系统"></a>第四阶段：多道批处理系统</h3><p>先来看看单道批处理下的 CPU 与 IO 运行关系，如图。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125749.png"></p>
+<p>当 IO 操作的时候，CPU 会等待 IO 操作的结果，结果返回后才会继续执行程序，我们可以认为这个时候程序是串行的。由于 I/O 设备的运行速度相对于 CPU 来说实在太慢，这种让<strong>高速设备等待低速设备的状况无法接受</strong>。那能不能将 CPU 和 I/O 进行并发呢？即在一个程序输入输出时，让另一个程序继续执行。换句话说，能不能将 CPU 运行和 I/O 设备的运行重叠起来而改善整个系统的呢？答案是肯定的，我们可以设计将多个程序同时加载到计算机内存里，以前内存里只有一个程序，而现在有多个程序在运行，从而就出现了多道批处理操作系统。这是一个划时代的操作系统，<strong>开始从原来串行执行任务，到并发执行任务</strong>，大大提高了 CPU 的使用率，具体如图。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125757.png"></p>
+<p>这样 CPU 就开始被任一时刻都用起来了，不会让它再次打盹了。这两个阶段都是可以为围绕如何提高 CPU 运行效率来优化。可以发现，在程序 1 要让出 CPU 的时候，那么到底是让程序 2 执行呢，还是程序 n 执行呢，这就涉及到 CPU 运行时间如何分配问题，随着发展，我们又有了分时运行的方案。</p>
+<h3 id="第五阶段：分时系统"><a href="#第五阶段：分时系统" class="headerlink" title="第五阶段：分时系统"></a>第五阶段：分时系统</h3><p><strong>多道批处理操作系统的出现使计算机的效率（主要是吞吐率）大大提高</strong>。不过批处理系统这里有一个很大的问题，写程序的人需要交给一个计算机操作人员来执行程序，对于结果等全部执行完了之后才知道，也不能知道执行步骤，这显然也是低效且很难接受的。万一这个计算机操作人员操作失误或者忘记了呢，所以这个时候就得提出人人都可以拥有计算机的使用权，从而去考虑 CPU 资源怎么分配，这就是<strong>分时系统</strong>，给每个用户分配的时间是均等份的。即分给每个人有限的时间，只要时间到了，就换一个进程。这种时分切换下的操作系统就是分时操作系统。在这种系统下，用户就可以自己调试程序，这里就相当于有多个程序并发的在执行，<strong>只要我们将 CPU 切换的时间无限细分，那么每个用户就会感觉独自占有计算机资源一样</strong>，这样的运行模式下就是有多个程序一起执行，也就是我们现代操作系统里的<strong>进程并发</strong>概念。详细情况如图。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125812.png"></p>
+<p>A,B,C,D 四个程序依次在 CPU 上执行，如果将每等分无限细分，就好像 A,B,C,D 四个程序自己一个人独占 CPU 资源一样，这也就出现了程序执行的并发现象，这是一个假象，只是执行速度太快，人类无法感知而已。</p>
+<p>在分时系统下，操作系统的复杂性开始大大提高，还会涉及到资源互斥、进程通信死锁、保护等问题，复杂性指数可以说是增长超快了。</p>
+<p>那么在分时系统下，每个进程获得 CPU 的执行时间是公平的，不存在偏差，这就会导致一个问题，比如我输入单词这么一个操作，不可能等 CPU 执行权限来到了才能执行吧，得及时响应，不然的话，用户体验极其差评！所以就出现了实时系统。</p>
+<h3 id="第六阶段：实时系统"><a href="#第六阶段：实时系统" class="headerlink" title="第六阶段：实时系统"></a>第六阶段：实时系统</h3><p>随着计算机技术的进步，产生了一种需求：<strong>有一个程序需要在需要运行的时候马上运行</strong>，而不能等到分时轮到这个进程执行，比如现在的鼠标、键盘等输入性操作，在不破坏操作系统原有运行体系下，需要响应这些事件。也就是计算机对这些事件必须在规定的事件内做出响应，这就是实时系统，详细情况如下图。</p>
+<p><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/image_20211127125823.png"></p>
+<p>这个时候响应事件的优先级最高，CPU 会优先处理这些高优的事件，也就是有了实时被处理的感觉。</p>
+<h3 id="第七阶段：现代操作系统"><a href="#第七阶段：现代操作系统" class="headerlink" title="第七阶段：现代操作系统"></a>第七阶段：现代操作系统</h3><p>1980 之后，就开始进入现代操作系统时代了，计算机工业开始迅速腾飞，出现了 DOS，Windows，MacOS 主流操作系统，总结了前面各个阶段的优缺点，发展了现代操作系统，同期也出现了 PC 机，计算机算力开始大大提高，后来又出现网络，分布式操作系统又得到了发展。</p>
+<p>在操作系统的历史演进过程中，我们可以发现基本上是围绕如何提高 CPU 效率这个方向来进行，让 CPU 不打盹是我们的目标，围绕这个点来看计算机发展史，非常能理解当前时代出现了什么问题，如何去解决问题。</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>我们生活在一个最好的时代，这个时代只要你动动手就能获取你想要了解的信息。一起享受这个时代所带来的的便捷吧！</p>
+<p>更多内容你可以关注公众号： 「<strong>ConeZhang</strong>」<br><img src="https://cone-pic.oss-cn-beijing.aliyuncs.com/pic/poster.png"></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://www.zhangchione.com" rel="external nofollow noreferrer">Cone</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                    </span>
+                <span class="reprint-info">
+                    <a href="https://www.zhangchione.com/2021/11/25/os-history/">https://www.zhangchione.com/2021/11/25/os-history/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY-NC-ND 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="https://www.zhangchione.com" target="_blank">Cone</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8F%91%E5%B1%95/">
+                                    <span class="chip bg-color">计算机发展</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'https://www.zhangchione.com/2021/11/25/os-history/';
+        this.page.identifier = '/2021/11/25/os-history/';
+        this.page.title = '清晰！一起穿梭操作系统发展史';
+    };
+    let disqus_shortname = 'zhangchione';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+    
+
+    
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC80MTQ1MS8xNzk5OA==">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/11/25/ex_bat_internal/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="真实！找大厂实习应该达到什么样的水平">
+                        
+                        <span class="card-title">真实！找大厂实习应该达到什么样的水平</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-25
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%A4%A7%E5%8E%82%E4%B8%96%E7%95%8C/" class="post-category">
+                                    大厂世界
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+                        <span class="chip bg-color">经验分享</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/11/22/ex-ex-copy/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="埋头拉车的同时，也要记得抬头看路">
+                        
+                        <span class="card-title">埋头拉车的同时，也要记得抬头看路</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/" class="post-category">
+                                    程序人生
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">
+                        <span class="chip bg-color">经验分享</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2018-2021</span>
+            
+            <a href="/about" target="_blank">Cone</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">51.3k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/zhangchione" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1525163730@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1525163730" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1525163730" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+    <a href="https://www.zhihu.com/people/han-yu-30-68-66" class="tooltipped" target="_blank" data-tooltip="关注我的知乎: https://www.zhihu.com/people/han-yu-30-68-66" data-position="top" data-delay="50">
+        <i class="fab fa-zhihu1">知</i>
+    </a>
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?de6e91c32960c44c0d4b38fcf214cd45";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
