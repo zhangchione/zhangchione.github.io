@@ -198,19 +198,18 @@
   </entry>
   
   <entry>
-    <title>Swift 将代码更优雅 —— 枚举</title>
-    <link href="https://www.zhangchione.com/2019/10/31/Swift-enum/"/>
-    <id>https://www.zhangchione.com/2019/10/31/Swift-enum/</id>
+    <title>Swift 将代码更优雅 —— 控制流</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift-control_flow/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift-control_flow/</id>
     <published>2019-10-31T07:47:31.000Z</published>
-    <updated>2021-11-27T01:33:51.827Z</updated>
+    <updated>2021-11-27T01:33:36.307Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;笔者枚举在swift中真正站起来了，想来聊聊枚举，枚举跟其他类型一样在swift中属于一等类型。它有很多种用法，如果你读过Alamofire的源码，你会发现，枚举在这个库中得到了完美的诠释。&lt;/p&gt;
-&lt;h3 id=&quot;enum的用法：&quot;&gt;&lt;a</summary>
+    <summary type="html">&lt;h3 id=&quot;if-let-可选绑定&quot;&gt;&lt;a href=&quot;#if-let-可选绑定&quot; class=&quot;headerlink&quot; title=&quot;if let 可选绑定&quot;&gt;&lt;/a&gt;if let 可选绑定&lt;/h3&gt;&lt;pre class=&quot;line-numbers</summary>
         
       
     
@@ -250,18 +249,19 @@
   </entry>
   
   <entry>
-    <title>Swift 将代码更优雅 —— 控制流</title>
-    <link href="https://www.zhangchione.com/2019/10/31/Swift-control_flow/"/>
-    <id>https://www.zhangchione.com/2019/10/31/Swift-control_flow/</id>
+    <title>Swift 将代码更优雅 —— 枚举</title>
+    <link href="https://www.zhangchione.com/2019/10/31/Swift-enum/"/>
+    <id>https://www.zhangchione.com/2019/10/31/Swift-enum/</id>
     <published>2019-10-31T07:47:31.000Z</published>
-    <updated>2021-11-27T01:33:36.307Z</updated>
+    <updated>2021-11-27T01:33:51.827Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h3 id=&quot;if-let-可选绑定&quot;&gt;&lt;a href=&quot;#if-let-可选绑定&quot; class=&quot;headerlink&quot; title=&quot;if let 可选绑定&quot;&gt;&lt;/a&gt;if let 可选绑定&lt;/h3&gt;&lt;pre class=&quot;line-numbers</summary>
+    <summary type="html">&lt;p&gt;笔者枚举在swift中真正站起来了，想来聊聊枚举，枚举跟其他类型一样在swift中属于一等类型。它有很多种用法，如果你读过Alamofire的源码，你会发现，枚举在这个库中得到了完美的诠释。&lt;/p&gt;
+&lt;h3 id=&quot;enum的用法：&quot;&gt;&lt;a</summary>
         
       
     
