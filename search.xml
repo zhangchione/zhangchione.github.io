@@ -379,31 +379,6 @@
     
     
     <entry>
-      <title>Swift 将代码更优雅 —— 控制流</title>
-      <link href="/2019/10/31/Swift-control_flow/"/>
-      <url>/2019/10/31/Swift-control_flow/</url>
-      
-        <content type="html"><![CDATA[<h3 id="if-let-可选绑定"><a href="#if-let-可选绑定" class="headerlink" title="if let 可选绑定"></a>if let 可选绑定</h3><pre class="line-numbers language-none"><code class="language-none">var optionalName : String? &#x3D; &quot;Cone&quot;var greet &#x3D; &quot;hello!&quot;if let name &#x3D; optionalName &#123;   greet &#x3D; &quot;Hello, \(name)&quot;&#125;print(greet)&#x2F;&#x2F; Hello, Cone<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这段代码如何运行呢？如果变量的可选值为nil，条件会判断为false，大括号中的代码会跳过，如果不是nil，会将值赋给let后面的常量，这样代码快中就可以使用这个值了。</p><h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><pre class="line-numbers language-none"><code class="language-none">let vegetable &#x3D; &quot;red pepper&quot;switch vegetable &#123;case &quot;celery&quot;:    let comment &#x3D; &quot;celery&quot;;    print(comment)case &quot;cucumber&quot;, &quot;watercress&quot;:    let comment &#x3D; &quot;cucumber, watercress&quot;;    print(comment)case let x where x.hasSuffix(&quot;pepper&quot;):    let comment &#x3D; &quot;It is a \(x)&quot;;    print(comment)default:    let comment &#x3D; &quot;nothing&quot;;    print(comment)&#125;&#x2F;&#x2F; It is a red pepper<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>Swift中的switch语句支持很多种情况，包括枚举、范围、元组等等。</p><h3 id="where"><a href="#where" class="headerlink" title="where"></a>where</h3><p>where关键字在Swift中非常强大，谈谈使用场景。</p><h5 id="与switch-做限定使用"><a href="#与switch-做限定使用" class="headerlink" title="与switch 做限定使用"></a>与switch 做限定使用</h5><pre class="line-numbers language-none"><code class="language-none">let name &#x3D; [&quot;王二&quot;,&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;]name.forEach &#123;     switch $0 &#123;    case let x where x.hasPrefix(&quot;王&quot;):           print(&quot;\(x)是笔者本家&quot;)    default: print(&quot;你好，\($0)&quot;)&#125; &#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 王二是笔者本家&#x2F;&#x2F; 你好，张三&#x2F;&#x2F; 你好，李四&#x2F;&#x2F; 王五是笔者本家<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="在-for中做限定"><a href="#在-for中做限定" class="headerlink" title="在 for中做限定"></a>在 for中做限定</h5><pre class="line-numbers language-none"><code class="language-none">let num: [Int?] &#x3D; [48, 99, nil]    let n &#x3D; num.flatMap &#123;$0&#125;for score in n where score &gt; 60 &#123;    print(&quot;及格啦 - \(score)&quot;)&#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 及格啦 - Optional(99)        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="对协议扩展做条件限制"><a href="#对协议扩展做条件限制" class="headerlink" title="对协议扩展做条件限制"></a>对协议扩展做条件限制</h5><pre class="line-numbers language-none"><code class="language-none">extension Sequence where Self.Iterator.Element : Comparable &#123;public func sorted() -&gt;[Self.Iterator.Element]&#125;    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> iOS </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Swift </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Swift 将代码更优雅 —— 枚举</title>
       <link href="/2019/10/31/Swift-enum/"/>
       <url>/2019/10/31/Swift-enum/</url>
@@ -439,6 +414,31 @@
       <categories>
           
           <category> 学习笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swift </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swift 将代码更优雅 —— 控制流</title>
+      <link href="/2019/10/31/Swift-control_flow/"/>
+      <url>/2019/10/31/Swift-control_flow/</url>
+      
+        <content type="html"><![CDATA[<h3 id="if-let-可选绑定"><a href="#if-let-可选绑定" class="headerlink" title="if let 可选绑定"></a>if let 可选绑定</h3><pre class="line-numbers language-none"><code class="language-none">var optionalName : String? &#x3D; &quot;Cone&quot;var greet &#x3D; &quot;hello!&quot;if let name &#x3D; optionalName &#123;   greet &#x3D; &quot;Hello, \(name)&quot;&#125;print(greet)&#x2F;&#x2F; Hello, Cone<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>这段代码如何运行呢？如果变量的可选值为nil，条件会判断为false，大括号中的代码会跳过，如果不是nil，会将值赋给let后面的常量，这样代码快中就可以使用这个值了。</p><h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><pre class="line-numbers language-none"><code class="language-none">let vegetable &#x3D; &quot;red pepper&quot;switch vegetable &#123;case &quot;celery&quot;:    let comment &#x3D; &quot;celery&quot;;    print(comment)case &quot;cucumber&quot;, &quot;watercress&quot;:    let comment &#x3D; &quot;cucumber, watercress&quot;;    print(comment)case let x where x.hasSuffix(&quot;pepper&quot;):    let comment &#x3D; &quot;It is a \(x)&quot;;    print(comment)default:    let comment &#x3D; &quot;nothing&quot;;    print(comment)&#125;&#x2F;&#x2F; It is a red pepper<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>Swift中的switch语句支持很多种情况，包括枚举、范围、元组等等。</p><h3 id="where"><a href="#where" class="headerlink" title="where"></a>where</h3><p>where关键字在Swift中非常强大，谈谈使用场景。</p><h5 id="与switch-做限定使用"><a href="#与switch-做限定使用" class="headerlink" title="与switch 做限定使用"></a>与switch 做限定使用</h5><pre class="line-numbers language-none"><code class="language-none">let name &#x3D; [&quot;王二&quot;,&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;]name.forEach &#123;     switch $0 &#123;    case let x where x.hasPrefix(&quot;王&quot;):           print(&quot;\(x)是笔者本家&quot;)    default: print(&quot;你好，\($0)&quot;)&#125; &#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 王二是笔者本家&#x2F;&#x2F; 你好，张三&#x2F;&#x2F; 你好，李四&#x2F;&#x2F; 王五是笔者本家<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="在-for中做限定"><a href="#在-for中做限定" class="headerlink" title="在 for中做限定"></a>在 for中做限定</h5><pre class="line-numbers language-none"><code class="language-none">let num: [Int?] &#x3D; [48, 99, nil]    let n &#x3D; num.flatMap &#123;$0&#125;for score in n where score &gt; 60 &#123;    print(&quot;及格啦 - \(score)&quot;)&#125;&#x2F;&#x2F; 输出:&#x2F;&#x2F; 及格啦 - Optional(99)        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="对协议扩展做条件限制"><a href="#对协议扩展做条件限制" class="headerlink" title="对协议扩展做条件限制"></a>对协议扩展做条件限制</h5><pre class="line-numbers language-none"><code class="language-none">extension Sequence where Self.Iterator.Element : Comparable &#123;public func sorted() -&gt;[Self.Iterator.Element]&#125;    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> iOS </category>
           
       </categories>
       
